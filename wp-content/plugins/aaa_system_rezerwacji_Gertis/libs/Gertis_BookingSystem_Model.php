@@ -40,7 +40,7 @@ class Gertis_BookingSystem_Model{
                 from_who VARCHAR(255) DEFAULT NULL,
     			more_info TEXT DEFAULT NULL,
                 money INT DEFAULT NULL,
-                status enum("actual", "old", "resign") NOT NULL DEFAULT "actual",
+                status enum("waiting", "confirm", "resign", "old") NOT NULL DEFAULT "waiting",
                 PRIMARY KEY(id)
             )ENGINE=InnoDB DEFAULT CHARSET=utf8';
 

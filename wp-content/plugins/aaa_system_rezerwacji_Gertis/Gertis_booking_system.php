@@ -1,5 +1,8 @@
 <?php
 
+ob_start(); //http://www.lessthanweb.com/blog/wordpress-and-wp_redirect-function-problem
+session_start();
+
 /*
      * Plugin Name: System rezerwacji dla Gertis
      * Plugin URI: http://www.robertsaternus.pl
@@ -11,6 +14,7 @@
 
 
 require_once 'libs/Gertis_BookingSystem_Model.php';
+require_once 'libs/Request.php';
 require_once 'libs/shortcodes.php';
 
 
@@ -34,7 +38,7 @@ class Gertis_booking_system{
         add_action('admin_menu', array($this, 'createAdminMenu'));
 
 
-//        $my_var = $this->model->getTableNameEvent();
+//        $my_var = $this->getAdminGuestUrl();
 //        var_dump($my_var);
 
     }
@@ -76,15 +80,41 @@ class Gertis_booking_system{
 
     }
 
-
+    //Kontroler dla strony z listą z rejsami
     function printAdminPageEvent(){
 
-        ?>
+        $request = Request::instance();
+        $view = $request->getQuerySingleParam('view', 'events');
 
-            <h1>Główna strona</h1>
-        <?php
+        switch ($view) {
+            case 'events':
+                $this->renderEvent('events');
+                break;
+
+            case 'event-form':
+                $this->renderEvent('event-form');
+                break;
+
+            default:
+                $this->renderEvent('404');
+                break;
+        }
+
+
+
     }
 
+    //Funkcja służąca do renderowania widoków dla sekcji z rejsami
+    private function renderEvent($view, array $args = array()){
+
+        //extract($args);
+        $tmpl_dir = plugin_dir_path(__FILE__).'templates/';
+        $view = $tmpl_dir.$view.'.php';
+        require_once $tmpl_dir.'layout-event.php';
+
+    }
+
+    //Kontroler dla strony z listą uczestników
     function printAdminPageGuest(){
 
         ?>
@@ -93,8 +123,54 @@ class Gertis_booking_system{
         <?php
     }
 
+
+
+
+    public function getAdminEventUrl(array $params = array()){
+        $admin_url = admin_url('admin.php?page='.static::$plugin_id);
+        $admin_url = add_query_arg($params, $admin_url);
+
+        return $admin_url;
+    }
+
+    public function getAdminGuestUrl(array $params = array()){
+        $admin_url = admin_url('admin.php?page='.static::$plugin_id.'-guests');
+        $admin_url = add_query_arg($params, $admin_url);
+
+        return $admin_url;
+    }
+
+
+    public function setFlashMsg($message, $status = 'updated'){
+        $_SESSION[__CLASS__]['message'] = $message;
+        $_SESSION[__CLASS__]['status'] = $status;
+    }
+
+    public function getFlashMsg(){
+        if(isset($_SESSION[__CLASS__]['message'])){
+            $msg = $_SESSION[__CLASS__]['message'];
+            unset($_SESSION[__CLASS__]);
+            return $msg;
+        }
+
+        return NULL;
+    }
+
+    public function getFlashMsgStatus(){
+        if(isset($_SESSION[__CLASS__]['status'])){
+            return $_SESSION[__CLASS__]['status'];
+        }
+
+        return NULL;
+    }
+
+    public function hasFlashMsg(){
+        return isset($_SESSION[__CLASS__]['message']);
+    }
+
 }
 
 
 $Gertis_booking_system = new Gertis_booking_system();
 
+ob_flush();
