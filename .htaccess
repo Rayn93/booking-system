@@ -1,0 +1,13 @@
+RewriteRule  http://www.obozy-zeglarskie.pl/s51-co_zabrac_na_oboz_zeglarski%253f /co-zabrac-na-oboz-zeglarski[R=301,L]
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /system-rezerwacji/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /system-rezerwacji/index.php [L]
+</IfModule>
+
+# END WordPress
