@@ -37,8 +37,11 @@ class Gertis_booking_system{
         //rejestracja przycisku w menu
         add_action('admin_menu', array($this, 'createAdminMenu'));
 
+        //rejestracja skryptów
+        add_action('wp_enqueue_scripts', array($this, 'addPageScripts'));
 
-//        $my_var = $this->getAdminGuestUrl();
+
+//        $my_var = plugins_url('/js/bootstrap.min.js', __FILE__);
 //        var_dump($my_var);
 
     }
@@ -69,6 +72,28 @@ class Gertis_booking_system{
                     break;
             }
         }
+    }
+
+    //Podpięcie styli css i skryptów js WAŻNE! Upewnić się czy tytuł strony się zgadza
+    function addPageScripts(){
+
+        wp_register_script('gertis-bootstrap-script', plugins_url('/js/bootstrap.min.js', __FILE__), array('jquery'));
+        wp_register_script('bootstrap-validation', plugins_url('/js/bootstrap-validation.js', __FILE__), array('jquery', 'gertis-bootstrap-script'));
+//
+        wp_register_style('bootstrap-style', plugins_url('/css/bootstrap.min.css', __FILE__));
+        wp_register_style('gertis-custom-style', plugins_url('/css/style.css', __FILE__));
+
+
+        if(is_page('A System rezerwacji')){
+
+            wp_enqueue_script('jquery');
+            wp_enqueue_script('gertis-bootstrap-script');
+            wp_enqueue_script('bootstrap-validation');
+
+            wp_enqueue_style('bootstrap-style');
+            wp_enqueue_style('gertis-custom-style');
+        }
+
     }
 
 
