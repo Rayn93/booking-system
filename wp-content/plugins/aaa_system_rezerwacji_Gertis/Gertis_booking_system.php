@@ -30,6 +30,9 @@ class Gertis_booking_system{
         //uruchamianie podczas aktywacji
         register_activation_hook(__FILE__, array($this, 'onActivate'));
 
+        //rejestracja przycisku w menu
+        add_action('admin_menu', array($this, 'createAdminMenu'));
+
 
 //        $my_var = $this->model->getTableNameEvent();
 //        var_dump($my_var);
@@ -62,6 +65,32 @@ class Gertis_booking_system{
                     break;
             }
         }
+    }
+
+
+    function createAdminMenu(){
+
+        add_menu_page('Gertis System Rezerwacji', 'System rezerwacji', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'), '', 66);
+        add_submenu_page(static::$plugin_id, 'Lista rejsów', 'Lista rejsów', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'));
+        add_submenu_page(static::$plugin_id, 'Zapisani uczestnicy', 'Uczestnicy', $this->user_capability, static::$plugin_id.'-guests', array($this, 'printAdminPageGuest'));
+
+    }
+
+
+    function printAdminPageEvent(){
+
+        ?>
+
+            <h1>Główna strona</h1>
+        <?php
+    }
+
+    function printAdminPageGuest(){
+
+        ?>
+
+        <h1>Główna podstrona</h1>
+        <?php
     }
 
 }
