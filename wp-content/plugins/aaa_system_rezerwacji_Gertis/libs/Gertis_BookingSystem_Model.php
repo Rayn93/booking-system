@@ -62,7 +62,7 @@ class Gertis_BookingSystem_Model{
                 end_date DATE NOT NULL,
                 price INT NOT NULL,
                 seat_no INT NOT NULL,
-                status enum("actual", "old") NOT NULL DEFAULT "actual",
+                status enum("yes", "no") NOT NULL DEFAULT "yes",
                 PRIMARY KEY(id)
             )ENGINE=InnoDB DEFAULT CHARSET=utf8';
 

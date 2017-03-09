@@ -12,7 +12,7 @@ function gertisMainForm() {
     <div id="booking_system_form" class="container">
         <div class="row">
 
-            <form class="form-horizontal" data-toggle="validator" role="form">
+            <form class="form-horizontal" action="" data-toggle="validator" role="form">
 
                 <div class="form-group">
                     <label for="event_code" class="col-sm-3 control-label">Kod imprezy *</label>
@@ -154,3 +154,11 @@ function gertisMainForm() {
 }
 
 add_shortcode( 'gertis_main_form', 'gertisMainForm' );
+
+//function submitMainForm(){
+//
+//    $model = new Gertis_BookingSystem_Model();
+//
+//
+//
+//}
