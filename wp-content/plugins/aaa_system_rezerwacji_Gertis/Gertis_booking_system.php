@@ -15,6 +15,7 @@ session_start();
 
 require_once 'libs/Gertis_BookingSystem_Model.php';
 require_once 'libs/Gertis_EventEntry.php';
+require_once 'libs/Gertis_GuestEntry.php';
 require_once 'libs/Request.php';
 require_once 'libs/shortcodes.php';
 
@@ -203,30 +204,41 @@ class Gertis_booking_system{
 
             case 'guest-form':
 
-                $EventEntry = new Gertis_EventEntry();
+                if($guestid > 0){
+                    $GuestEntry = new Gertis_GuestEntry($guestid);
+
+                    if(!$GuestEntry->exist()){
+                        $this->setFlashMsg('Brak takiego uczestnika', 'error');
+                        $this->redirect($this->getAdminPageUrl('-guests'));
+                    }
+                }
+                else{
+                    $GuestEntry = new Gertis_GuestEntry();
+                }
+
 
                 if($action == 'save' && $request->isMethod('POST') && $_POST['entry']){
 
                     //Sprawdzenie czy token akcji w formularza jest poprawny
                     if(check_admin_referer($this->action_token)){
 
-                        $EventEntry->setFields($_POST['entry']);
+                        $GuestEntry->setFields($_POST['entry']);
 
-                        if($EventEntry->validate()){
+                        if($GuestEntry->validate()){
 
-                            $entry_id = $this->model->saveEventEntry($EventEntry);
+                            $entry_id = $this->model->saveGuestEntry($GuestEntry);
 
                             if($entry_id != FALSE){
-                                if($EventEntry->hasId()){
-                                    $this->setFlashMsg('Poprawnie zmodyfikowano wydarzenie');
+                                if($GuestEntry->hasId()){
+                                    $this->setFlashMsg('Poprawnie zmodyfikowano dane uczestnika');
                                 }
                                 else{
-                                    $this->setFlashMsg('Poprawnie dodano nowe wydarzenie');
+                                    $this->setFlashMsg('Poprawnie dodano nowego uczestnika');
                                 }
-                                $this->redirect($this->getAdminPageUrl('', array('view' => 'event-form', 'eventid' => $entry_id)));
+                                $this->redirect($this->getAdminPageUrl('-guests', array('view' => 'guest-form', 'guestid' => $entry_id)));
                             }
                             else{
-                                $this->setFlashMsg('Nie udało się dodać/edytować wydarzenia. Sprawdź czy dokonałeś/aś jakiś zmian w formularzu.', 'error');
+                                $this->setFlashMsg('Nie udało się dodać/edytować uczestnika. Sprawdź czy dokonałeś/aś jakiś zmian w formularzu.', 'error');
                             }
                         }
                         else{
@@ -238,7 +250,7 @@ class Gertis_booking_system{
                     }
                 }
 
-                $this->renderGuest('guest-form');
+                $this->renderGuest('guest-form', array('Guest' => $GuestEntry));
                 break;
 
             default:

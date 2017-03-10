@@ -28,7 +28,7 @@ class Gertis_BookingSystem_Model{
         $sql = '
             CREATE TABLE IF NOT EXISTS '.$table_name.'(
                 id INT NOT NULL AUTO_INCREMENT,
-                event_turn VARCHAR(30) NOT NULL,
+                event_turn VARCHAR(20) NOT NULL,
                 guest_name VARCHAR(255) NOT NULL,
                 birth_date DATE NOT NULL,
                 email VARCHAR(255) NOT NULL,
@@ -108,9 +108,60 @@ class Gertis_BookingSystem_Model{
         }
     }
 
+    //Zapisanie danych z formularza o rejsach do bazy danych
+    function saveGuestEntry(Gertis_GuestEntry $GuestEntry){
+
+        $toSave = array(
+            'event_turn' => $GuestEntry->getField('event_turn'),
+            'guest_name' => $GuestEntry->getField('guest_name'),
+            'birth_date' => $GuestEntry->getField('birth_date'),
+            'email' => $GuestEntry->getField('email'),
+            'phone' => $GuestEntry->getField('phone'),
+            'personal_no' => $GuestEntry->getField('personal_no'),
+            'city' => $GuestEntry->getField('city'),
+            'street' => $GuestEntry->getField('street'),
+            'zip_code' => $GuestEntry->getField('zip_code'),
+            'from_who' => $GuestEntry->getField('from_who'),
+            'more_info' => $GuestEntry->getField('more_info'),
+            'money' => $GuestEntry->getField('money'),
+            'status' => $GuestEntry->getField('status'),
+        );
+
+        $maps = array('%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s');
+
+        $table_name = $this->getTableNameGuest();
+
+        if($GuestEntry->hasId()){
+
+            if($this->wpdb->update($table_name, $toSave, array('id' => $GuestEntry->getField('id')), $maps, '%d')){
+                return $GuestEntry->getField('id');
+            }
+            else{
+                return FALSE;
+            }
+        }
+        else{
+
+            if($this->wpdb->insert($table_name, $toSave, $maps)){
+                return $this->wpdb->insert_id;
+            }
+            else{
+                return FALSE;
+            }
+        }
+    }
+
     //Pobiera oraz zwraca wydarzenie o konkretnym id
     function fetchEventRow($id){
         $table_name = $this->getTableNameEvent();
+        $sql = "SELECT * FROM {$table_name} WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+        return $this->wpdb->get_row($prep);
+    }
+
+    //Pobiera oraz zwraca uczestnika o konkretnym id
+    function fetchGuestRow($id){
+        $table_name = $this->getTableNameGuest();
         $sql = "SELECT * FROM {$table_name} WHERE id = %d";
         $prep = $this->wpdb->prepare($sql, $id);
         return $this->wpdb->get_row($prep);
