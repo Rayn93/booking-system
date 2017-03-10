@@ -14,6 +14,7 @@ session_start();
 
 
 require_once 'libs/Gertis_BookingSystem_Model.php';
+require_once 'libs/Gertis_EventEntry.php';
 require_once 'libs/Request.php';
 require_once 'libs/shortcodes.php';
 
@@ -37,11 +38,14 @@ class Gertis_booking_system{
         //rejestracja przycisku w menu
         add_action('admin_menu', array($this, 'createAdminMenu'));
 
-        //rejestracja skryptów
+        //rejestracja styli i skryptów dla frontendu
         add_action('wp_enqueue_scripts', array($this, 'addPageScripts'));
 
+        //rejestracja styli i skryptów dla admina
+        add_action('admin_enqueue_scripts', array($this, 'addAdminScripts'));
 
-//        $my_var = plugins_url('/js/bootstrap.min.js', __FILE__);
+
+//        $my_var = $this->getAdminPageUrl('', array('view'=> 'form', 'action'=>'hey'));
 //        var_dump($my_var);
 
     }
@@ -93,7 +97,16 @@ class Gertis_booking_system{
             wp_enqueue_style('bootstrap-style');
             wp_enqueue_style('gertis-custom-style');
         }
+    }
 
+    function addAdminScripts(){
+        wp_register_style('gertis-admin-style', plugins_url('/css/style-admin.css', __FILE__));
+        wp_enqueue_style('gertis-admin-style');
+
+//        if(get_current_screen()->id == 'toplevel_page_'.static::$plugin_id || get_current_screen()->id == 'system-rezerwacji_page_'.static::$plugin_id.'-guests'){
+//
+//
+//        }
     }
 
 
@@ -110,6 +123,7 @@ class Gertis_booking_system{
 
         $request = Request::instance();
         $view = $request->getQuerySingleParam('view', 'events');
+        $action = $request->getQuerySingleParam('action');
 
         switch ($view) {
             case 'events':
@@ -117,7 +131,19 @@ class Gertis_booking_system{
                 break;
 
             case 'event-form':
-                $this->renderEvent('event-form');
+
+                $EventEntry = new Gertis_EventEntry();
+
+
+                if($action == 'save' && $request->isMethod('POST') && $_POST['entry']){
+
+                    $EventEntry->setFields($_POST['entry']);
+                    $EventEntry->validate();
+
+                }
+
+
+                $this->renderEvent('event-form', array('Event' => $EventEntry));
                 break;
 
             default:
@@ -132,7 +158,7 @@ class Gertis_booking_system{
     //Funkcja służąca do renderowania widoków dla sekcji z rejsami
     private function renderEvent($view, array $args = array()){
 
-        //extract($args);
+        extract($args);
         $tmpl_dir = plugin_dir_path(__FILE__).'templates/';
         $view = $tmpl_dir.$view.'.php';
         require_once $tmpl_dir.'layout-event.php';
@@ -151,15 +177,8 @@ class Gertis_booking_system{
 
 
 
-    public function getAdminEventUrl(array $params = array()){
-        $admin_url = admin_url('admin.php?page='.static::$plugin_id);
-        $admin_url = add_query_arg($params, $admin_url);
-
-        return $admin_url;
-    }
-
-    public function getAdminGuestUrl(array $params = array()){
-        $admin_url = admin_url('admin.php?page='.static::$plugin_id.'-guests');
+    public function getAdminPageUrl($page ='', array $params = array()){
+        $admin_url = admin_url('admin.php?page='.static::$plugin_id.$page);
         $admin_url = add_query_arg($params, $admin_url);
 
         return $admin_url;

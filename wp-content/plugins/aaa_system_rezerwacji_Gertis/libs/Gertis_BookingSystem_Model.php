@@ -71,5 +71,42 @@ class Gertis_BookingSystem_Model{
         dbDelta($sql);
     }
 
+    //Zapisanie danych z formularza o rejsach do bazy danych
+    function saveEventEntry(Gertis_EventEntry $EventEntry){
+
+        $toSave = array(
+            'event_code' => $EventEntry->getField('event_code'),
+            'event_turn' => $EventEntry->getField('event_turn'),
+            'start_date' => $EventEntry->getField('start_date'),
+            'end_date' => $EventEntry->getField('end_date'),
+            'price' => $EventEntry->getField('price'),
+            'seat_no' => $EventEntry->getField('seat_no'),
+            'status' => $EventEntry->getField('status'),
+        );
+
+        $maps = array('%s', '%s', '%s', '%s', '%d', '%s');
+
+        $table_name = $this->getTableName();
+
+        if($entry->hasId()){
+
+            if($this->wpdb->update($table_name, $toSave, array('id' => $entry->getField('id')), $maps, '%d')){
+                return $entry->getField('id');
+            }else{
+                return FALSE;
+            }
+
+        }else{
+
+            if($this->wpdb->insert($table_name, $toSave, $maps)){
+                return $this->wpdb->insert_id;
+            }else{
+                return FALSE;
+            }
+
+        }
+
+    }
+
 
 }

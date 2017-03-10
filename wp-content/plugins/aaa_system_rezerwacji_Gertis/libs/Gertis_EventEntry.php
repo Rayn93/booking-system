@@ -68,8 +68,7 @@ class Gertis_EventEntry{
 
 
     //Funkcja walidująca poprawność pul w formularzu z impreza. Zwraca true jeżeli nie ma błędów
-    function validate()
-    {
+    function validate(){
 
         /*
          * event_code:
@@ -146,7 +145,7 @@ class Gertis_EventEntry{
          * - rzutowanie wartości do integera
          * - musi być to liczba większa od 0
          */
-        if(empty($this->price)){
+        if(empty($this->price) && !is_numeric($this->price)){
             $this->setError('price', 'To pole nie może być puste.');
         }
         else{
@@ -163,7 +162,7 @@ class Gertis_EventEntry{
          * - rzutowanie wartości do integera
          * - musi być to liczba większa od 0
          */
-        if(empty($this->seat_no)){
+        if(empty($this->seat_no) && !is_numeric($this->seat_no)){
             $this->setError('seat_no', 'To pole nie może być puste.');
         }
         else{
