@@ -918,3 +918,6 @@
 [10-Mar-2017 12:57:21 UTC] PHP Parse error:  syntax error, unexpected '}' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 142
 [10-Mar-2017 12:57:59 UTC] PHP Parse error:  syntax error, unexpected '}' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 142
 [10-Mar-2017 12:58:02 UTC] PHP Parse error:  syntax error, unexpected '}' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 142
+[10-Mar-2017 13:47:38 UTC] PHP Warning:  require_once(C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis/templates/guests.php): failed to open stream: No such file or directory in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\layout-guest.php on line 17
+[10-Mar-2017 13:50:44 UTC] PHP Fatal error:  Call to a member function hasId() on null in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\guest-form.php on line 3
+[10-Mar-2017 15:24:12 UTC] PHP Fatal error:  Call to a member function getField() on null in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\guest-form.php on line 21

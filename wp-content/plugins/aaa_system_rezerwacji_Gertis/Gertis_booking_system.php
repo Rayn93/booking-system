@@ -83,7 +83,8 @@ class Gertis_booking_system{
 
         wp_register_script('gertis-bootstrap-script', plugins_url('/js/bootstrap.min.js', __FILE__), array('jquery'));
         wp_register_script('bootstrap-validation', plugins_url('/js/bootstrap-validation.js', __FILE__), array('jquery', 'gertis-bootstrap-script'));
-//
+        wp_register_script('recaptha-google', 'https://www.google.com/recaptcha/api.js', array('jquery', 'gertis-bootstrap-script', 'bootstrap-validation'));
+
         wp_register_style('bootstrap-style', plugins_url('/css/bootstrap.min.css', __FILE__));
         wp_register_style('gertis-custom-style', plugins_url('/css/style.css', __FILE__));
 
@@ -93,6 +94,7 @@ class Gertis_booking_system{
             wp_enqueue_script('jquery');
             wp_enqueue_script('gertis-bootstrap-script');
             wp_enqueue_script('bootstrap-validation');
+            wp_enqueue_script('recaptha-google');
 
             wp_enqueue_style('bootstrap-style');
             wp_enqueue_style('gertis-custom-style');
@@ -101,14 +103,11 @@ class Gertis_booking_system{
 
     function addAdminScripts(){
         wp_register_style('gertis-admin-style', plugins_url('/css/style-admin.css', __FILE__));
-        wp_enqueue_style('gertis-admin-style');
 
-//        if(get_current_screen()->id == 'toplevel_page_'.static::$plugin_id || get_current_screen()->id == 'system-rezerwacji_page_'.static::$plugin_id.'-guests'){
-//
-//
-//        }
+        if(get_current_screen()->id == 'toplevel_page_'.static::$plugin_id || get_current_screen()->id == 'system-rezerwacji_page_'.static::$plugin_id.'-guests'){
+            wp_enqueue_style('gertis-admin-style');
+        }
     }
-
 
     function createAdminMenu(){
 
@@ -179,7 +178,6 @@ class Gertis_booking_system{
                     }
                 }
 
-
                 $this->renderEvent('event-form', array('Event' => $EventEntry));
                 break;
 
@@ -187,9 +185,66 @@ class Gertis_booking_system{
                 $this->renderEvent('404');
                 break;
         }
+    }
 
 
+    //Kontroler dla strony z listą uczestników + obsługa formularza uczestników
+    function printAdminPageGuest(){
 
+        $request = Request::instance();
+        $view = $request->getQuerySingleParam('view', 'guests');
+        $action = $request->getQuerySingleParam('action');
+        $guestid = (int)$request->getQuerySingleParam('guestid');
+
+        switch ($view) {
+            case 'guests':
+                $this->renderGuest('guests');
+                break;
+
+            case 'guest-form':
+
+                $EventEntry = new Gertis_EventEntry();
+
+                if($action == 'save' && $request->isMethod('POST') && $_POST['entry']){
+
+                    //Sprawdzenie czy token akcji w formularza jest poprawny
+                    if(check_admin_referer($this->action_token)){
+
+                        $EventEntry->setFields($_POST['entry']);
+
+                        if($EventEntry->validate()){
+
+                            $entry_id = $this->model->saveEventEntry($EventEntry);
+
+                            if($entry_id != FALSE){
+                                if($EventEntry->hasId()){
+                                    $this->setFlashMsg('Poprawnie zmodyfikowano wydarzenie');
+                                }
+                                else{
+                                    $this->setFlashMsg('Poprawnie dodano nowe wydarzenie');
+                                }
+                                $this->redirect($this->getAdminPageUrl('', array('view' => 'event-form', 'eventid' => $entry_id)));
+                            }
+                            else{
+                                $this->setFlashMsg('Nie udało się dodać/edytować wydarzenia. Sprawdź czy dokonałeś/aś jakiś zmian w formularzu.', 'error');
+                            }
+                        }
+                        else{
+                            $this->setFlashMsg('Popraw pola formularza', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Błędny token formularza', 'error');
+                    }
+                }
+
+                $this->renderGuest('guest-form');
+                break;
+
+            default:
+                $this->renderGuest('404');
+                break;
+        }
     }
 
     //Funkcja służąca do renderowania widoków dla sekcji z rejsami
@@ -202,13 +257,14 @@ class Gertis_booking_system{
 
     }
 
-    //Kontroler dla strony z listą uczestników
-    function printAdminPageGuest(){
+    //Funkcja służąca do renderowania widoków dla sekcji z uczestnikami
+    private function renderGuest($view, array $args = array()){
 
-        ?>
+        extract($args);
+        $tmpl_dir = plugin_dir_path(__FILE__).'templates/';
+        $view = $tmpl_dir.$view.'.php';
+        require_once $tmpl_dir.'layout-guest.php';
 
-        <h1>Główna podstrona</h1>
-        <?php
     }
 
 

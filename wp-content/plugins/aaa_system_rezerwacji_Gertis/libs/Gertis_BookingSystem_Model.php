@@ -28,7 +28,7 @@ class Gertis_BookingSystem_Model{
         $sql = '
             CREATE TABLE IF NOT EXISTS '.$table_name.'(
                 id INT NOT NULL AUTO_INCREMENT,
-                event_date VARCHAR(255) NOT NULL,
+                event_turn VARCHAR(30) NOT NULL,
                 guest_name VARCHAR(255) NOT NULL,
                 birth_date DATE NOT NULL,
                 email VARCHAR(255) NOT NULL,
@@ -36,7 +36,7 @@ class Gertis_BookingSystem_Model{
     			personal_no VARCHAR(255) NOT NULL,
                 city VARCHAR(255) NOT NULL,
                 street VARCHAR(255) NOT NULL,
-                zip_code VARCHAR(255) NOT NULL,
+                zip_code VARCHAR(20) NOT NULL,
                 from_who VARCHAR(255) DEFAULT NULL,
     			more_info TEXT DEFAULT NULL,
                 money INT DEFAULT NULL,
