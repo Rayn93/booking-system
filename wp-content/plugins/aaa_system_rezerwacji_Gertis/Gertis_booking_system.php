@@ -124,6 +124,7 @@ class Gertis_booking_system{
         $request = Request::instance();
         $view = $request->getQuerySingleParam('view', 'events');
         $action = $request->getQuerySingleParam('action');
+        $eventid = (int)$request->getQuerySingleParam('eventid');
 
         switch ($view) {
             case 'events':
@@ -132,14 +133,50 @@ class Gertis_booking_system{
 
             case 'event-form':
 
-                $EventEntry = new Gertis_EventEntry();
+                if($eventid > 0){
+                    $EventEntry = new Gertis_EventEntry($eventid);
+
+                    if(!$EventEntry->exist()){
+                        $this->setFlashMsg('Brak takiego wydarzenia', 'error');
+                        $this->redirect($this->getAdminPageUrl());
+                    }
+                }
+                else{
+                    $EventEntry = new Gertis_EventEntry();
+                }
 
 
                 if($action == 'save' && $request->isMethod('POST') && $_POST['entry']){
 
-                    $EventEntry->setFields($_POST['entry']);
-                    $EventEntry->validate();
+                    //Sprawdzenie czy token akcji w formularza jest poprawny
+                    if(check_admin_referer($this->action_token)){
 
+                        $EventEntry->setFields($_POST['entry']);
+
+                        if($EventEntry->validate()){
+
+                            $entry_id = $this->model->saveEventEntry($EventEntry);
+
+                            if($entry_id != FALSE){
+                                if($EventEntry->hasId()){
+                                    $this->setFlashMsg('Poprawnie zmodyfikowano wydarzenie');
+                                }
+                                else{
+                                    $this->setFlashMsg('Poprawnie dodano nowe wydarzenie');
+                                }
+                                $this->redirect($this->getAdminPageUrl('', array('view' => 'event-form', 'eventid' => $entry_id)));
+                            }
+                            else{
+                                $this->setFlashMsg('Nie udało się dodać/edytować wydarzenia. Sprawdź czy dokonałeś/aś jakiś zmian w formularzu.', 'error');
+                            }
+                        }
+                        else{
+                            $this->setFlashMsg('Popraw pola formularza', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Błędny token formularza', 'error');
+                    }
                 }
 
 
@@ -176,7 +213,7 @@ class Gertis_booking_system{
 
 
 
-
+    //Zwraca link do pluginu (parametr $page dla uczestników powinien mieć wartość '-guests')
     public function getAdminPageUrl($page ='', array $params = array()){
         $admin_url = admin_url('admin.php?page='.static::$plugin_id.$page);
         $admin_url = add_query_arg($params, $admin_url);
@@ -210,6 +247,11 @@ class Gertis_booking_system{
 
     public function hasFlashMsg(){
         return isset($_SESSION[__CLASS__]['message']);
+    }
+
+    public function redirect($location){
+        wp_safe_redirect($location);
+        exit;
     }
 
 }

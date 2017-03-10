@@ -1,13 +1,13 @@
 <?php
 $action_params = array('view' => 'event-form', 'action' => 'save');
-//if($Slide->hasId()){
-//    $action_params['slideid'] = $Slide->getField('id');
-//}
-//
-//?>
+if($Event->hasId()){
+    $action_params['eventid'] = $Event->getField('id');
+}
+
+?>
 <form action="<?php echo $this->getAdminPageUrl('', $action_params); ?>" method="post" id="gertis-event-form">
 
-    <?php //wp_nonce_field($this->action_token); ?>
+    <?php wp_nonce_field($this->action_token); ?>
 
     <table class="form-table">
 
@@ -23,7 +23,7 @@ $action_params = array('view' => 'event-form', 'action' => 'save');
                 <?php if($Event->hasError('event_code')): ?>
                     <p class="description error"><?php echo $Event->getError('event_code'); ?></p>
                 <?php else: ?>
-                    <p class="description">To pole jest wymagane</p>
+                    <p class="description">To pole jest wymagane. Format np. SPO</p>
                 <?php endif; ?>
 
             </td>
@@ -39,7 +39,7 @@ $action_params = array('view' => 'event-form', 'action' => 'save');
                 <?php if($Event->hasError('event_turn')): ?>
                     <p class="description error"><?php echo $Event->getError('event_turn'); ?></p>
                 <?php else: ?>
-                    <p class="description">To pole jest wymagane</p>
+                    <p class="description">To pole jest wymagane. Format np. SPO1</p>
                 <?php endif; ?>
             </td>
         </tr>

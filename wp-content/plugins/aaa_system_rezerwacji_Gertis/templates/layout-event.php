@@ -1,4 +1,5 @@
 <div class="wrap">
+    <br />
 
     <?php if($this->hasFlashMsg()): ?>
         <!--<div id="message" class="updated">-->
@@ -12,7 +13,7 @@
         <a class="add-new-h2" href="<?php echo $this->getAdminPageUrl('', array('view' => 'event-form')); ?>">Dodaj nowy rejs/turnus</a>
     </h2>
 
-    <br /><br /><br />
+    <br /><br />
 
 <?php require_once $view; ?>
 

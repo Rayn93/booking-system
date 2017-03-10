@@ -84,28 +84,36 @@ class Gertis_BookingSystem_Model{
             'status' => $EventEntry->getField('status'),
         );
 
-        $maps = array('%s', '%s', '%s', '%s', '%d', '%s');
+        $maps = array('%s', '%s', '%s', '%s', '%d', '%d', '%s');
 
-        $table_name = $this->getTableName();
+        $table_name = $this->getTableNameEvent();
 
-        if($entry->hasId()){
+        if($EventEntry->hasId()){
 
-            if($this->wpdb->update($table_name, $toSave, array('id' => $entry->getField('id')), $maps, '%d')){
-                return $entry->getField('id');
-            }else{
+            if($this->wpdb->update($table_name, $toSave, array('id' => $EventEntry->getField('id')), $maps, '%d')){
+                return $EventEntry->getField('id');
+            }
+            else{
                 return FALSE;
             }
-
-        }else{
+        }
+        else{
 
             if($this->wpdb->insert($table_name, $toSave, $maps)){
                 return $this->wpdb->insert_id;
-            }else{
+            }
+            else{
                 return FALSE;
             }
-
         }
+    }
 
+    //Pobiera oraz zwraca wydarzenie o konkretnym id
+    function fetchEventRow($id){
+        $table_name = $this->getTableNameEvent();
+        $sql = "SELECT * FROM {$table_name} WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+        return $this->wpdb->get_row($prep);
     }
 
 

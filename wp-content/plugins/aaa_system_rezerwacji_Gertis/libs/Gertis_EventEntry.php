@@ -21,6 +21,29 @@ class Gertis_EventEntry{
     private $exists = FALSE;
 
 
+    function __construct($id = NULL) {
+        $this->id = $id;
+        $this->load();
+    }
+
+
+    private function load(){
+        if(isset($this->id)){
+            $Model = new Gertis_BookingSystem_Model();
+            $row = $Model->fetchEventRow($this->id);
+
+            if(isset($row)){
+                $this->setFields($row);
+                $this->exists = TRUE;
+            }
+        }
+    }
+
+    function exist(){
+        return $this->exists;
+    }
+
+
     function getField($field){
         if(isset($this->{$field})){
             return $this->{$field};
