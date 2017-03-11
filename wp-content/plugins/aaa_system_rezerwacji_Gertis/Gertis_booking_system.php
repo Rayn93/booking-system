@@ -45,11 +45,17 @@ class Gertis_booking_system{
         //rejestracja styli i skryptów dla admina
         add_action('admin_enqueue_scripts', array($this, 'addAdminScripts'));
 
+        //akcja obsługi formularza na frontendzie
+        add_action('init', array($this, 'handleGertisMainForm'));
 
-//        $my_var = $this->getAdminPageUrl('', array('view'=> 'form', 'action'=>'hey'));
-//        var_dump($my_var);
+//        $dateString = '2012.06.30';
+//        $date = date('Y-m-d', strtotime(str_replace('-', '/', $dateString)));
+//        //$myDateTime = DateTime::createFromFormat('d.m.Y', $dateString);
+////        $my_var = $_POST['entry'];
+//        var_dump($date);
 
     }
+
 
     function onActivate(){
         $ver_opt = static::$plugin_id.'-version';
@@ -112,7 +118,7 @@ class Gertis_booking_system{
 
     function createAdminMenu(){
 
-        add_menu_page('Gertis System Rezerwacji', 'System rezerwacji', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'), '', 66);
+        add_menu_page('Gertis System Rezerwacji', 'System rezerwacji', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'), 'dashicons-calendar-alt', 66);
         add_submenu_page(static::$plugin_id, 'Lista rejsów', 'Lista rejsów', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'));
         add_submenu_page(static::$plugin_id, 'Zapisani uczestnicy', 'Uczestnicy', $this->user_capability, static::$plugin_id.'-guests', array($this, 'printAdminPageGuest'));
 
@@ -148,7 +154,7 @@ class Gertis_booking_system{
 
                 if($action == 'save' && $request->isMethod('POST') && $_POST['entry']){
 
-                    //Sprawdzenie czy token akcji w formularza jest poprawny
+                    //Sprawdzenie czy token akcji  formularza jest poprawny
                     if(check_admin_referer($this->action_token)){
 
                         $EventEntry->setFields($_POST['entry']);
@@ -258,6 +264,49 @@ class Gertis_booking_system{
                 break;
         }
     }
+
+    function handleGertisMainForm(){
+
+        if (isset($_POST['front_entry'])){
+
+            $GuestEntry = new Gertis_GuestEntry();
+
+            if(check_admin_referer($this->action_token)) {
+
+                $GuestEntry->setFields($_POST['front_entry']);
+
+                if ($GuestEntry->validate()) {
+
+                    $entry_id = $this->model->saveGuestEntry($GuestEntry);
+
+                    if ($entry_id != FALSE) {
+
+                        $this->redirect('http://localhost/system-rezerwacji/submit_page.php');
+                        //Mail do admina o nowym uczestniku (wysłać $entry_id)
+
+                    } else {
+                        //Przekirowanie na stronę z formularzem z informacją że rejestracja się nie powiodła
+                        $_SESSION['form_error'] = 'Błąd bazy danych. Spróbuj ponownie za jakiś czas lub skontaktuj się z nami.';
+                        $this->redirect('http://localhost/system-rezerwacji/a-system-rezerwacji/');
+
+                    }
+                }
+                else {
+                    //Przekirowanie na stronę z formularzem z informacją że nie przeszło walidacji
+                    $_SESSION['form_error'] = 'Formularz nie został poprawnie wypełniony. Wypełnij formularz ponownie';
+                    $this->redirect('http://localhost/system-rezerwacji/a-system-rezerwacji/');
+
+                }
+            }
+            else{
+                //Przekirowanie na stronę z formularzem z informacją że błędny token
+                $_SESSION['form_error'] = 'Błąd tokena. Wyczyść pliki przeglądarki i spróbuj ponownie!';
+                $this->redirect('http://localhost/system-rezerwacji/a-system-rezerwacji/');
+
+            }
+        }
+    }
+
 
     //Funkcja służąca do renderowania widoków dla sekcji z rejsami
     private function renderEvent($view, array $args = array()){

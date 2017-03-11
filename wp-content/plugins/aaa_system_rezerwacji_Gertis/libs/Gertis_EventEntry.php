@@ -137,12 +137,16 @@ class Gertis_EventEntry{
         if (empty($this->start_date)) {
             $this->setError('start_date', 'To pole nie może być puste');
         }
-        else{
-            $date_start = date_parse($this->start_date);
-            if (!$date_start["error_count"] == 0 || !checkdate($date_start["month"], $date_start["day"], $date_start["year"])) {
-                $this->setError('start_date', 'To pole musi być datą');
-            }
+        else if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->start_date)){
+            $this->setError('start_date', 'To pole musi być datą w formacie: rrrr-mm-dd np. 1993-05-30');
+
         }
+//        else{
+//            $date_start = date_parse($this->start_date);
+//            if (!$date_start["error_count"] == 0 || !checkdate($date_start["month"], $date_start["day"], $date_start["year"])) {
+//                $this->setError('start_date', 'To pole musi być datą');
+//            }
+//        }
 
 
         /*
@@ -155,12 +159,16 @@ class Gertis_EventEntry{
         if (empty($this->end_date)) {
             $this->setError('end_date', 'To pole nie może być puste');
         }
-        else{
-            $date_end = date_parse($this->end_date);
-            if (!$date_end["error_count"] == 0 || !checkdate($date_end["month"], $date_end["day"], $date_end["year"])) {
-                $this->setError('end_date', 'To pole musi być datą');
-            }
+        else if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->end_date)){
+            $this->setError('end_date', 'To pole musi być datą w formacie: rrrr-mm-dd np. 1993-05-30');
+
         }
+//        else{
+//            $date_end = date_parse($this->end_date);
+//            if (!$date_end["error_count"] == 0 || !checkdate($date_end["month"], $date_end["day"], $date_end["year"])) {
+//                $this->setError('end_date', 'To pole musi być datą');
+//            }
+//        }
 
         /*
          * pole price:

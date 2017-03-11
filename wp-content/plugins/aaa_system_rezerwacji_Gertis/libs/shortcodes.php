@@ -1,29 +1,36 @@
 <?php
 
-
 //Shortcode z formularzem frontend
 
-function gertisMainForm()
-{
+add_shortcode('gertis_main_form', 'gertisMainForm');
+function gertisMainForm(){
 
     ob_start();
+
+    $action_token = 'gertis-bs-action';
+
+    //$main_object = new Gertis_booking_system();
 
     ?>
 
     <div id="booking_system_form" class="container">
         <div class="row">
 
-            <form class="form-horizontal" action="" data-toggle="validator" role="form">
+            <div class="my_errors"><?php echo isset($_SESSION['form_error']) ? $_SESSION['form_error'] : ''; unset($_SESSION['form_error']); ?></div>
+
+            <form class="form-horizontal" action="../Gertis_booking_system.php" data-toggle="validator" role="form" method="post">
+
+                <?php wp_nonce_field($action_token); ?>
 
                 <div class="form-group">
-                    <label for="event_code" class="col-sm-3 control-label">Kod imprezy *</label>
+                    <label for="event_turn" class="col-sm-3 control-label">Kod imprezy *</label>
                     <div class="col-sm-4">
-                        <select id="event_code" class="form-control">
-                            <option>OPT1</option>
-                            <option>OPT2</option>
-                            <option>OPT3</option>
-                            <option>OPT4</option>
-                            <option>OPT5</option>
+                        <select id="event_turn" class="form-control" name="front_entry[event_turn]">
+                            <option value="OPT1">OPT1</option>
+                            <option value="OPT2">OPT2</option>
+                            <option value="OPT3">OPT3</option>
+                            <option value="OPT4">OPT4</option>
+                            <option value="OPT5">OPT5</option>
                         </select>
                     </div>
                 </div>
@@ -42,19 +49,19 @@ function gertisMainForm()
                 <!--                </div>-->
 
                 <div class="form-group">
-                    <label for="name" class="col-sm-3 control-label">Imię i nazwisko *</label>
+                    <label for="guest_name" class="col-sm-3 control-label">Imię i nazwisko *</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="name" placeholder="Imię i nazwisko uczestnika"
+                        <input type="text" class="form-control" name="front_entry[guest_name]" id="guest_name" placeholder="Imię i nazwisko uczestnika"
                                data-error="To pole nie może zostać puste" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="data" class="col-sm-3 control-label">Data urodzenia *</label>
+                    <label for="birth_date" class="col-sm-3 control-label">Data urodzenia *</label>
                     <div class="col-sm-4">
-                        <input type="date" class="form-control" id="data" data-error="To pole nie może zostać puste"
-                               required>
+                        <input type="date" class="form-control" name="front_entry[birth_date]" id="birth_date" placeholder="rrrr-mm-dd" pattern="^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"
+                               data-error="Data musi zostać podana i musi mieć format: rrrr-mm-dd np. 1993-05-30" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
@@ -62,7 +69,7 @@ function gertisMainForm()
                 <div class="form-group">
                     <label for="email" class="col-sm-3 control-label">Email *</label>
                     <div class="col-sm-9">
-                        <input type="email" class="form-control" id="email" placeholder="Adres Email"
+                        <input type="email" class="form-control" name="front_entry[email]" id="email" placeholder="Adres Email"
                                data-error="Podaj prawidłowy adres E-mail" required>
                         <div class="help-block with-errors"></div>
                     </div>
@@ -71,17 +78,16 @@ function gertisMainForm()
                 <div class="form-group">
                     <label for="phone" class="col-sm-3 control-label">Nr telefonu * </label>
                     <div class="col-sm-9">
-                        <input type="tel" class="form-control" id="phone" placeholder="Numer telefonu"
-                               data-error="Podaj aktualny nr telefonu" required>
+                        <input type="number" class="form-control" name="front_entry[phone]" id="phone" placeholder="Numer telefonu"
+                               data-error="Podaj aktualny nr telefonu (musi się składać z samych liczb)" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="pesel" class="col-sm-3 control-label">Pesel lub nr ID *</label>
+                    <label for="personal_no" class="col-sm-3 control-label">Pesel lub nr ID *</label>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control" id="pesel"
-                               placeholder="Pesel lub nr dowodu osobistego" data-minlength="6"
+                        <input type="number" class="form-control" name="front_entry[personal_no]" id="personal_no" placeholder="Pesel lub nr dowodu osobistego" data-minlength="6"
                                data-error="Podaj min 6 cyfr" required>
                         <div class="help-block with-errors"></div>
                     </div>
@@ -90,8 +96,7 @@ function gertisMainForm()
                 <div class="form-group">
                     <label for="city" class="col-sm-3 control-label">Miasto *</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="city"
-                               placeholder="Miejscowość zamieszkania np. Poznań"
+                        <input type="text" class="form-control" name="front_entry[city]" id="city" placeholder="Miejscowość zamieszkania np. Poznań"
                                data-error="To pole nie może zostać puste" required>
                         <div class="help-block with-errors"></div>
                     </div>
@@ -100,17 +105,16 @@ function gertisMainForm()
                 <div class="form-group">
                     <label for="street" class="col-sm-3 control-label">Ulica i nr budynku *</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="street"
-                               placeholder="Ulica i numer budynku zamieszkania np. Piłsudzkiego 3A"
+                        <input type="text" class="form-control" name="front_entry[street]" id="street" placeholder="Ulica i numer budynku zamieszkania np. Piłsudzkiego 3A"
                                data-error="To pole nie może zostać puste" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="zipcode" class="col-sm-3 control-label">Kod pocztowy *</label>
+                    <label for="zip_code" class="col-sm-3 control-label">Kod pocztowy *</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" id="zipcode" pattern="^\d{2}(?:[-]\d{3})?$"
+                        <input type="text" class="form-control" name="front_entry[zip_code]" id="zip_code" pattern="^\d{2}(?:[-]\d{3})?$"
                                placeholder="Kod pocztowy miejsca zamieszkania"
                                data-error="Wprowadzona wartość musi mieć format xx-xxx np. 41-400" required>
                         <div class="help-block with-errors"></div>
@@ -118,18 +122,16 @@ function gertisMainForm()
                 </div>
 
                 <div class="form-group">
-                    <label for="from-who" class="col-sm-3 control-label">Skąd o nas wiesz?</label>
+                    <label for="from_who" class="col-sm-3 control-label">Skąd o nas wiesz?</label>
                     <div class="col-sm-9">
-                        <textarea type="text" class="form-control" id="from-who"
-                                  placeholder="Np. znajomi, internet, gazeta itp."></textarea>
+                        <textarea type="text" class="form-control" name="front_entry[from_who]" id="from_who" placeholder="Np. znajomi, internet, gazeta itp."></textarea>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="addition" class="col-sm-3 control-label">Uwagi dodatkowe</label>
+                    <label for="more_info" class="col-sm-3 control-label">Uwagi dodatkowe</label>
                     <div class="col-sm-9">
-                        <textarea type="text" class="form-control" id="addition"
-                                  placeholder="Twoje pytania, faktura VAT, dojazd itp."></textarea>
+                        <textarea type="text" class="form-control" name="front_entry[more_info]" id="more_info" placeholder="Twoje pytania, faktura VAT, dojazd itp."></textarea>
                     </div>
                 </div>
 
@@ -178,12 +180,9 @@ function gertisMainForm()
 
 }
 
-add_shortcode('gertis_main_form', 'gertisMainForm');
-
-//function submitMainForm(){
-//
-//    $model = new Gertis_BookingSystem_Model();
-//
-//
-//
-//}
+add_action('init', 'my_init');
+function my_init() {
+    if (!session_id()) {
+        session_start();
+    }
+}

@@ -49,7 +49,7 @@ if($Event->hasId()){
                 <label for="gertis_start_date">Data początkowa:</label>
             </th>
             <td>
-                <input type="date" name="entry[start_date]" id="gertis_start_date" value="<?php echo $Event->getField('start_date'); ?>" />
+                <input type="date" name="entry[start_date]" id="gertis_start_date" placeholder="rrrr-mm-dd" value="<?php echo $Event->getField('start_date'); ?>" />
 
                 <?php if($Event->hasError('start_date')): ?>
                     <p class="description error"><?php echo $Event->getError('start_date'); ?></p>
@@ -65,7 +65,7 @@ if($Event->hasId()){
                 <label for="gertis_end_date">Data końcowa:</label>
             </th>
             <td>
-                <input type="date" name="entry[end_date]" id="gertis_end_date" value="<?php echo $Event->getField('end_date'); ?>" />
+                <input type="date" name="entry[end_date]" id="gertis_end_date" placeholder="rrrr-mm-dd" value="<?php echo $Event->getField('end_date'); ?>" />
 
                 <?php if($Event->hasError('end_date')): ?>
                 <p class="description error"><?php echo $Event->getError('end_date'); ?></p>

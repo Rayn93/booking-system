@@ -122,7 +122,7 @@ class Gertis_GuestEntry{
             $this->setError('event_turn', 'To pole nie może być dłuższe niż 20 znaków.');
         }
         else{
-            $this->event_turn = wp_kses_data($this->event_turn);
+            $this->event_turn = sanitize_text_field($this->event_turn);
         }
 
         /*
@@ -137,7 +137,7 @@ class Gertis_GuestEntry{
             $this->setError('guest_name', 'To pole nie może być dłuższe niż 20 znaków.');
         }
         else{
-            $this->guest_name = wp_kses_data($this->guest_name);
+            $this->guest_name = sanitize_text_field($this->guest_name);
         }
 
 
@@ -149,12 +149,17 @@ class Gertis_GuestEntry{
         if (empty($this->birth_date)) {
             $this->setError('birth_date', 'To pole nie może być puste');
         }
-        else{
-            $date_start = date_parse($this->birth_date);
-            if (!$date_start["error_count"] == 0 || !checkdate($date_start["month"], $date_start["day"], $date_start["year"])) {
-                $this->setError('birth_date', 'To pole musi być datą');
-            }
+
+        else if (!preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->birth_date)){
+            $this->setError('birth_date', 'To pole musi być datą w formacie: rrrr-mm-dd np. 1993-05-30');
+
         }
+//        else{
+//            $date_start = date_parse($this->birth_date);
+//            if (!$date_start["error_count"] == 0 || !checkdate($date_start["month"], $date_start["day"], $date_start["year"])) {
+//                $this->setError('birth_date', 'To pole musi być poprawną datą w formacie: rrrr-mm-dd np. 1993-05-30');
+//            }
+//        }
 
 
         /*
@@ -197,7 +202,7 @@ class Gertis_GuestEntry{
             $this->setError('personal_no', 'To pole nie może być dłuższe niż 255 znaków.');
         }
         else{
-            $this->personal_no = wp_kses_data($this->personal_no);
+            $this->personal_no = sanitize_text_field($this->personal_no);
         }
 
         /*
@@ -212,7 +217,7 @@ class Gertis_GuestEntry{
             $this->setError('city', 'To pole nie może być dłuższe niż 255 znaków.');
         }
         else{
-            $this->city = wp_kses_data($this->city);
+            $this->city = sanitize_text_field($this->city);
         }
 
         /*
@@ -227,7 +232,7 @@ class Gertis_GuestEntry{
             $this->setError('street', 'To pole nie może być dłuższe niż 255 znaków.');
         }
         else{
-            $this->street = wp_kses_data($this->street);
+            $this->street = sanitize_text_field($this->street);
         }
 
         /*
@@ -242,7 +247,7 @@ class Gertis_GuestEntry{
             $this->setError('zip_code', 'To pole nie może być dłuższe niż 20 znaków.');
         }
         else{
-            $this->zip_code = wp_kses_data($this->zip_code);
+            $this->zip_code = sanitize_text_field($this->zip_code);
         }
 
         /*
@@ -253,7 +258,7 @@ class Gertis_GuestEntry{
          */
         if(!empty($this->from_who)){
 
-            $this->from_who = wp_kses_data($this->from_who);
+            $this->from_who = sanitize_text_field($this->from_who);
             if(strlen($this->from_who) > 255){
                 $this->setError('from_who', 'To pole nie może być dłuższe niż 255 znaków.');
             }
@@ -268,7 +273,7 @@ class Gertis_GuestEntry{
          */
         if(!empty($this->more_info)){
 
-            $this->more_info = wp_kses_data($this->more_info);
+            $this->more_info = sanitize_text_field($this->more_info);
             if(strlen($this->more_info) > 50000){
                 $this->setError('more_info', 'To pole nie może być dłuższe niż 50 000 znaków.');
             }

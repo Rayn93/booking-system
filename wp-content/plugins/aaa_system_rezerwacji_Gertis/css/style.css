@@ -13,3 +13,10 @@ a.credential{
     color: #0A246A;
     font-weight: bold;
 }
+
+#booking_system_form .my_errors{
+    text-align: center;
+    padding: 40px 0;
+    font-size: 20px;
+    color: red;
+}

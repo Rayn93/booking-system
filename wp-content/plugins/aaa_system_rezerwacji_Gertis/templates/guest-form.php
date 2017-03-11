@@ -48,7 +48,7 @@
                 <label for="gertis_birth_date">Data urodzenia</label>
             </th>
             <td>
-                <input type="date" name="entry[birth_date]" id="gertis_birth_date" value="<?php echo $Guest->getField('birth_date'); ?>"/>
+                <input type="date" name="entry[birth_date]" id="gertis_birth_date" placeholder="rrrr-mm-dd" value="<?php echo $Guest->getField('birth_date'); ?>"/>
 
                 <?php if($Guest->hasError('birth_date')): ?>
                 <p class="description error"><?php echo $Guest->getError('birth_date'); ?></p>
