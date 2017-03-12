@@ -16,6 +16,7 @@ session_start();
 require_once 'libs/Gertis_BookingSystem_Model.php';
 require_once 'libs/Gertis_EventEntry.php';
 require_once 'libs/Gertis_GuestEntry.php';
+require_once 'libs/Gertis_Pagination.php';
 require_once 'libs/Request.php';
 require_once 'libs/shortcodes.php';
 
@@ -49,11 +50,9 @@ class Gertis_booking_system{
         //akcja obsługi formularza na frontendzie
         add_action('init', array($this, 'handleGertisMainForm'));
 
-//        $dateString = '2012.06.30';
-//        $date = date('Y-m-d', strtotime(str_replace('-', '/', $dateString)));
-//        //$myDateTime = DateTime::createFromFormat('d.m.Y', $dateString);
-////        $my_var = $_POST['entry'];
-//        var_dump($date);
+
+//        $fullSeats = $this->model->getEventPagination(1);
+//        print_r($fullSeats);
 
     }
 
@@ -135,7 +134,15 @@ class Gertis_booking_system{
 
         switch ($view) {
             case 'events':
-                $this->renderEvent('events');
+
+                $curr_page = (int)$request->getQuerySingleParam('paged', 1);
+                $order_by = $request->getQuerySingleParam('orderby', 'id');
+                $order_dir = $request->getQuerySingleParam('orderdir', 'asc');
+
+                $pagination = $this->model->getEventPagination($curr_page, $this->pagination_limit, $order_by, $order_dir);
+
+
+                $this->renderEvent('events', array('Pagination' => $pagination));
                 break;
 
             case 'event-form':

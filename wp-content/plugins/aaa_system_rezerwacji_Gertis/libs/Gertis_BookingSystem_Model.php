@@ -159,12 +159,73 @@ class Gertis_BookingSystem_Model{
         return $this->wpdb->get_row($prep);
     }
 
-    //Pobiera oraz zwraca uczestnika o konkretnym id
+    //Pobiera oraz zwraca uczestnika (cały wiersz) o konkretnym id
     function fetchGuestRow($id){
         $table_name = $this->getTableNameGuest();
         $sql = "SELECT * FROM {$table_name} WHERE id = %d";
         $prep = $this->wpdb->prepare($sql, $id);
         return $this->wpdb->get_row($prep);
+    }
+
+
+    function getEventPagination($curr_page, $limit = 10, $order_by = 'id', $order_dir = 'asc'){
+
+        $curr_page = (int)$curr_page;
+        if($curr_page < 1){
+            $curr_page = 1;
+        }
+
+        $limit = (int)$limit;
+
+        $order_by_opts = static::getEventOrderByOpts();
+        $order_by = in_array($order_by, $order_by_opts) ? $order_by : 'id';
+
+        $order_dir = in_array($order_dir, array('asc', 'desc')) ? $order_dir : 'asc';
+
+        $offset = ($curr_page-1)*$limit;
+
+        $table_name = $this->getTableNameEvent();
+
+        $count_sql = "SELECT COUNT(*) FROM {$table_name}";
+        $total_count = $this->wpdb->get_var($count_sql);
+
+        $last_page = ceil($total_count/$limit);
+
+        $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+
+        $event_list = $this->wpdb->get_results($sql, ARRAY_A);
+
+        //Dodanie zajętych miejsc to listy wydarzeń
+        foreach ($event_list as $key => $val){
+            $event_list[$key]['taken_seats'] = $this->countTakenSeats($event_list[$key]['event_turn']);
+        }
+
+        $Pagination = new Gertis_Pagination($event_list, $order_by, $order_dir, $limit, $total_count, $curr_page, $last_page);
+
+        return $Pagination;
+    }
+
+    static function getEventOrderByOpts(){
+        return array(
+            'ID' => 'id',
+            'Cena' => 'price',
+            'Zapisanych' => 'taken_seats',
+            'Status' => 'status'
+        );
+    }
+
+
+
+
+
+
+    //zwraca liczbę zajętych miejsc na danym turnusie
+    function countTakenSeats($event_turn){
+
+        $table_name = $this->getTableNameGuest();
+        $sql = 'SELECT COUNT(event_turn) FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" AND status IN ("waiting", "confirm")';
+        return $this->wpdb->get_var($sql);
+
     }
 
 
