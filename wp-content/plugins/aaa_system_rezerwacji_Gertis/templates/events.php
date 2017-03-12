@@ -1,3 +1,10 @@
+<?php
+//
+//var_dump($Pagination->getItems());
+//
+//?>
+
+
 <form method="get" action="" id="gertis-events-form-1">
 
 <!--    <input type="hidden" name="page" value="--><?php //echo static::$plugin_id; ?><!--" />-->
@@ -52,70 +59,70 @@
 
         </div>
 
-        <div class="alignleft actions">
-
-            <select name="filter">
-                <option value="0">Wszystkie imprezy</option>
-                <option value="pos">POS</option>
-                <option value="dem">DEM</option>
-                <option value="bjk">BJK</option>
-            </select>
-
-            <input type="submit" class="button-secondary" value="Filtruj" />
-
-        </div>
+<!--        <div class="alignleft actions">-->
+<!---->
+<!--            <select name="filter">-->
+<!--                <option value="0">Wszystkie imprezy</option>-->
+<!--                <option value="pos">POS</option>-->
+<!--                <option value="dem">DEM</option>-->
+<!--                <option value="bjk">BJK</option>-->
+<!--            </select>-->
+<!---->
+<!--            <input type="submit" class="button-secondary" value="Filtruj" />-->
+<!---->
+<!--        </div>-->
 
         <div class="tablenav-pages">
-            <span class="displaying-num"><?php // echo $Pagination->getTotalCount(); ?> 23 imprezy</span>
+            <span class="displaying-num"><?php  echo $Pagination->getTotalCount(); ?> imprezy</span>
 
-<!--            --><?php
-//            $curr_page = $Pagination->getCurrPage();
-//            $last_page = $Pagination->getLastPage();
-//
-//            $first_disabled = '';
-//            $last_disabled = '';
-//
-//            $url_params = array(
-//                'orderby' => $Pagination->getOrderBy(),
-//                'orderdir' => $Pagination->getOrderDir()
-//            );
-//
-//
-//            $url_params['paged'] = 1;
-//            $first_page_url = $this->getAdminPageUrl($url_params);
-//
-//            $url_params['paged'] = $curr_page-1;
-//            $prev_page_url = $this->getAdminPageUrl($url_params);
-//
-//            $url_params['paged'] = $last_page;
-//            $last_page_url = $this->getAdminPageUrl($url_params);
-//
-//            $url_params['paged'] = $curr_page+1;
-//            $next_page_url = $this->getAdminPageUrl($url_params);
-//
-//
-//            if($curr_page == 1){
-//                $first_page_url = '#';
-//                $prev_page_url = '#';
-//
-//                $first_disabled = 'disabled';
-//            }else
-//                if($curr_page == $last_page){
-//                    $last_page_url = '#';
-//                    $next_page_url = '#';
-//
-//                    $last_disabled = 'disabled';
-//                }
-//            ?>
+            <?php
+            $curr_page = $Pagination->getCurrPage();
+            $last_page = $Pagination->getLastPage();
+
+            $first_disabled = '';
+            $last_disabled = '';
+
+            $url_params = array(
+                'orderby' => $Pagination->getOrderBy(),
+                'orderdir' => $Pagination->getOrderDir()
+            );
+
+
+            $url_params['paged'] = 1;
+            $first_page_url = $this->getAdminPageUrl('', $url_params);
+
+            $url_params['paged'] = $curr_page-1;
+            $prev_page_url = $this->getAdminPageUrl('', $url_params);
+
+            $url_params['paged'] = $last_page;
+            $last_page_url = $this->getAdminPageUrl('', $url_params);
+
+            $url_params['paged'] = $curr_page+1;
+            $next_page_url = $this->getAdminPageUrl('', $url_params);
+
+
+            if($curr_page == 1){
+                $first_page_url = '#';
+                $prev_page_url = '#';
+
+                $first_disabled = 'disabled';
+            }else
+                if($curr_page == $last_page){
+                    $last_page_url = '#';
+                    $next_page_url = '#';
+
+                    $last_disabled = 'disabled';
+                }
+            ?>
 
             <span class="pagination-links">
-                <a href="<?php// echo $first_page_url; ?>" title="Idź do pierwszej strony" class="first-page <?php// echo $first_disabled; ?>">«</a>&nbsp;&nbsp;
-                <a href="<?php// echo $prev_page_url; ?>" title="Idź do poprzedniej strony" class="prev-page <?php// echo $first_disabled; ?>">‹</a>&nbsp;&nbsp;
+                <a href="<?php echo $first_page_url; ?>" title="Idź do pierwszej strony" class="first-page <?php echo $first_disabled; ?>">«</a>&nbsp;&nbsp;
+                <a href="<?php echo $prev_page_url; ?>" title="Idź do poprzedniej strony" class="prev-page <?php echo $first_disabled; ?>">‹</a>&nbsp;&nbsp;
                 
-                <span class="paging-input"><?php// echo $curr_page ?> 1 z <span class="total-pages"><?php// echo $last_page ?> 4</span></span>
+                <span class="paging-input"><?php echo $curr_page ?>  z <span class="total-pages"><?php echo $last_page ?></span></span>
                 
-                &nbsp;&nbsp;<a href="<?php// echo $next_page_url; ?>" title="Idź do następnej strony" class="next-page <?php// echo $last_disabled; ?>">›</a>
-                &nbsp;&nbsp;<a href="<?php// echo $last_page_url; ?>" title="Idź do ostatniej strony" class="last-page <?php// echo $last_disabled; ?>">»</a>
+                &nbsp;&nbsp;<a href="<?php echo $next_page_url; ?>" title="Idź do następnej strony" class="next-page <?php echo $last_disabled; ?>">›</a>
+                &nbsp;&nbsp;<a href="<?php echo $last_page_url; ?>" title="Idź do ostatniej strony" class="last-page <?php echo $last_disabled; ?>">»</a>
                 
             </span>
         </div>
@@ -142,16 +149,16 @@
         </thead>
         <tbody id="the-list">
 
-        <?php //if($Pagination->hasItems()): ?>
+        <?php if($Pagination->hasItems()): ?>
 
-            <?php //foreach($Pagination->getItems() as $i=>$item): ?>
+            <?php foreach($Pagination->getItems() as $i=>$item): ?>
 
-                <tr <?php //echo ($i%2) ? 'class="alternate"' : ''; ?>>
+                <tr <?php echo ($i%2) ? 'class="alternate"' : ''; ?>>
                     <th class="check-column">
-                        <input type="checkbox" value="<?php// echo $item->id; ?> 1" name="bulkcheck[]" />
+                        <input type="checkbox" value="<?php echo $item['id']; ?> 1" name="bulkcheck[]" />
                     </th>
-                    <td><?php //echo $item->id; ?> 1</td>
-                    <td>OPT
+                    <td><?php echo $item['id']; ?></td>
+                    <td><?php echo $item['event_code']; ?>
                         <div class="row-actions">
                                 <span class="edit">
                                     <a class="edit" href="<?php// echo $this->getAdminPageUrl(array('view' => 'form', 'slideid' => $item->id)); ?>">Edytuj</a>
@@ -165,23 +172,23 @@
                                 </span>
                         </div>
                     </td>
-                    <td>OPT8</td>
-                    <td>21.06</td>
-                    <td>02.07</td>
-                    <td>1999</td>
-                    <td>21</td>
-                    <td>2</td>
-                    <td>aktualny</td>
+                    <td><?php echo $item['event_turn']; ?></td>
+                    <td><?php $start_date = date_create($item['start_date']); echo date_format($start_date, 'd-m-Y');?></td>
+                    <td><?php $end_date = date_create($item['end_date']); echo date_format($end_date, 'd-m-Y');?></td>
+                    <td><?php echo $item['price']; ?></td>
+                    <td><?php echo $item['seat_no']; ?></td>
+                    <td><?php echo $item['taken_seats']; ?></td>
+                    <td><?php echo ($item['status'] == 'yes') ? 'aktualny' : 'nieaktualny'; ?></td>
                 </tr>
 
-            <?php// endforeach; ?>
+            <?php endforeach; ?>
 
 
-        <?php// else: ?>
+        <?php else: ?>
             <tr>
                 <td colspan="8">Brak rejsów w bazie danych</td>
             </tr>
-        <?php //endif; ?>
+        <?php endif; ?>
         </tbody>
 
     </table>
@@ -192,30 +199,30 @@
             
             <span class="pagination-links">
                 Przejdź do strony
-                    <strong>1</strong>
-                    &nbsp;<a href="#">2</a>
-                    &nbsp;<a href="#">3</a>
-                    &nbsp;<a href="#">4</a>
-<!--                --><?php
-//
-//                $url_params = array(
-//                    'orderby' => $Pagination->getOrderBy(),
-//                    'orderdir' => $Pagination->getOrderDir()
-//                );
-//
-//                for($i=1; $i<=$Pagination->getLastPage(); $i++){
-//
-//                    $url_params['paged'] = $i;
-//                    $url = $this->getAdminPageUrl($url_params);
-//
-//                    if($i == $Pagination->getCurrPage()){
-//                        echo "&nbsp;<strong>{$i}</strong>";
-//                    }else{
-//                        echo '&nbsp;<a href="'.$url.'">'.$i.'</a>';
-//                    }
-//
-//                }
-//                ?>
+<!--                    <strong>1</strong>-->
+<!--                    &nbsp;<a href="#">2</a>-->
+<!--                    &nbsp;<a href="#">3</a>-->
+<!--                    &nbsp;<a href="#">4</a>-->
+                <?php
+
+                $url_params = array(
+                    'orderby' => $Pagination->getOrderBy(),
+                    'orderdir' => $Pagination->getOrderDir()
+                );
+
+                for($i=1; $i<=$Pagination->getLastPage(); $i++){
+
+                    $url_params['paged'] = $i;
+                    $url = $this->getAdminPageUrl($url_params);
+
+                    if($i == $Pagination->getCurrPage()){
+                        echo "&nbsp;<strong>{$i}</strong>";
+                    }else{
+                        echo '&nbsp;<a href="'.$url.'">'.$i.'</a>';
+                    }
+
+                }
+                ?>
             </span>
 
         </div>

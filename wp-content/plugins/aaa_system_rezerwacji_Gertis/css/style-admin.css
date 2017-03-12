@@ -1,3 +1,12 @@
 p.error{
     color: red;
 }
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+
+.alternate {
+    background-color: #dadada;
+}

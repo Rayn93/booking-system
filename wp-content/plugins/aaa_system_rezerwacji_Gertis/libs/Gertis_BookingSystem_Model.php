@@ -194,6 +194,7 @@ class Gertis_BookingSystem_Model{
         $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
 
         $event_list = $this->wpdb->get_results($sql, ARRAY_A);
+        //$event_list = $this->wpdb->get_results($sql);
 
         //Dodanie zajętych miejsc to listy wydarzeń
         foreach ($event_list as $key => $val){

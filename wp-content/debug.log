@@ -1106,3 +1106,7 @@
 [12-Mar-2017 10:59:50 UTC] PHP Warning:  Cannot use a scalar value as an array in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\libs\Gertis_BookingSystem_Model.php on line 200
 [12-Mar-2017 10:59:50 UTC] PHP Warning:  Cannot use a scalar value as an array in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\libs\Gertis_BookingSystem_Model.php on line 200
 [12-Mar-2017 11:06:19 UTC] PHP Fatal error:  Class 'Pagination' not found in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\libs\Gertis_BookingSystem_Model.php on line 205
+[12-Mar-2017 12:31:08 UTC] PHP Parse error:  syntax error, unexpected end of file in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\events.php on line 226
+[12-Mar-2017 12:54:17 UTC] PHP Warning:  date_format() expects parameter 1 to be DateTimeInterface, string given in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\events.php on line 177
+[12-Mar-2017 12:54:17 UTC] PHP Warning:  date_format() expects parameter 1 to be DateTimeInterface, string given in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\events.php on line 177
+[12-Mar-2017 12:54:17 UTC] PHP Warning:  date_format() expects parameter 1 to be DateTimeInterface, string given in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\events.php on line 177

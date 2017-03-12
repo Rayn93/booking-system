@@ -28,7 +28,7 @@ class Gertis_booking_system{
     private $user_capability = 'manage_options';
     private $model;
     private $action_token = 'gertis-bs-action';
-    private $pagination_limit = 5;
+    private $pagination_limit = 2;
 
 
 
