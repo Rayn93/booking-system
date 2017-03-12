@@ -28,7 +28,7 @@ class Gertis_booking_system{
     private $user_capability = 'manage_options';
     private $model;
     private $action_token = 'gertis-bs-action';
-    private $pagination_limit = 2;
+    private $pagination_limit = 10;
 
 
 
@@ -51,7 +51,8 @@ class Gertis_booking_system{
         add_action('init', array($this, 'handleGertisMainForm'));
 
 
-//        $fullSeats = $this->model->getEventPagination(1);
+//        $guest = new Gertis_GuestEntry();
+//        $fullSeats = $guest->getGuestName();
 //        print_r($fullSeats);
 
     }
@@ -119,7 +120,7 @@ class Gertis_booking_system{
     function createAdminMenu(){
 
         add_menu_page('Gertis System Rezerwacji', 'System rezerwacji', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'), 'dashicons-calendar-alt', 66);
-        add_submenu_page(static::$plugin_id, 'Lista rejsów', 'Lista rejsów', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'));
+        add_submenu_page(static::$plugin_id, 'Obozy żeglarskie', 'Obozy żeglarskie', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'));
         add_submenu_page(static::$plugin_id, 'Zapisani uczestnicy', 'Uczestnicy', $this->user_capability, static::$plugin_id.'-guests', array($this, 'printAdminPageGuest'));
 
     }
@@ -134,6 +135,61 @@ class Gertis_booking_system{
 
         switch ($view) {
             case 'events':
+
+                if($action == 'delete'){
+
+                    $token_name = $this->action_token.$eventid;
+                    $wpnonce = $request->getQuerySingleParam('_wpnonce', NULL);
+
+                    if(wp_verify_nonce($wpnonce, $token_name)){
+
+                        if($this->model->deleteRow($eventid, 'event') !== FALSE){
+                            $this->setFlashMsg('Poprawnie usunięto wydarzenie!');
+                        }
+                        else{
+                            $this->setFlashMsg('Nie udało się usunąć wydarzenia', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Nie poprawny token akcji', 'error');
+                    }
+
+                    $this->redirect($this->getAdminPageUrl());
+
+                }
+                else if($action == 'bulk'){
+
+                    if ($request->isMethod('POST') && check_admin_referer($this->action_token . 'bulk')) {
+
+                        $bulk_action = (isset($_POST['bulkaction'])) ? $_POST['bulkaction'] : NULL;
+                        $bulk_check = (isset($_POST['bulkcheck'])) ? $_POST['bulkcheck'] : array();
+
+                        if (count($bulk_check) < 1) {
+                            $this->setFlashMsg('Brak wydarzeń do zmiany', 'error');
+                        }
+                        else {
+                            if ($bulk_action == 'delete') {
+
+                                if ($this->model->bulkDelete($bulk_check, 'event') !== FALSE) {
+                                    $this->setFlashMsg('Poprawnie usunięto zaznaczone wydarzenia!');
+                                }
+                                else {
+                                    $this->setFlashMsg('Nie udało się usunąć zaznaczonych wydarzeń', 'error');
+                                }
+                            }
+                            else if ($bulk_action == 'actual' || $bulk_action == 'no_actual') {
+
+                                if ($this->model->bulkChangeStatus($bulk_check, $bulk_action , 'event') !== FALSE) {
+                                    $this->setFlashMsg('Poprawnie zmieniono status wydarzeń');
+                                }
+                                else {
+                                    $this->setFlashMsg('Nie udało się zmienić statusu zaznaczonych wydarzeń', 'error');
+                                }
+                            }
+                        }
+                    }
+                    $this->redirect($this->getAdminPageUrl());
+                }
 
                 $curr_page = (int)$request->getQuerySingleParam('paged', 1);
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
@@ -213,7 +269,90 @@ class Gertis_booking_system{
 
         switch ($view) {
             case 'guests':
-                $this->renderGuest('guests');
+
+                if($action == 'delete'){
+
+                    $token_name = $this->action_token.$guestid;
+                    $wpnonce = $request->getQuerySingleParam('_wpnonce', NULL);
+
+                    if(wp_verify_nonce($wpnonce, $token_name)){
+
+                        if($this->model->deleteRow($guestid, 'guest') !== FALSE){
+                            $this->setFlashMsg('Poprawnie usunięto uczestnika!');
+                        }
+                        else{
+                            $this->setFlashMsg('Nie udało się usunąć uczestnika', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Nie poprawny token akcji', 'error');
+                    }
+
+                    $this->redirect($this->getAdminPageUrl('-guests'));
+
+                }
+                else if($action == 'confirm'){
+
+                    $token_name = $this->action_token.$guestid;
+                    $wpnonce = $request->getQuerySingleParam('_wpnonce', NULL);
+
+                    if(wp_verify_nonce($wpnonce, $token_name)){
+
+                        if($this->model->confirmGuest($guestid) !== FALSE){
+                            $this->setFlashMsg('Poprawnie potwierdzono uczestnictwo tego uczestnika.');
+                        }
+                        else{
+                            $this->setFlashMsg('Nie udało się potwierdzić uczestnictwo tego uczestnika.', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Nie poprawny token akcji. Spróbuj jeszcze raz.', 'error');
+                    }
+
+                    $this->redirect($this->getAdminPageUrl('-guests'));
+
+                }
+                else if($action == 'bulk'){
+
+                    if ($request->isMethod('POST') && check_admin_referer($this->action_token . 'bulk')) {
+
+                        $bulk_action = (isset($_POST['bulkaction'])) ? $_POST['bulkaction'] : NULL;
+                        $bulk_check = (isset($_POST['bulkcheck'])) ? $_POST['bulkcheck'] : array();
+
+                        if (count($bulk_check) < 1) {
+                            $this->setFlashMsg('Brak uczestników do zmiany', 'error');
+                        }
+                        else {
+                            if ($bulk_action == 'delete') {
+
+                                if ($this->model->bulkDelete($bulk_check, 'guest') !== FALSE) {
+                                    $this->setFlashMsg('Poprawnie usunięto zaznaczonych uczestników!');
+                                }
+                                else {
+                                    $this->setFlashMsg('Nie udało się usunąć zaznaczonych uczestników', 'error');
+                                }
+                            }
+                            else if ($bulk_action == 'resign' || $bulk_action == 'old' || $bulk_action == 'waiting') {
+
+                                if ($this->model->bulkChangeStatus($bulk_check, $bulk_action , 'guest') !== FALSE) {
+                                    $this->setFlashMsg('Poprawnie zmieniono status wybranych uczestników');
+                                }
+                                else {
+                                    $this->setFlashMsg('Nie udało się zmienić statusu zaznaczonych uczestników', 'error');
+                                }
+                            }
+                        }
+                    }
+                    $this->redirect($this->getAdminPageUrl('-guests'));
+                }
+
+                $curr_page = (int)$request->getQuerySingleParam('paged', 1);
+                $order_by = $request->getQuerySingleParam('orderby', 'id');
+                $order_dir = $request->getQuerySingleParam('orderdir', 'asc');
+
+                $pagination = $this->model->getGuestPagination($curr_page, $this->pagination_limit, $order_by, $order_dir);
+
+                $this->renderGuest('guests', array('Pagination' => $pagination));
                 break;
 
             case 'guest-form':
@@ -298,7 +437,7 @@ class Gertis_booking_system{
                         $entry_id = $this->model->saveGuestEntry($GuestEntry);
 
                         if ($entry_id != FALSE) {
-
+                            $_SESSION['new_guest_name'] = $GuestEntry->getGuestName();
                             $this->redirect('http://localhost/system-rezerwacji/submit_page.php');
                             //Mail do admina o nowym uczestniku (wysłać $entry_id)
 

@@ -1,38 +1,27 @@
-<?php
-//
-//var_dump($Pagination->getItems());
-//
-//?>
+<form method="get" action="<?php echo $this->getAdminPageUrl(); ?>" id="gertis-events-form-1">
 
-
-<form method="get" action="" id="gertis-events-form-1">
-
-<!--    <input type="hidden" name="page" value="--><?php //echo static::$plugin_id; ?><!--" />-->
-<!--    <input type="hidden" name="paged" value="--><?php //echo $Pagination->getCurrPage(); ?><!--" />-->
+    <input type="hidden" name="page" value="<?php echo static::$plugin_id; ?>" />
+    <input type="hidden" name="paged" value="<?php echo $Pagination->getCurrPage(); ?>" />
 
     Sortuj według
     <select name="orderby">
-<!--        --><?php //foreach(LTEHomeSlider_Model::getOrderByOpts() as $key=>$val): ?>
-<!--            <option-->
-<!--                --><?php //echo($val == $Pagination->getOrderBy()) ? 'selected="selected"' : ''; ?>
-<!--                value="--><?php //echo $val; ?><!--">-->
-<!--                --><?php //echo $key; ?>
-<!--            </option>-->
-<!--        --><?php //endforeach; ?>
-        <option value="id">ID</option>
-        <option value="id">Kod wydarzenia</option>
-        <option value="id">Status</option>
-        <option value="id">Liczba miejsc</option>
+        <?php foreach(Gertis_BookingSystem_Model::getEventOrderByOpts() as $key=>$val): ?>
+            <option
+                <?php echo($val == $Pagination->getOrderBy()) ? 'selected="selected"' : ''; ?>
+                value="<?php echo $val; ?>">
+                <?php echo $key; ?>
+            </option>
+        <?php endforeach; ?>
     </select>
 
     <select name="orderdir">
-<!--        --><?php //if($Pagination->getOrderDir() == 'asc') :?>
+        <?php if($Pagination->getOrderDir() == 'asc') :?>
             <option selected="selected" value="asc">Rosnąco</option>
             <option value="desc">Majeląco</option>
-<!--        --><?php //else: ?>
-<!--            <option value="asc">Rosnąco</option>-->
-<!--            <option selected="selected" value="desc">Majeląco</option>-->
-<!--        --><?php //endif; ?>
+        <?php else: ?>
+            <option value="asc">Rosnąco</option>
+            <option selected="selected" value="desc">Majeląco</option>
+        <?php endif; ?>
     </select>
 
     <input type="submit" class="button-secondary" value="Sortuj" />
@@ -40,9 +29,9 @@
 </form>
 
 
-<form action="#" method="post" id="gertis-events-form-2" onsubmit="return confirm('Czy na pewno chcesz zastosować zmiany masowe?')">
+<form action="<?php echo $this->getAdminPageUrl('', array('view' => 'events', 'action' => 'bulk')); ?>" method="post" id="gertis-events-form-2" onsubmit="return confirm('Czy na pewno chcesz zastosować zmiany masowe?')">
 
-<!--    --><?php //wp_nonce_field($this->action_token.'bulk'); ?>
+    <?php wp_nonce_field($this->action_token.'bulk'); ?>
 
     <div class="tablenav">
 
@@ -51,8 +40,8 @@
             <select name="bulkaction">
                 <option value="0">Masowe działania</option>
                 <option value="delete">Usuń</option>
-                <option value="public">Aktualny</option>
-                <option value="private">Nieaktualny</option>
+                <option value="actual">Aktualny</option>
+                <option value="no_actual">Nieaktualny</option>
             </select>
 
             <input type="submit" class="button-secondary" value="Zastosuj" />
@@ -106,13 +95,13 @@
                 $prev_page_url = '#';
 
                 $first_disabled = 'disabled';
-            }else
-                if($curr_page == $last_page){
-                    $last_page_url = '#';
-                    $next_page_url = '#';
+            }
+            if($curr_page == $last_page){
+                $last_page_url = '#';
+                $next_page_url = '#';
 
-                    $last_disabled = 'disabled';
-                }
+                $last_disabled = 'disabled';
+            }
             ?>
 
             <span class="pagination-links">
@@ -161,14 +150,14 @@
                     <td><?php echo $item['event_code']; ?>
                         <div class="row-actions">
                                 <span class="edit">
-                                    <a class="edit" href="<?php// echo $this->getAdminPageUrl(array('view' => 'form', 'slideid' => $item->id)); ?>">Edytuj</a>
+                                    <a class="edit" href="<?php echo $this->getAdminPageUrl('', array('view' => 'event-form', 'eventid' => $item['id'])); ?>">Edytuj</a>
                                 </span> |
                             <span class="trash">
-<!--                                    --><?php
-//                                    $token_name = $this->action_token.$item->id;
-//                                    $del_url = $this->getAdminPageUrl(array('action' => 'delete', 'slideid' => $item->id));
-//                                    ?>
-                                <a class="delete" href="<?php// echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć ten wpis?')">Usuń</a>
+                                    <?php
+                                    $token_name = $this->action_token.$item['id'];
+                                    $del_url = $this->getAdminPageUrl('', array('action' => 'delete', 'eventid' => $item['id']));
+                                    ?>
+                                <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
                                 </span>
                         </div>
                     </td>
@@ -199,10 +188,7 @@
             
             <span class="pagination-links">
                 Przejdź do strony
-<!--                    <strong>1</strong>-->
-<!--                    &nbsp;<a href="#">2</a>-->
-<!--                    &nbsp;<a href="#">3</a>-->
-<!--                    &nbsp;<a href="#">4</a>-->
+
                 <?php
 
                 $url_params = array(
@@ -213,7 +199,7 @@
                 for($i=1; $i<=$Pagination->getLastPage(); $i++){
 
                     $url_params['paged'] = $i;
-                    $url = $this->getAdminPageUrl($url_params);
+                    $url = $this->getAdminPageUrl('', $url_params);
 
                     if($i == $Pagination->getCurrPage()){
                         echo "&nbsp;<strong>{$i}</strong>";

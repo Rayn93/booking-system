@@ -121,7 +121,7 @@ if($Event->hasId()){
     </table>
 
     <p class="submit">
-        <a href="#" class="button-secondary">Wstecz</a>
+        <a href="<?php echo $this->getAdminPageUrl() ?>" class="button-secondary">Wstecz</a>
         &nbsp;
         <input type="submit" class="button-primary" value="Zapisz zmiany" />
     </p>

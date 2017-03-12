@@ -192,6 +192,7 @@ class Gertis_BookingSystem_Model{
         $last_page = ceil($total_count/$limit);
 
         $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+        //filter: SELECT * FROM wp_gertis_booking_system_guest WHERE event_turn = 'OPT1' ORDER BY id ASC LIMIT 0, 10
 
         $event_list = $this->wpdb->get_results($sql, ARRAY_A);
         //$event_list = $this->wpdb->get_results($sql);
@@ -206,18 +207,131 @@ class Gertis_BookingSystem_Model{
         return $Pagination;
     }
 
+
+    function getGuestPagination($curr_page, $limit = 10, $order_by = 'id', $order_dir = 'asc'){
+
+        $curr_page = (int)$curr_page;
+        if($curr_page < 1){
+            $curr_page = 1;
+        }
+
+        $limit = (int)$limit;
+
+        $order_by_opts = static::getGuestOrderByOpts();
+        $order_by = in_array($order_by, $order_by_opts) ? $order_by : 'id';
+
+        $order_dir = in_array($order_dir, array('asc', 'desc')) ? $order_dir : 'asc';
+
+        $offset = ($curr_page-1)*$limit;
+
+        $table_name = $this->getTableNameGuest();
+
+        $count_sql = "SELECT COUNT(*) FROM {$table_name}";
+        $total_count = $this->wpdb->get_var($count_sql);
+
+        $last_page = ceil($total_count/$limit);
+
+        $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+
+        //$event_list = $this->wpdb->get_results($sql, ARRAY_A);
+        $event_list = $this->wpdb->get_results($sql);
+
+
+        $Pagination = new Gertis_Pagination($event_list, $order_by, $order_dir, $limit, $total_count, $curr_page, $last_page);
+
+        return $Pagination;
+    }
+
     static function getEventOrderByOpts(){
         return array(
             'ID' => 'id',
+            'Kod wydarzenia' => 'event_code',
+            'Turnus' => 'event_turn',
             'Cena' => 'price',
-            'Zapisanych' => 'taken_seats',
+            'Liczba miejsc' => 'seat_no',
             'Status' => 'status'
         );
     }
 
+    static function getGuestOrderByOpts(){
+        return array(
+            'ID' => 'id',
+            'Kod imprezy [turnus]' => 'event_turn',
+            'Imie i nazwisko' => 'guest_name',
+            'Status' => 'status'
+        );
+    }
 
+    //Usuwa rekord z bazy danych o id = $id z tabeli $table (event/guest)
+    function deleteRow($id, $table){
+        $id = (int)$id;
 
+        if($table == 'event'){
+            $table_name = $this->getTableNameEvent();
+        }
+        elseif ($table == 'guest'){
+            $table_name = $this->getTableNameGuest();
+        }
 
+        $sql = "DELETE FROM {$table_name} WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+
+        return $this->wpdb->query($prep);
+    }
+
+    //Masowe usuwanie zaznaczonych id z tabeli $table (event/guest)
+    function bulkDelete(array $ids_list, $table){
+        $ids_list = array_map('intval', $ids_list);
+
+        if($table == 'event'){
+            $table_name = $this->getTableNameEvent();
+        }
+        elseif ($table == 'guest'){
+            $table_name = $this->getTableNameGuest();
+        }
+
+        $ids_str = implode(',', $ids_list);
+        $sql = "DELETE FROM {$table_name} WHERE id IN ({$ids_str})";
+        return $this->wpdb->query($sql);
+    }
+
+    //Masowa zmiana statusu
+    function bulkChangeStatus(array $ids_list, $change_to, $table){
+        $ids_list = array_map('intval', $ids_list);
+
+        if($table == 'event'){
+            $table_name = $this->getTableNameEvent();
+        }
+        elseif ($table == 'guest'){
+            $table_name = $this->getTableNameGuest();
+        }
+
+        $status = '';
+        switch($change_to){
+            default:
+            case 'actual': $status = 'yes'; break;
+            case 'no_actual': $status = 'no'; break;
+            case 'resign': $status = 'resign'; break;
+            case 'old': $status = 'old'; break;
+            case 'waiting': $status = 'waiting'; break;
+        }
+
+        $ids_str = implode(',', $ids_list);
+
+        $sql = "UPDATE {$table_name} SET status = '{$status}' WHERE id IN ({$ids_str})";
+        return $this->wpdb->query($sql);
+    }
+
+    //Zmiana statusu potwierdzenia uczestnictwa
+    function confirmGuest($id){
+        $id = (int)$id;
+        $table_name = $this->getTableNameGuest();
+
+        $sql = "UPDATE {$table_name} SET status = 'confirm' WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+
+        return $this->wpdb->query($prep);
+    }
 
 
     //zwraca liczbę zajętych miejsc na danym turnusie
@@ -226,7 +340,6 @@ class Gertis_BookingSystem_Model{
         $table_name = $this->getTableNameGuest();
         $sql = 'SELECT COUNT(event_turn) FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" AND status IN ("waiting", "confirm")';
         return $this->wpdb->get_var($sql);
-
     }
 
 
