@@ -208,7 +208,7 @@ class Gertis_BookingSystem_Model{
     }
 
 
-    function getGuestPagination($curr_page, $limit = 10, $order_by = 'id', $order_dir = 'asc'){
+    function getGuestPagination($curr_page, $limit = 10, $order_by = 'id', $order_dir = 'asc', $event_turn = ''){
 
         $curr_page = (int)$curr_page;
         if($curr_page < 1){
@@ -234,15 +234,15 @@ class Gertis_BookingSystem_Model{
 
         $last_page = ceil($total_count/$limit);
 
-//        if($filter != ''){
-//            $sql = "SELECT * FROM {$table_name} WHERE event_turn = '{$filter}' ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
-//            //filter: SELECT * FROM wp_gertis_booking_system_guest WHERE event_turn = 'OPT1' ORDER BY id ASC LIMIT 0, 10
-//        }
-//        else{
-//
-//        }
+        if($event_turn != ''){
+            $sql = "SELECT * FROM {$table_name} WHERE event_turn = '{$event_turn}' AND status IN (\"waiting\", \"confirm\") ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+            //filter: SELECT * FROM wp_gertis_booking_system_guest WHERE event_turn = 'OPT1' ORDER BY id ASC LIMIT 0, 10
+        }
+        else{
+            $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+        }
 
-        $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+
 
 
         //$event_list = $this->wpdb->get_results($sql, ARRAY_A);

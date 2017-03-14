@@ -152,12 +152,15 @@
                                 <span class="edit">
                                     <a class="edit" href="<?php echo $this->getAdminPageUrl('', array('view' => 'event-form', 'eventid' => $item['id'])); ?>">Edytuj</a>
                                 </span> |
-                            <span class="trash">
+                                <span class="trash">
                                     <?php
                                     $token_name = $this->action_token.$item['id'];
                                     $del_url = $this->getAdminPageUrl('', array('action' => 'delete', 'eventid' => $item['id']));
                                     ?>
-                                <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
+                                    <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
+                                </span> |
+                                <span class="edit">
+                                    <a class="edit" href="<?php echo $this->getAdminPageUrl('-guests', array('action' => 'members', 'event_turn' => $item['event_turn'])); ?>">Uczestnicy</a>
                                 </span>
                         </div>
                     </td>

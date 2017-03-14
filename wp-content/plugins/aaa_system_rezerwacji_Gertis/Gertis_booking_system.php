@@ -266,6 +266,7 @@ class Gertis_booking_system{
         $view = $request->getQuerySingleParam('view', 'guests');
         $action = $request->getQuerySingleParam('action');
         $guestid = (int)$request->getQuerySingleParam('guestid');
+        $event_turn = $request->getQuerySingleParam('event_turn');
 
         switch ($view) {
             case 'guests':
@@ -349,9 +350,15 @@ class Gertis_booking_system{
                 $curr_page = (int)$request->getQuerySingleParam('paged', 1);
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
                 $order_dir = $request->getQuerySingleParam('orderdir', 'asc');
-               // $event_turn = $request->getQuerySingleParam('event_turn');
+                //$event_turn = $request->getQuerySingleParam('event_turn');
 
-                $pagination = $this->model->getGuestPagination($curr_page, $this->pagination_limit, $order_by, $order_dir);
+                //Generowanie listy uczestników dla poszczególnego turnusu
+                if($action == 'members'){
+                    $pagination = $this->model->getGuestPagination($curr_page, 100, $order_by, $order_dir, $event_turn);
+                }
+                else{
+                    $pagination = $this->model->getGuestPagination($curr_page, $this->pagination_limit, $order_by, $order_dir);
+                }
 
                 $this->renderGuest('guests', array('Pagination' => $pagination));
                 break;

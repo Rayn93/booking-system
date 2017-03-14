@@ -1,3 +1,8 @@
+<!--If sprawdzający czy widok jest dla wszystkich uczestników czy tylko dla uczestników w danym obozie-->
+<?php if($_GET['action'] == 'members'): ?>
+<h2>Lista uczestników dla obozu: <?php echo  $_GET['event_turn']?></h2>
+<?php else: ?>
+
 <form method="get" action="<?php echo $this->getAdminPageUrl('-guests'); ?>" id="gertis-guests-form-1">
 
     <input type="hidden" name="page" value="<?php echo static::$plugin_id.'-guests'; ?>" />
@@ -51,11 +56,13 @@
 
 </form>
 
+<?php endif; ?>
 
 <form action="<?php echo $this->getAdminPageUrl('-guests', array('view' => 'guests', 'action' => 'bulk')); ?>" method="post" id="gertis-guests-form-2" onsubmit="return confirm('Czy na pewno chcesz zastosować zmiany masowe?')">
 
     <?php wp_nonce_field($this->action_token.'bulk'); ?>
 
+    <?php if(!isset($_GET['action']) && $_GET['action'] != 'members'): ?>
     <div class="tablenav">
 
         <div class="alignleft actions bulkactions">
@@ -131,6 +138,8 @@
 
     </div>
 
+    <?php endif; ?>
+
 
     <table class="widefat">
         <thead>
@@ -175,13 +184,13 @@
                                         <a class="edit" href="<?php echo wp_nonce_url($confirm_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz potwierdzić zgłoszenie tego uczestnika?')">Potwierdź</a>
                                     </span> |
                                 <?php endif ?>
-                            <span class="trash">
+                                    <span class="trash">
                                     <?php
                                     $token_name = $this->action_token.$item->id;
                                     $del_url = $this->getAdminPageUrl('-guests', array('action' => 'delete', 'guestid' => $item->id));
                                     ?>
-                                <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
-                                </span>
+                                        <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
+                                    </span>
                         </div>
                     </td>
                     <td><?php echo $item->event_turn; ?></td>
@@ -212,7 +221,7 @@
 
         <?php else: ?>
             <tr>
-                <td colspan="12">Brak uczestników w bazie danych</td>
+                <td colspan="12">Brak uczestników</td>
             </tr>
         <?php endif; ?>
         </tbody>
