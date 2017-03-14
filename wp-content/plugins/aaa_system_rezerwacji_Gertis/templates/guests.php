@@ -141,10 +141,12 @@
     <?php endif; ?>
 
 
-    <table class="widefat">
+    <table id="table2excel" class="widefat">
         <thead>
         <tr>
+            <?php if(!isset($_GET['action']) && $_GET['action'] != 'members'): ?>
             <th class="check-column"><input type="checkbox" /></th>
+            <?php endif; ?>
             <th>ID</th>
             <th>Imie i nazwisko</th>
             <th>Kod imprezy (turnus)</th>
@@ -166,12 +168,16 @@
             <?php foreach($Pagination->getItems() as $i=>$item): ?>
 
                 <tr <?php echo ($i%2) ? 'class="alternate"' : ''; ?>>
-                    <th class="check-column">
-                        <input type="checkbox" value="<?php echo $item->id; ?> " name="bulkcheck[]" />
-                    </th>
+
+                    <?php if(!isset($_GET['action']) && $_GET['action'] != 'members'): ?>
+                        <th class="check-column">
+                            <input type="checkbox" value="<?php echo $item->id; ?> " name="bulkcheck[]" />
+                        </th>
+                    <?php endif; ?>
+
                     <td><?php echo $item->id; ?></td>
                     <td><?php echo $item->guest_name; ?>
-                        <div class="row-actions">
+                        <div class="row-actions noExl">
                                 <span class="edit">
                                     <a class="edit" href="<?php echo $this->getAdminPageUrl('-guests', array('view' => 'guest-form', 'guestid' => $item->id)); ?>">Edytuj</a>
                                 </span> |
@@ -199,8 +205,8 @@
                     <td><?php echo $item->phone; ?></td>
                     <td><?php echo $item->personal_no; ?></td>
                     <td>
-                        <?php echo $item->city; ?> <br />
-                        <?php echo $item->street; ?> <br />
+                        <?php echo $item->city; ?>
+                        <?php echo $item->street; ?>
                         <?php echo $item->zip_code; ?>
                     </td>
                     <td><?php echo $item->money; ?></td>
@@ -262,3 +268,5 @@
     </div>
 
 </form>
+
+<button id="btnExport"> Export uczestników do Excel-a</button>

@@ -110,9 +110,18 @@ class Gertis_booking_system{
     }
 
     function addAdminScripts(){
+
+        wp_register_script('gertis-export-excel', plugins_url('/js/jquery.table2excel.js', __FILE__), array('jquery'));
+        wp_register_script('gertis-custom-script', plugins_url('/js/custom-scripts.js', __FILE__), array('jquery', 'gertis-export-excel'));
+
         wp_register_style('gertis-admin-style', plugins_url('/css/style-admin.css', __FILE__));
 
         if(get_current_screen()->id == 'toplevel_page_'.static::$plugin_id || get_current_screen()->id == 'system-rezerwacji_page_'.static::$plugin_id.'-guests'){
+
+            wp_enqueue_script('jquery');
+            wp_enqueue_script('gertis-export-excel');
+            wp_enqueue_script('gertis-custom-script');
+
             wp_enqueue_style('gertis-admin-style');
         }
     }

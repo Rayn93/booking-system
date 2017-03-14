@@ -1,3 +1,13 @@
-/**
- * Created by Rob on 14.03.2017.
- */
+jQuery(document).ready(function () {
+
+    jQuery("#btnExport").click(function(){
+        jQuery("#table2excel").table2excel({
+            // exclude CSS class
+            exclude: ".noExl",
+            name: "Worksheet Name",
+            filename: "Lista uczestników" //do not include extension
+        });
+    });
+
+
+});
