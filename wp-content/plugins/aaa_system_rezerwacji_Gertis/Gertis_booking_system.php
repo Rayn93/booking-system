@@ -50,9 +50,12 @@ class Gertis_booking_system{
         //akcja obsługi formularza na frontendzie
         add_action('init', array($this, 'handleGertisMainForm'));
 
+        add_filter( 'page_template', 'wpa3396_page_template' );;
+
+
 
 //        $list = Gertis_BookingSystem_Model::getEventForFilter();
-//        var_dump($list);
+//        var_dump($_POST['front_entry']);
 
     }
 
@@ -106,6 +109,7 @@ class Gertis_booking_system{
             wp_enqueue_style('bootstrap-style');
 
         }
+
         wp_enqueue_style('gertis-custom-style');
     }
 
@@ -454,8 +458,10 @@ class Gertis_booking_system{
                         $entry_id = $this->model->saveGuestEntry($GuestEntry);
 
                         if ($entry_id != FALSE) {
-                            $_SESSION['new_guest_name'] = $GuestEntry->getGuestName();
-                            $this->redirect(get_site_url().'/submit_page.php');
+                            $_SESSION['new_guest_name'] = $GuestEntry->getField('guest_name');
+                            $_SESSION['event_turn'] = $GuestEntry->getField('event_turn');
+                            $_SESSION['email'] = $GuestEntry->getField('email');
+                            $this->redirect(get_site_url().'/a-po-rejestracji');
                             //Mail do admina o nowym uczestniku (wysłać $entry_id)
 
                         }
@@ -549,6 +555,16 @@ class Gertis_booking_system{
         exit;
     }
 
+}
+
+
+
+function wpa3396_page_template( $page_template )
+{
+    if ( is_page( 'my-custom-page-slug' ) ) {
+        $page_template = dirname( __FILE__ ) . '/my-api.php';
+    }
+    return $page_template;
 }
 
 

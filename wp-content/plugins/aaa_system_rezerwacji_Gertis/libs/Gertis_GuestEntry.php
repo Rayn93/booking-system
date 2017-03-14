@@ -83,19 +83,6 @@ class Gertis_GuestEntry{
     }
 
 
-    public function getGuestName()
-    {
-        return $this->guest_name;
-    }
-
-//    function getGuestName(){
-//        if(isset($this->{$guest_name})){
-//            return $this->{$guest_name};
-//        }
-//
-//        return NULL;
-//    }
-
 
 
 
