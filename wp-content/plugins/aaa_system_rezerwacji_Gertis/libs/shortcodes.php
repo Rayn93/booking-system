@@ -5,11 +5,13 @@
 add_shortcode('gertis_main_form', 'gertisMainForm');
 function gertisMainForm(){
 
-    ob_start();
-
     $action_token = 'gertis-bs-action';
+    $event_code = $_GET['code'];
+    $model = new Gertis_BookingSystem_Model();
 
     //$main_object = new Gertis_booking_system();
+
+    ob_start();
 
     ?>
 
@@ -26,11 +28,17 @@ function gertisMainForm(){
                     <label for="event_turn" class="col-sm-3 control-label">Kod imprezy *</label>
                     <div class="col-sm-4">
                         <select id="event_turn" class="form-control" name="front_entry[event_turn]">
-                            <option value="OPT1">OPT1</option>
-                            <option value="OPT2">OPT2</option>
-                            <option value="OPT3">OPT3</option>
-                            <option value="OPT4">OPT4</option>
-                            <option value="OPT5">OPT5</option>
+
+                            <?php if(!empty($event_code)): ?>
+                                <?php $event_list = $model->getEventTurn($event_code, 'event_turn'); ?>
+                                <?php foreach ($event_list as $i=>$item): ?>
+                                    <option value="<?php echo $item['event_turn'] ?>"><?php echo $item['event_turn'] ?></option>
+                                <?php endforeach; ?>
+
+                            <?php else: ?>
+                                <option value="0">Nie wybrano odpowieniego kodu imprezy</option>
+                            <?php endif; ?>
+
                         </select>
                     </div>
                 </div>
@@ -179,6 +187,64 @@ function gertisMainForm(){
     return $form;
 
 }
+
+//Shortcode z tabelą wydarzenia
+
+add_shortcode('gertis_oboz', 'gertisPrintEventTable');
+function gertisPrintEventTable($args){
+
+    $event_code = shortcode_atts(array('kod_obozu' => 'OPT'), $args);
+
+
+    $model = new Gertis_BookingSystem_Model();
+    $event_list = $model->getEventTurn($event_code['kod_obozu']);
+    //var_dump($event_list);
+
+    ob_start();
+
+    ?>
+
+    <table>
+        <tr>
+            <th>Kod imprezy</th>
+            <th>Początek</th>
+            <th>Koniec</th>
+            <th>Cena</th>
+            <th>Wolne miejsca</th>
+            <th>Link do rezerwacji</th>
+        </tr>
+
+        <?php if(!empty($event_list)): ?>
+            <?php foreach ($event_list as $i=>$item): ?>
+                <tr>
+                    <td><?php echo $item['event_turn']; ?></td>
+                    <td><?php $start_date = date_create($item['start_date']); echo date_format($start_date, 'd-m-Y');?></td>
+                    <td><?php $end_date = date_create($item['end_date']); echo date_format($end_date, 'd-m-Y');?></td>
+                    <td><?php echo $item['price']; ?> zł</td>
+                    <td><?php echo ((int)$item['seat_no'] - (int)$item['taken_seats']);?></td>
+                    <td><a href="<?php echo get_site_url().'/a-system-rezerwacji/?code='.$item['event_code']; ?>" >Rezerwuj</a></td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="6">Brak obozów tego typu</td>
+            </tr>
+        <?php endif; ?>
+    </table>
+
+
+    <?php
+
+    $table = ob_get_contents();
+    ob_end_clean();
+
+    return $table;
+
+}
+
+
+
+
 
 add_action('init', 'my_init');
 function my_init() {

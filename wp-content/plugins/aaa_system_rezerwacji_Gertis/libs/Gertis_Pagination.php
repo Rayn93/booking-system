@@ -13,6 +13,8 @@ class Gertis_Pagination{
     private $order_by;
     private $order_dir;
 
+//    private $filter;
+
     private $limit;
     private $total_count;
 
@@ -28,6 +30,7 @@ class Gertis_Pagination{
         $this->total_count = $total_count;
         $this->curr_page = $curr_page;
         $this->last_page = $last_page;
+        //$this->filter = $filter;
     }
 
     public function hasItems(){
@@ -62,5 +65,9 @@ class Gertis_Pagination{
     public function getLastPage() {
         return $this->last_page;
     }
+
+//    public function getFilter() {
+//        return $this->filter;
+//    }
 
 }

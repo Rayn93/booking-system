@@ -192,7 +192,7 @@ class Gertis_BookingSystem_Model{
         $last_page = ceil($total_count/$limit);
 
         $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
-        //filter: SELECT * FROM wp_gertis_booking_system_guest WHERE event_turn = 'OPT1' ORDER BY id ASC LIMIT 0, 10
+
 
         $event_list = $this->wpdb->get_results($sql, ARRAY_A);
         //$event_list = $this->wpdb->get_results($sql);
@@ -220,6 +220,9 @@ class Gertis_BookingSystem_Model{
         $order_by_opts = static::getGuestOrderByOpts();
         $order_by = in_array($order_by, $order_by_opts) ? $order_by : 'id';
 
+//        $filter_opts = static::getEventForFilter();
+//        $filter = in_array($filter, $filter_opts) ? $order_by : 'all';
+
         $order_dir = in_array($order_dir, array('asc', 'desc')) ? $order_dir : 'asc';
 
         $offset = ($curr_page-1)*$limit;
@@ -231,7 +234,16 @@ class Gertis_BookingSystem_Model{
 
         $last_page = ceil($total_count/$limit);
 
+//        if($filter != ''){
+//            $sql = "SELECT * FROM {$table_name} WHERE event_turn = '{$filter}' ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+//            //filter: SELECT * FROM wp_gertis_booking_system_guest WHERE event_turn = 'OPT1' ORDER BY id ASC LIMIT 0, 10
+//        }
+//        else{
+//
+//        }
+
         $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+
 
         //$event_list = $this->wpdb->get_results($sql, ARRAY_A);
         $event_list = $this->wpdb->get_results($sql);
@@ -341,6 +353,35 @@ class Gertis_BookingSystem_Model{
         $sql = 'SELECT COUNT(event_turn) FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" AND status IN ("waiting", "confirm")';
         return $this->wpdb->get_var($sql);
     }
+
+    //Zwraca listę z turnusami o podanym kodzie wydarzenia
+    function getEventTurn($event_code, $column_name='*'){
+
+        //SELECT * FROM `wp_gertis_booking_system_event` WHERE `event_code` = 'OPT' AND `status` = 'yes' ORDER BY event_turn DESC
+        $table_name = $this->getTableNameEvent();
+
+        $sql = 'SELECT '.$column_name.' FROM '.$table_name.' WHERE event_code="'.$event_code.'" AND status = "yes" ORDER BY event_turn ASC';
+        $event_list = $this->wpdb->get_results($sql, ARRAY_A);
+
+        if($column_name=='*'){
+            //Dodanie zajętych miejsc to listy wydarzeń
+            foreach ($event_list as $key => $val){
+                $event_list[$key]['taken_seats'] = $this->countTakenSeats($event_list[$key]['event_turn']);
+            }
+        }
+
+        return $event_list;
+
+    }
+
+//    static function getEventForFilter(){
+//
+//        global $wpdb;
+//        $sql = 'SELECT event_turn FROM wp_gertis_booking_system_guest GROUP BY event_turn ORDER BY event_turn ASC';
+//
+//
+//        return $wpdb->get_results($sql);
+//    }
 
 
 }

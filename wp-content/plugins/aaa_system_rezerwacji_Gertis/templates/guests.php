@@ -26,6 +26,29 @@
 
     <input type="submit" class="button-secondary" value="Sortuj" />
 
+<!--    <div class="alignleft actions">-->
+<!---->
+<!--        <select name="event_turn">-->
+<!--            <option value="0">Wszystkie imprezy</option>-->
+<!--            --><?php //foreach(Gertis_BookingSystem_Model::getEventForFilter() as $key=>$val): ?>
+<!--                <option-->
+<!--                    --><?php //echo($val == $Pagination->getFilter()) ? 'selected="selected"' : ''; ?>
+<!--                    value="--><?php //echo $val; ?><!--">-->
+<!--                    --><?php //echo $key; ?>
+<!--                </option>-->
+<!--            --><?php //endforeach; ?>
+<!---->
+<!---->
+<!--            <option value="OPT1">OPT1</option>-->
+<!--            <option value="OPT2">OPT2</option>-->
+<!--            <option value="OPT3">OPT3</option>-->
+<!--            <option value="OPT4">OPT4</option>-->
+<!--        </select>-->
+<!---->
+<!--        <input type="submit" class="button-secondary" value="Filtruj" />-->
+<!---->
+<!--    </div>-->
+
 </form>
 
 
@@ -48,28 +71,6 @@
             <input type="submit" class="button-secondary" value="Zastosuj" />
 
         </div>
-
-<!--        <div class="alignleft actions">-->
-<!---->
-<!--            <select name="filter">-->
-<!--                <option value="0">Wszystkie imprezy</option>-->
-<!--                <option value="pos1">POS1</option>-->
-<!--                <option value="pos2">POS2</option>-->
-<!--                <option value="pos3">POS3</option>-->
-<!--                <option value="pos4">POS4</option>-->
-<!--                <option value="pos5">POS5</option>-->
-<!--                <option value="dem1">DEM1</option>-->
-<!--                <option value="dem2">DEM2</option>-->
-<!--                <option value="dem3">DEM3</option>-->
-<!--                <option value="dem4">DEM4</option>-->
-<!--                <option value="dem5">DEM5</option>-->
-<!--                <option value="bjk1">BJK1</option>-->
-<!--                <option value="qwe1">QWE1</option>-->
-<!--            </select>-->
-<!---->
-<!--            <input type="submit" class="button-secondary" value="Filtruj" />-->
-<!---->
-<!--        </div>-->
 
         <div class="tablenav-pages">
             <span class="displaying-num"><?php  echo $Pagination->getTotalCount(); ?> Uczestników</span>

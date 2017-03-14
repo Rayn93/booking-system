@@ -51,9 +51,8 @@ class Gertis_booking_system{
         add_action('init', array($this, 'handleGertisMainForm'));
 
 
-//        $guest = new Gertis_GuestEntry();
-//        $fullSeats = $guest->getGuestName();
-//        print_r($fullSeats);
+//        $list = Gertis_BookingSystem_Model::getEventForFilter();
+//        var_dump($list);
 
     }
 
@@ -105,8 +104,9 @@ class Gertis_booking_system{
             wp_enqueue_script('recaptha-google');
 
             wp_enqueue_style('bootstrap-style');
-            wp_enqueue_style('gertis-custom-style');
+
         }
+        wp_enqueue_style('gertis-custom-style');
     }
 
     function addAdminScripts(){
@@ -349,6 +349,7 @@ class Gertis_booking_system{
                 $curr_page = (int)$request->getQuerySingleParam('paged', 1);
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
                 $order_dir = $request->getQuerySingleParam('orderdir', 'asc');
+               // $event_turn = $request->getQuerySingleParam('event_turn');
 
                 $pagination = $this->model->getGuestPagination($curr_page, $this->pagination_limit, $order_by, $order_dir);
 
@@ -438,32 +439,32 @@ class Gertis_booking_system{
 
                         if ($entry_id != FALSE) {
                             $_SESSION['new_guest_name'] = $GuestEntry->getGuestName();
-                            $this->redirect('http://localhost/system-rezerwacji/submit_page.php');
+                            $this->redirect(get_site_url().'/submit_page.php');
                             //Mail do admina o nowym uczestniku (wysłać $entry_id)
 
                         }
                         else {
                             //Przekirowanie na stronę z formularzem z informacją że rejestracja się nie powiodła
                             $_SESSION['form_error'] = 'Błąd bazy danych. Spróbuj ponownie za jakiś czas lub skontaktuj się z nami.';
-                            $this->redirect('http://localhost/system-rezerwacji/a-system-rezerwacji/');
+                            $this->redirect(get_site_url().'/a-system-rezerwacji/');
                         }
                     }
                     else {
                         //Przekirowanie na stronę z formularzem z informacją że nie przeszło walidacji
                         $_SESSION['form_error'] = 'Formularz nie został poprawnie wypełniony. Wypełnij formularz ponownie';
-                        $this->redirect('http://localhost/system-rezerwacji/a-system-rezerwacji/');
+                        $this->redirect(get_site_url().'/a-system-rezerwacji/');
                     }
                 }
                 else{
                     //Przekirowanie na stronę z formularzem z informacją że błędny token
                     $_SESSION['form_error'] = 'Błąd tokena. Wyczyść pliki przeglądarki i spróbuj ponownie!';
-                    $this->redirect('http://localhost/system-rezerwacji/a-system-rezerwacji/');
+                    $this->redirect(get_site_url().'/a-system-rezerwacji/');
                 }
             }
             else{
                 //Przekirowanie na stronę z formularzem z informacją że recaptcha jest błędna
                 $_SESSION['form_error'] = 'Błąd weryfikacji recaptch-y. Spróbuj jeszcze raz jeżeli nie jesteś botem :)';
-                $this->redirect('http://localhost/system-rezerwacji/a-system-rezerwacji/');
+                $this->redirect(get_site_url().'/a-system-rezerwacji/');
             }
         }
     }
