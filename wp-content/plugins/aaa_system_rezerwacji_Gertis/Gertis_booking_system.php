@@ -50,12 +50,11 @@ class Gertis_booking_system{
         //akcja obsługi formularza na frontendzie
         add_action('init', array($this, 'handleGertisMainForm'));
 
-        add_filter( 'page_template', 'wpa3396_page_template' );;
 
 
 
-//        $list = Gertis_BookingSystem_Model::getEventForFilter();
-//        var_dump($_POST['front_entry']);
+        $list = $this->getAdminEmail();
+        var_dump($list);
 
     }
 
@@ -458,11 +457,21 @@ class Gertis_booking_system{
                         $entry_id = $this->model->saveGuestEntry($GuestEntry);
 
                         if ($entry_id != FALSE) {
+
+                            //Mail do admina o nowym uczestniku (wysłać $entry_id) oraz do uczestnika
+                            $mail_params = array(
+                                'guest_name' => $GuestEntry->getField('guest_name'),
+                                'event_turn' => $GuestEntry->getField('event_turn'),
+                                'id' => $GuestEntry->getField('id'),
+                                'email' => $GuestEntry->getField('email'),
+                            );
+                            $this->sendEmail('registration_guest', $GuestEntry->getField('email'), $mail_params);
+                            $this->sendEmail('registration_admin', $this->getAdminEmail(), $mail_params);
+
                             $_SESSION['new_guest_name'] = $GuestEntry->getField('guest_name');
                             $_SESSION['event_turn'] = $GuestEntry->getField('event_turn');
                             $_SESSION['email'] = $GuestEntry->getField('email');
                             $this->redirect(get_site_url().'/a-po-rejestracji');
-                            //Mail do admina o nowym uczestniku (wysłać $entry_id)
 
                         }
                         else {
@@ -555,17 +564,92 @@ class Gertis_booking_system{
         exit;
     }
 
-}
+    function getAdminEmail(){
+        $blogusers = get_users(array('role__in' => array('Administrator', 'Editor')));
+        $admin_emails = array();
 
-
-
-function wpa3396_page_template( $page_template )
-{
-    if ( is_page( 'my-custom-page-slug' ) ) {
-        $page_template = dirname( __FILE__ ) . '/my-api.php';
+        foreach ($blogusers as $user) {
+           // echo $user->user_email;
+            $admin_emails[]= $user->user_email;
+        }
+        return $admin_emails;
     }
-    return $page_template;
+
+    public function sendEmail($type_message, $to, $mail_params = array() ){
+
+        $message = '';
+        $subject = 'Gertis - Obozy żeglarskie: ';
+
+
+        switch ($type_message){
+
+            case 'registration_guest':
+
+                $subject .= 'potwierdzenie złożenia rezerwacji';
+                $message .= '<h1>Cześć '.$mail_params['guest_name'].'</h1>';
+                $message .= '<p>Gratulujemy! Właśnie poprawnie złożyłaś rejestrację na obóz żeglarski z Gertis</p>';
+
+                $message .= '<p>Miejsce zostaje zarezerwowane na <strong>5 dni roboczych</strong>. Aby potwierdzić rezerwację należy dokonać wpłaty <strong>zaliczki wysokości 600 zł </strong>. Zaliczkę możesz wykonać korzystając z poniższego przycisku (płatność za pośrednictwem PayPal). </p>';
+
+                $message .= '<p>
+                                <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66KKJCHJLR99C">
+                                    <img src="https://www.paypalobjects.com/pl_PL/PL/i/btn/btn_paynowCC_LG.gif" border="0" alt="PayPal – Płać wygodnie i bezpiecznie">" 
+                                </a>
+                            </p>';
+
+
+                $message .= '<p>Zaliczkę możesz również uregulować poprzez przelew bankowy na konto:</p>';
+                $message .= '<p><strong>
+                                Gertis - Marek Makowski <br />
+                                Nr konta bankowego: 52 938123823 129389123 12830123<br />
+                                Tytułem: '.$mail_params['guest_name'].'. Zaliczka za obóz:'.$mail_params['event_turn'].' </strong>
+                            </p>';
+
+                $message .= '<p>Pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
+                $message .= '<p>W razie jakichkolwiek pytań służymy pomocą. Wszelkie dane kontaktowe znajdziesz tutaj: http://www.obozy-zeglarskie.pl/kontakt/</p>
+';
+                $message .= '<p>
+                                Do zobaczenia pod żaglami ;) <br />
+                                <strong>Zespół Gertis. </strong>
+                            </p>';
+
+                break;
+
+            case 'registration_admin':
+
+                $subject .= 'rejestracja nowego uczestnika obozu!';
+                $message .= '<h1>Cześć</h1>';
+                $message .= '<p>Właśnie zarejestrował się nowy uczestnik na obóz żeglarski o kodzie: <strong>'.$mail_params['guest_name'].'</strong></p>';
+                $message .= '<p>Podstawowe dane uczestnika: </p>';
+                $message .= '<ul>
+                                <li>Imię i nazwisko: '.$mail_params['guest_name'].'</li>
+                                <li>Email: '.$mail_params['email'].'</li>
+                                <li>ID w systemie rezerwacji: '.$mail_params['id'].'</li>
+                             </ul>';
+                $message .= '<p>W systemie rezerwacji możesz znaleść więcej informacji o nowej rejestracji</p>';
+                $message .= '<p>Udanego dnia <br /> System rezerwacji Gertis</p>';
+
+
+                break;
+
+            case 'confirm_guest':
+
+                break;
+
+            case 'resign_guest':
+
+            default:
+                $this->renderGuest('404');
+                break;
+        }
+
+
+        return (wp_mail($to, $subject, $message));
+
+    }
+
 }
+
 
 
 $Gertis_booking_system = new Gertis_booking_system();

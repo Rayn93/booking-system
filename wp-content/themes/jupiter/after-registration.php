@@ -34,7 +34,7 @@ get_header();
                 <p><strong>
                     Gertis - Marek Makowski <br />
                     Nr konta bankowego: 52 938123823 129389123 12830123<br />
-                    Tytułem: <?php echo $_SESSION['new_guest_name'] ?> . Zaliczka za obóz: <?php echo $_SESSION['event_turn'] ?></strong>
+                    Tytułem: <?php echo $_SESSION['new_guest_name'] ?>. Zaliczka za obóz: <?php echo $_SESSION['event_turn'] ?></strong>
                 </p>
 
                 <p>Pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>
