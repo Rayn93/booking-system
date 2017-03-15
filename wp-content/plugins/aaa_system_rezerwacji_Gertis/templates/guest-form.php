@@ -190,7 +190,7 @@
                 <label for="gertis_more_info">Uwagi dodatkowe</label>
             </th>
             <td>
-                <textarea name="entry[more_info]" id="gertis_more_info" value="<?php echo $Guest->getField('more_info'); ?>"></textarea>
+                <input type="text" name="entry[more_info]" id="gertis_more_info" value="<?php echo $Guest->getField('more_info'); ?>" />
 
                 <?php if($Guest->hasError('more_info')): ?>
                 <p class="description error"><?php echo $Guest->getError('more_info'); ?></p>
@@ -238,7 +238,7 @@
     </table>
 
     <p class="submit">
-        <a href="#" class="button-secondary">Wstecz</a>
+        <a href="<?php echo $this->getAdminPageUrl('-guests') ?>" class="button-secondary">Wstecz</a>
         &nbsp;
         <input type="submit" class="button-primary" value="Zapisz zmiany"/>
     </p>

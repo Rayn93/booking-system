@@ -334,7 +334,7 @@ class Gertis_BookingSystem_Model{
         return $this->wpdb->query($sql);
     }
 
-    //Zmiana statusu potwierdzenia uczestnictwa
+    //Zmiana statusu  uczestnictwa na potwierdzony
     function confirmGuest($id){
         $id = (int)$id;
         $table_name = $this->getTableNameGuest();
@@ -344,6 +344,19 @@ class Gertis_BookingSystem_Model{
 
         return $this->wpdb->query($prep);
     }
+
+    //Zmiana statusu  uczestnictwa na anulowano (zrezygnował)
+    function cancelGuest($id){
+        $id = (int)$id;
+        $table_name = $this->getTableNameGuest();
+
+        $sql = "UPDATE {$table_name} SET status = 'resign' WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+
+        return $this->wpdb->query($prep);
+    }
+
+
 
 
     //zwraca liczbę zajętych miejsc na danym turnusie

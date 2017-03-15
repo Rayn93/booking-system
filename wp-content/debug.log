@@ -1232,3 +1232,5 @@
 [15-Mar-2017 16:17:27 UTC] PHP Parse error:  syntax error, unexpected '$message' (T_VARIABLE) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 590
 [15-Mar-2017 16:19:11 UTC] PHP Parse error:  syntax error, unexpected '$message' (T_VARIABLE) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 590
 [15-Mar-2017 16:19:28 UTC] PHP Parse error:  syntax error, unexpected '$message' (T_VARIABLE) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 590
+[15-Mar-2017 17:15:19 UTC] PHP Parse error:  syntax error, unexpected 'var_dump' (T_STRING) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 57
+[15-Mar-2017 17:15:32 UTC] PHP Parse error:  syntax error, unexpected 'var_dump' (T_STRING) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 57

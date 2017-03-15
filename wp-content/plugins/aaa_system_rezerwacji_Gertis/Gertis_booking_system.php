@@ -8,7 +8,7 @@ session_start();
      * Plugin URI: http://www.robertsaternus.pl
      * Description: System rezerwacji na rejsy, dedykowany dla Gertis.
      * Author: Robert Saternus
-     * Version: 1.0
+     * Version: 1.1
      * Author URI: http://www.robertsaternus.pl
      */
 
@@ -24,7 +24,7 @@ require_once 'libs/shortcodes.php';
 class Gertis_booking_system{
 
     private static $plugin_id = 'gertis-book-system';
-    private $plugin_version = '1.0.0';
+    private $plugin_version = '1.1.0';
     private $user_capability = 'manage_options';
     private $model;
     private $action_token = 'gertis-bs-action';
@@ -53,8 +53,9 @@ class Gertis_booking_system{
 
 
 
-        $list = $this->getAdminEmail();
-        var_dump($list);
+//        $guest_for_confirm = new Gertis_GuestEntry(8);
+//        $guest_email = $guest_for_confirm->getField('email');
+//        var_dump($guest_email);
 
     }
 
@@ -312,10 +313,39 @@ class Gertis_booking_system{
                     if(wp_verify_nonce($wpnonce, $token_name)){
 
                         if($this->model->confirmGuest($guestid) !== FALSE){
-                            $this->setFlashMsg('Poprawnie potwierdzono uczestnictwo tego uczestnika.');
+
+                            $guest_for_confirm = new Gertis_GuestEntry($guestid);
+                            $guest_conf_email = $guest_for_confirm->getField('email');
+                            $this->sendEmail('confirm_guest', $guest_conf_email);
+                            $this->setFlashMsg('Poprawnie potwierdzono uczestnictwo i wysłano mail do uczestnika z potwierdzeniem.');
                         }
                         else{
                             $this->setFlashMsg('Nie udało się potwierdzić uczestnictwo tego uczestnika.', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Nie poprawny token akcji. Spróbuj jeszcze raz.', 'error');
+                    }
+
+                    $this->redirect($this->getAdminPageUrl('-guests'));
+
+                }
+                else if($action == 'cancel'){
+
+                    $token_name = $this->action_token.$guestid;
+                    $wpnonce = $request->getQuerySingleParam('_wpnonce', NULL);
+
+                    if(wp_verify_nonce($wpnonce, $token_name)){
+
+                        if($this->model->cancelGuest($guestid) !== FALSE){
+
+                            $guest_for_confirm = new Gertis_GuestEntry($guestid);
+                            $guest_conf_email = $guest_for_confirm->getField('email');
+                            $this->sendEmail('cancel_guest', $guest_conf_email);
+                            $this->setFlashMsg('Poprawnie anulowano uczestnictwo i wysłano mail do uczestnika z wiadomością o anulowaniu.');
+                        }
+                        else{
+                            $this->setFlashMsg('Nie udało się anulować tego uczestnika.', 'error');
                         }
                     }
                     else{
@@ -564,6 +594,7 @@ class Gertis_booking_system{
         exit;
     }
 
+    //Return emails form admin and redactor
     function getAdminEmail(){
         $blogusers = get_users(array('role__in' => array('Administrator', 'Editor')));
         $admin_emails = array();
@@ -585,7 +616,7 @@ class Gertis_booking_system{
 
             case 'registration_guest':
 
-                $subject .= 'potwierdzenie złożenia rezerwacji';
+                $subject .= 'potwierdzenie rejestracji';
                 $message .= '<h1>Cześć '.$mail_params['guest_name'].'</h1>';
                 $message .= '<p>Gratulujemy! Właśnie poprawnie złożyłaś rejestrację na obóz żeglarski z Gertis</p>';
 
@@ -634,12 +665,26 @@ class Gertis_booking_system{
 
             case 'confirm_guest':
 
+                $subject .= 'potwierdzenie rezerwacji na obozie!';
+                $message .= '<h1>Cześć</h1>';
+                $message .= '<p>Mamy dla Ciebie dobrą wiadomość! Otrzymaliśmy od Ciebie przelew i tym samym oficjalnie jesteś na obozie Żeglarskim Gertis. Gratulacje!</p>';
+                $message .= '<p>Przypominamy, że jeżeli jeszcze nie wpłaciłeś całej kwoty za obóz, to pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
+                $message .= '<p>Widzimy się już niedługo pod Żeglami!</p>';
+                $message .= '<p><strong>Zespół Gertis. </strong></p>';
+
                 break;
 
-            case 'resign_guest':
+            case 'cancel_guest':
+                $subject .= 'anulowanie uczestnictwa!';
+                $message .= '<h1>Cześć</h1>';
+                $message .= '<p>Anulowaliśmy Twoje uczestnictwo w obozie żeglarskim</p>';
+                $message .= '<p>Jeżeli masz jakieś wątpliwości lub proces anulowania jest według Ciebie bezpodstawny, skontaktuj się z nami jak najszybciej</p>';
+                $message .= '<p>Pozdrawiamy</p>';
+                $message .= '<p><strong>Zespół Gertis.</strong></p>';
+
+                break;
 
             default:
-                $this->renderGuest('404');
                 break;
         }
 

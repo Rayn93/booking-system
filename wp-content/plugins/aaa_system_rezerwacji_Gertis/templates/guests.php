@@ -196,7 +196,16 @@
                                     $del_url = $this->getAdminPageUrl('-guests', array('action' => 'delete', 'guestid' => $item->id));
                                     ?>
                                         <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
-                                    </span>
+                                    </span> |
+                                <?php if($item->status == 'waiting' || $item->status == 'confirm' ): ?>
+                                    <span class="edit">
+                                            <?php
+                                            $token_name = $this->action_token.$item->id;
+                                            $confirm_url = $this->getAdminPageUrl('-guests', array('action' => 'cancel', 'guestid' => $item->id));
+                                            ?>
+                                        <a class="edit" href="<?php echo wp_nonce_url($confirm_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz anulować zgłoszenie tego uczestnika?')">Anuluj</a>
+                                        </span>
+                                <?php endif ?>
                         </div>
                     </td>
                     <td><?php echo $item->event_turn; ?></td>
@@ -269,4 +278,7 @@
 
 </form>
 
-<button id="btnExport"> Export uczestników do Excel-a</button>
+
+<?php if($_GET['action'] == 'members'): ?>
+    <button id="btnExport"> Export uczestników do Excel-a</button>
+<?php endif; ?>
