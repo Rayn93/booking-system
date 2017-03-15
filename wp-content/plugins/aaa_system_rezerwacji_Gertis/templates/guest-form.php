@@ -201,6 +201,22 @@
             </td>
         </tr>
 
+        <tr class="form-field">
+            <th>
+                <label for="gertis_staff_info">Nasze uwagi</label>
+            </th>
+            <td>
+                <input type="text" name="entry[staff_info]" id="staff_info" value="<?php echo $Guest->getField('staff_info'); ?>" />
+
+                <?php if($Guest->hasError('staff_info')): ?>
+                    <p class="description error"><?php echo $Guest->getError('staff_info'); ?></p>
+                <?php else: ?>
+                    <p class="description">To pole jest opcjonalne</p>
+                <?php endif; ?>
+
+            </td>
+        </tr>
+
         <tr>
             <th>
                 <label for="gertis_status">Status uczestnictwa:</label>
@@ -221,7 +237,7 @@
                     </label><br/>
                     <label>
                         <input type='radio' name='entry[status]' value='old' <?php echo ($Guest->isOld()) ? 'checked="checked"' : ''; ?>/>
-                        <span>nieaktualny</span>
+                        <span>zakończony</span>
                     </label><br/>
                 </fieldset>
 

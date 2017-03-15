@@ -6,7 +6,7 @@ add_shortcode('gertis_main_form', 'gertisMainForm');
 function gertisMainForm(){
 
     $action_token = 'gertis-bs-action';
-    $event_code = $_GET['code'];
+    $event_turn = $_GET['code'];
     $model = new Gertis_BookingSystem_Model();
 
     //$main_object = new Gertis_booking_system();
@@ -29,11 +29,14 @@ function gertisMainForm(){
                     <div class="col-sm-4">
                         <select id="event_turn" class="form-control" name="front_entry[event_turn]">
 
-                            <?php if(!empty($event_code)): ?>
-                                <?php $event_list = $model->getEventTurn($event_code, 'event_turn'); ?>
-                                <?php foreach ($event_list as $i=>$item): ?>
-                                    <option value="<?php echo $item['event_turn'] ?>"><?php echo $item['event_turn'] ?></option>
-                                <?php endforeach; ?>
+                            <?php if(!empty($event_turn) && $model->checkEventTurn($event_turn)): ?>
+
+                                <option value="<?php echo $event_turn ?>"><?php echo $event_turn ?> (Termin: <?php echo $model->getEventDate($event_turn); ?>)</option>
+
+<!--                                --><?php //$event_list = $model->getEventTurn($event_code, 'event_turn'); ?>
+<!--                                --><?php //foreach ($event_list as $i=>$item): ?>
+<!--                                    <option value="--><?php //echo $item['event_turn'] ?><!--">--><?php //echo $item['event_turn'] ?><!--</option>-->
+<!--                                --><?php //endforeach; ?>
 
                             <?php else: ?>
                                 <option value="0">Nie wybrano odpowieniego kodu imprezy</option>
@@ -172,7 +175,9 @@ function gertisMainForm(){
 
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9">
-                        <button type="submit" class="btn btn-default">Zapisz mnie</button>
+                        <?php if(!empty($event_turn) && $model->checkEventTurn($event_turn)): ?>
+                            <button type="submit" class="btn btn-default">Zapisz mnie</button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </form>
@@ -195,10 +200,9 @@ function gertisPrintEventTable($args){
 
     $event_code = shortcode_atts(array('kod_obozu' => 'OPT'), $args);
 
-
     $model = new Gertis_BookingSystem_Model();
     $event_list = $model->getEventTurn($event_code['kod_obozu']);
-    //var_dump($event_list);
+
 
     ob_start();
 
@@ -216,13 +220,20 @@ function gertisPrintEventTable($args){
 
         <?php if(!empty($event_list)): ?>
             <?php foreach ($event_list as $i=>$item): ?>
+                <?php $free_seats = ((int)$item['seat_no'] - (int)$item['taken_seats']); ?>
+
                 <tr>
                     <td><?php echo $item['event_turn']; ?></td>
                     <td><?php $start_date = date_create($item['start_date']); echo date_format($start_date, 'd-m-Y');?></td>
                     <td><?php $end_date = date_create($item['end_date']); echo date_format($end_date, 'd-m-Y');?></td>
                     <td><?php echo $item['price']; ?> zł</td>
-                    <td><?php echo ((int)$item['seat_no'] - (int)$item['taken_seats']);?></td>
-                    <td><a href="<?php echo get_site_url().'/a-system-rezerwacji/?code='.$item['event_code']; ?>" >Rezerwuj</a></td>
+                    <td><?php echo $free_seats;?></td>
+
+                    <?php if($free_seats > 0): ?>
+                        <td><a href="<?php echo get_site_url().'/a-system-rezerwacji/?code='.$item['event_turn']; ?>" >Rezerwuj</a></td>
+                    <?php else: ?>
+                        <td> Brak wolnych miejsc </td>
+                    <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>

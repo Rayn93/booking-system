@@ -72,7 +72,7 @@
                 <option value="delete">Usuń</option>
                 <option value="waiting">Niepotwierdzony</option>
                 <option value="resign">Zrezygnował</option>
-                <option value="old">Nieaktualny</option>
+                <option value="old">Zakończony</option>
             </select>
 
             <input type="submit" class="button-secondary" value="Zastosuj" />
@@ -154,10 +154,11 @@
             <th>Email</th>
             <th>Telefon</th>
             <th>Pesel/ID</th>
-            <th>Adres zamieszkania</th>
+            <th>Adres</th>
             <th>Wpłacono</th>
             <th>Skąd wiesz?</th>
             <th>Uwagi dodatkowe</th>
+            <th>Nasze uwagi</th>
             <th>Status</th>
         </tr>
         </thead>
@@ -221,12 +222,13 @@
                     <td><?php echo $item->money; ?></td>
                     <td><?php echo $item->from_who; ?></td>
                     <td><?php echo $item->more_info; ?></td>
+                    <td><?php echo $item->staff_info; ?></td>
                     <td>
                         <?php
                             if($item->status == 'waiting') echo 'Oczekuje';
                             else if($item->status == 'confirm') echo 'Potwierdzony';
                             else if($item->status == 'resign') echo 'Zrezygnował';
-                            else if($item->status == 'old') echo 'Nieaktualny';
+                            else if($item->status == 'old') echo 'Zakończony';
                         ?>
                     </td>
                 </tr>

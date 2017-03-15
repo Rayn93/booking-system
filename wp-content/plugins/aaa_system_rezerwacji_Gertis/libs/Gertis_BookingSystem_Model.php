@@ -39,6 +39,7 @@ class Gertis_BookingSystem_Model{
                 zip_code VARCHAR(20) NOT NULL,
                 from_who VARCHAR(255) DEFAULT NULL,
     			more_info TEXT DEFAULT NULL,
+    			staff_info TEXT DEFAULT NULL,
                 money INT DEFAULT NULL,
                 status enum("waiting", "confirm", "resign", "old") NOT NULL DEFAULT "waiting",
                 PRIMARY KEY(id)
@@ -123,11 +124,12 @@ class Gertis_BookingSystem_Model{
             'zip_code' => $GuestEntry->getField('zip_code'),
             'from_who' => $GuestEntry->getField('from_who'),
             'more_info' => $GuestEntry->getField('more_info'),
+            'staff_info' => $GuestEntry->getField('staff_info'),
             'money' => $GuestEntry->getField('money'),
             'status' => $GuestEntry->getField('status'),
         );
 
-        $maps = array('%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s');
+        $maps = array('%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s');
 
         $table_name = $this->getTableNameGuest();
 
@@ -385,6 +387,48 @@ class Gertis_BookingSystem_Model{
 
         return $event_list;
 
+    }
+
+    //Sprawdza czy na podany event_turn można się rejestrować. True - można, false - niemożna
+    function checkEventTurn($event_turn){
+
+        $table_name = $this->getTableNameEvent();
+        $sql = 'SELECT * FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" AND status = "yes"';
+        $result_row = $this->wpdb->get_row($sql, ARRAY_A);
+
+        if(!empty($result_row)){
+            $free_seats = ((int)$result_row['seat_no'] - (int)$this->countTakenSeats($event_turn));
+            if($free_seats > 0){
+                return TRUE;
+            }
+            else{
+                return FALSE;
+            }
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+    //Zwraca przedział daty konkretnego wydarzenia
+    function getEventDate($event_turn){
+
+        $table_name = $this->getTableNameEvent();
+        $sql = 'SELECT * FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" ';
+        $result_row = $this->wpdb->get_row($sql, ARRAY_A);
+
+        if(!empty($result_row)){
+
+            $start_date = date_create($result_row['start_date']);
+            $end_date = date_create($result_row['end_date']);
+
+            $event_date = date_format($start_date, 'd.m.Y').' - '.date_format($end_date, 'd.m.Y');
+
+            return $event_date;
+        }
+        else{
+            return FALSE;
+        }
     }
 
 //    static function getEventForFilter(){

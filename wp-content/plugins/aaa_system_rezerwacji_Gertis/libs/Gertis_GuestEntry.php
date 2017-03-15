@@ -16,6 +16,7 @@ class Gertis_GuestEntry{
     private $more_info = NULL;
     private $money = NULL;
     private $status = 'waiting';
+    private $staff_info = NULL;
 
     private $errors = array();
     private $exists = FALSE;
@@ -278,6 +279,20 @@ class Gertis_GuestEntry{
             $this->more_info = sanitize_text_field($this->more_info);
             if(strlen($this->more_info) > 50000){
                 $this->setError('more_info', 'To pole nie może być dłuższe niż 50 000 znaków.');
+            }
+        }
+
+        /*
+         * staff_info:
+         * - może być puste
+         * - jeżeli nie puste:
+         *      - po wyczyszczeniu  nie może być dłuższy niż 50000 znaków
+         */
+        if(!empty($this->staff_info)){
+
+            $this->staff_info = sanitize_text_field($this->staff_info);
+            if(strlen($this->staff_info) > 50000){
+                $this->setError('staff_info', 'To pole nie może być dłuższe niż 50 000 znaków.');
             }
         }
 

@@ -28,7 +28,7 @@ class Gertis_booking_system{
     private $user_capability = 'manage_options';
     private $model;
     private $action_token = 'gertis-bs-action';
-    private $pagination_limit = 10;
+    private $pagination_limit = 15;
 
 
 
@@ -54,7 +54,7 @@ class Gertis_booking_system{
 
 
 //        $guest_for_confirm = new Gertis_GuestEntry(8);
-//        $guest_email = $guest_for_confirm->getField('email');
+//        $guest_email = $this->model->getEventDate('OPT1');
 //        var_dump($guest_email);
 
     }
@@ -492,8 +492,8 @@ class Gertis_booking_system{
                             $mail_params = array(
                                 'guest_name' => $GuestEntry->getField('guest_name'),
                                 'event_turn' => $GuestEntry->getField('event_turn'),
-                                'id' => $GuestEntry->getField('id'),
-                                'email' => $GuestEntry->getField('email'),
+                                'id' => $entry_id,
+                                'email' => $GuestEntry->getField('email')
                             );
                             $this->sendEmail('registration_guest', $GuestEntry->getField('email'), $mail_params);
                             $this->sendEmail('registration_admin', $this->getAdminEmail(), $mail_params);
