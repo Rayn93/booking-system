@@ -25,7 +25,7 @@ class Gertis_booking_system{
 
     private static $plugin_id = 'gertis-book-system';
     private $plugin_version = '1.1.0';
-    private $user_capability = 'manage_options';
+    private $user_capability = 'edit_pages';
     private $model;
     private $action_token = 'gertis-bs-action';
     private $pagination_limit = 15;
@@ -650,7 +650,7 @@ class Gertis_booking_system{
 
                 $subject .= 'rejestracja nowego uczestnika obozu!';
                 $message .= '<h1>Cześć</h1>';
-                $message .= '<p>Właśnie zarejestrował się nowy uczestnik na obóz żeglarski o kodzie: <strong>'.$mail_params['guest_name'].'</strong></p>';
+                $message .= '<p>Właśnie zarejestrował się nowy uczestnik na obóz żeglarski o kodzie: <strong>'.$mail_params['event_turn'].'</strong></p>';
                 $message .= '<p>Podstawowe dane uczestnika: </p>';
                 $message .= '<ul>
                                 <li>Imię i nazwisko: '.$mail_params['guest_name'].'</li>
