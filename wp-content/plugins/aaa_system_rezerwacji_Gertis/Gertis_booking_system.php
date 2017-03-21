@@ -133,8 +133,9 @@ class Gertis_booking_system{
     function createAdminMenu(){
 
         add_menu_page('Gertis System Rezerwacji', 'System rezerwacji', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'), 'dashicons-calendar-alt', 66);
-        add_submenu_page(static::$plugin_id, 'Obozy żeglarskie', 'Obozy żeglarskie', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'));
+        add_submenu_page(static::$plugin_id, 'Obozy żeglarskie', 'Twoje usługi', $this->user_capability, static::$plugin_id, array($this, 'printAdminPageEvent'));
         add_submenu_page(static::$plugin_id, 'Zapisani uczestnicy', 'Uczestnicy', $this->user_capability, static::$plugin_id.'-guests', array($this, 'printAdminPageGuest'));
+        add_submenu_page(static::$plugin_id, 'Szablony email', 'Szablony E-mail', $this->user_capability, static::$plugin_id.'-emails', array($this, 'printAdminPageEmail'));
 
     }
 
@@ -530,6 +531,32 @@ class Gertis_booking_system{
         }
     }
 
+    function printAdminPageEmail(){
+
+        $request = Request::instance();
+        $view = $request->getQuerySingleParam('view', 'emails');
+//        $action = $request->getQuerySingleParam('action');
+//        $eventid = (int)$request->getQuerySingleParam('eventid');
+
+        switch ($view) {
+            case 'emails':
+
+
+                $this->renderEmail('emails');
+                break;
+
+            case 'email-form':
+
+
+                $this->renderEmail('email-form');
+                break;
+
+            default:
+                $this->renderEmail('404');
+                break;
+        }
+    }
+
 
     //Funkcja służąca do renderowania widoków dla sekcji z rejsami
     private function renderEvent($view, array $args = array()){
@@ -548,6 +575,16 @@ class Gertis_booking_system{
         $tmpl_dir = plugin_dir_path(__FILE__).'templates/';
         $view = $tmpl_dir.$view.'.php';
         require_once $tmpl_dir.'layout-guest.php';
+
+    }
+
+    //Funkcja służąca do renderowania widoków dla sekcji z rejsami
+    private function renderEmail($view, array $args = array()){
+
+        extract($args);
+        $tmpl_dir = plugin_dir_path(__FILE__).'templates/';
+        $view = $tmpl_dir.$view.'.php';
+        require_once $tmpl_dir.'layout-email.php';
 
     }
 
