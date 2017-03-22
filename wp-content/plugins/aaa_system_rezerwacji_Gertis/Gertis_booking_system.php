@@ -320,13 +320,84 @@ class Gertis_booking_system{
 
                         if($this->model->confirmGuest($guestid) !== FALSE){
 
-                            $guest_for_confirm = new Gertis_GuestEntry($guestid);
-                            $guest_conf_email = $guest_for_confirm->getField('email');
-                            $this->sendEmail('confirm_guest', $guest_conf_email);
+                            $GuestEntry = new Gertis_GuestEntry($guestid);
+
+                            //Mail do uczetnika z informacjami o potwierdzeniu
+                            $mail_params = array(
+                                'guest_name' => $GuestEntry->getField('guest_name'),
+                                'event_turn' => $GuestEntry->getField('event_turn'),
+                                'email' => $GuestEntry->getField('email')
+                            );
+
+                            $this->sendEmail('confirm_guest', $mail_params['email'], $mail_params);
                             $this->setFlashMsg('Poprawnie potwierdzono uczestnictwo i wysłano mail do uczestnika z potwierdzeniem.');
                         }
                         else{
                             $this->setFlashMsg('Nie udało się potwierdzić uczestnictwo tego uczestnika.', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Nie poprawny token akcji. Spróbuj jeszcze raz.', 'error');
+                    }
+
+                    $this->redirect($this->getAdminPageUrl('-guests'));
+
+                }
+                else if($action == 'advance'){
+
+                    $token_name = $this->action_token.$guestid;
+                    $wpnonce = $request->getQuerySingleParam('_wpnonce', NULL);
+
+                    if(wp_verify_nonce($wpnonce, $token_name)){
+
+                        if($this->model->advanceGuest($guestid) !== FALSE){
+
+                            $GuestEntry = new Gertis_GuestEntry($guestid);
+
+                           //Mail do uczetnika z informacjami o potwierdzeniu
+                            $mail_params = array(
+                                'guest_name' => $GuestEntry->getField('guest_name'),
+                                'event_turn' => $GuestEntry->getField('event_turn'),
+                                'email' => $GuestEntry->getField('email')
+                            );
+
+                            $this->sendEmail('advance_guest', $mail_params['email'], $mail_params);
+                            $this->setFlashMsg('Poprawnie zmieniono status na "Zapłacono zaliczkę" i wysłano mail do uczestnika z informacjami.');
+                        }
+                        else{
+                            $this->setFlashMsg('Nie udało się zmienić statusu tego uczestnika.', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Nie poprawny token akcji. Spróbuj jeszcze raz.', 'error');
+                    }
+
+                    $this->redirect($this->getAdminPageUrl('-guests'));
+
+                }
+                else if($action == 'paid'){
+
+                    $token_name = $this->action_token.$guestid;
+                    $wpnonce = $request->getQuerySingleParam('_wpnonce', NULL);
+
+                    if(wp_verify_nonce($wpnonce, $token_name)){
+
+                        if($this->model->paidGuest($guestid) !== FALSE){
+
+                            $GuestEntry = new Gertis_GuestEntry($guestid);
+
+                            //Mail do uczetnika z informacjami o potwierdzeniu
+                            $mail_params = array(
+                                'guest_name' => $GuestEntry->getField('guest_name'),
+                                'event_turn' => $GuestEntry->getField('event_turn'),
+                                'email' => $GuestEntry->getField('email')
+                            );
+
+                            $this->sendEmail('paid_guest', $mail_params['email'], $mail_params);
+                            $this->setFlashMsg('Poprawnie zmieniono status na "Zapłacono całość" i wysłano mail do uczestnika z informacjami.');
+                        }
+                        else{
+                            $this->setFlashMsg('Nie udało się zmienić statusu tego uczestnika.', 'error');
                         }
                     }
                     else{
@@ -343,11 +414,16 @@ class Gertis_booking_system{
 
                     if(wp_verify_nonce($wpnonce, $token_name)){
 
+                        $GuestEntry = new Gertis_GuestEntry($guestid);
+                        $mail_params = array(
+                            'guest_name' => $GuestEntry->getField('guest_name'),
+                            'event_turn' => $GuestEntry->getField('event_turn'),
+                            'email' => $GuestEntry->getField('email')
+                        );
+
                         if($this->model->cancelGuest($guestid) !== FALSE){
 
-                            $guest_for_confirm = new Gertis_GuestEntry($guestid);
-                            $guest_conf_email = $guest_for_confirm->getField('email');
-                            $this->sendEmail('cancel_guest', $guest_conf_email);
+                            $this->sendEmail('cancel_guest', $mail_params['email'], $mail_params);
                             $this->setFlashMsg('Poprawnie anulowano uczestnictwo i wysłano mail do uczestnika z wiadomością o anulowaniu.');
                         }
                         else{
@@ -763,28 +839,23 @@ class Gertis_booking_system{
                 if($this->model->getRegisterMail($mail_params['event_turn']) != FALSE){
 
                     $message = $this->model->getRegisterMail($mail_params['event_turn']);
-
                 }
                 else{
                     $message .= '<h1>Cześć '.$mail_params['guest_name'].'</h1>';
                     $message .= '<p>Gratulujemy! Właśnie poprawnie złożyłaś rejestrację na obóz żeglarski z Gertis</p>';
 
                     $message .= '<p>Miejsce zostaje zarezerwowane na <strong>5 dni roboczych</strong>. Aby potwierdzić rezerwację należy dokonać wpłaty <strong>zaliczki wysokości 600 zł </strong>. Zaliczkę możesz wykonać korzystając z poniższego przycisku (płatność za pośrednictwem PayPal). </p>';
-
                     $message .= '<p>
                                     <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66KKJCHJLR99C">
                                         <img src="https://www.paypalobjects.com/pl_PL/PL/i/btn/btn_paynowCC_LG.gif" border="0" alt="PayPal – Płać wygodnie i bezpiecznie">"
                                     </a>
                                 </p>';
-
-
                     $message .= '<p>Zaliczkę możesz również uregulować poprzez przelew bankowy na konto:</p>';
                     $message .= '<p><strong>
                                     Gertis - Marek Makowski <br />
                                     Nr konta bankowego: 52 938123823 129389123 12830123<br />
                                     Tytułem: '.$mail_params['guest_name'].'. Zaliczka za obóz:'.$mail_params['event_turn'].' </strong>
                                 </p>';
-
                     $message .= '<p>Pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
                     $message .= '<p>W razie jakichkolwiek pytań służymy pomocą. Wszelkie dane kontaktowe znajdziesz tutaj: http://www.obozy-zeglarskie.pl/kontakt/</p>
     ';
@@ -810,27 +881,76 @@ class Gertis_booking_system{
                 $message .= '<p>W systemie rezerwacji możesz znaleść więcej informacji o nowej rejestracji</p>';
                 $message .= '<p>Udanego dnia <br /> System rezerwacji Gertis</p>';
 
-
                 break;
 
             case 'confirm_guest':
 
                 $subject .= 'potwierdzenie rezerwacji na obozie!';
-                $message .= '<h1>Cześć</h1>';
-                $message .= '<p>Mamy dla Ciebie dobrą wiadomość! Otrzymaliśmy od Ciebie przelew i tym samym oficjalnie jesteś na obozie Żeglarskim Gertis. Gratulacje!</p>';
-                $message .= '<p>Przypominamy, że jeżeli jeszcze nie wpłaciłeś całej kwoty za obóz, to pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
-                $message .= '<p>Widzimy się już niedługo pod Żeglami!</p>';
-                $message .= '<p><strong>Zespół Gertis. </strong></p>';
+
+                if($this->model->getConfirmMail($mail_params['event_turn']) != FALSE){
+
+                    $message = $this->model->getConfirmMail($mail_params['event_turn']);
+                }
+                else{
+                    $message .= '<h1>Cześć</h1>';
+                    $message .= '<p>Mamy dla Ciebie dobrą wiadomość! Otrzymaliśmy od Ciebie przelew i tym samym oficjalnie jesteś na obozie Żeglarskim Gertis. Gratulacje!</p>';
+                    $message .= '<p>Przypominamy, że jeżeli jeszcze nie wpłaciłeś całej kwoty za obóz, to pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
+                    $message .= '<p>Widzimy się już niedługo pod Żeglami!</p>';
+                    $message .= '<p><strong>Zespół Gertis. </strong></p>';
+                }
+
+                break;
+
+            case 'advance_guest':
+
+                $subject .= 'potwierdzenie wpłaty zaliczki!';
+
+                if($this->model->getAdvanceMail($mail_params['event_turn']) != FALSE){
+
+                    $message = $this->model->getAdvanceMail($mail_params['event_turn']);
+                }
+                else{
+                    $message .= '<h1>Cześć</h1>';
+                    $message .= '<p>Potwierdzamy wpłynięcie na Nasze konto zaliczki od Ciebie</p>';
+                    $message .= '<p>Przypominamy, że jeżeli jeszcze nie wpłaciłeś całej kwoty za obóz, to pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
+                    $message .= '<p>Widzimy się już niedługo pod Żeglami!</p>';
+                    $message .= '<p><strong>Zespół Gertis. </strong></p>';
+                }
+
+                break;
+
+            case 'paid_guest':
+
+                $subject .= 'potwierdzenie wpłaty całej kwoty!';
+
+                if($this->model->getPaidMail($mail_params['event_turn']) != FALSE){
+
+                    $message = $this->model->getPaidMail($mail_params['event_turn']);
+                }
+                else{
+                    $message .= '<h1>Cześć</h1>';
+                    $message .= '<p>Potwierdzamy wpłynięcie na Nasze konto całej kwoty za obóz od Ciebie</p>';
+                    $message .= '<p>Widzimy się już niedługo pod Żeglami!</p>';
+                    $message .= '<p><strong>Zespół Gertis. </strong></p>';
+                }
 
                 break;
 
             case 'cancel_guest':
+
                 $subject .= 'anulowanie uczestnictwa!';
-                $message .= '<h1>Cześć</h1>';
-                $message .= '<p>Anulowaliśmy Twoje uczestnictwo w obozie żeglarskim</p>';
-                $message .= '<p>Jeżeli masz jakieś wątpliwości lub proces anulowania jest według Ciebie bezpodstawny, skontaktuj się z nami jak najszybciej</p>';
-                $message .= '<p>Pozdrawiamy</p>';
-                $message .= '<p><strong>Zespół Gertis.</strong></p>';
+
+                if($this->model->getCancelMail($mail_params['event_turn']) != FALSE){
+
+                    $message = $this->model->getCancelMail($mail_params['event_turn']);
+                }
+                else{
+                    $message .= '<h1>Cześć</h1>';
+                    $message .= '<p>Anulowaliśmy Twoje uczestnictwo w obozie żeglarskim</p>';
+                    $message .= '<p>Jeżeli masz jakieś wątpliwości lub proces anulowania jest według Ciebie bezpodstawny, skontaktuj się z nami jak najszybciej</p>';
+                    $message .= '<p>Pozdrawiamy</p>';
+                    $message .= '<p><strong>Zespół Gertis.</strong></p>';
+                }
 
                 break;
 
@@ -838,6 +958,7 @@ class Gertis_booking_system{
                 break;
         }
 
+        //Zamiana słów kluczowych na dynamiczne
         foreach ( $to_replace as $placeholder => $var ) {
             $message = str_replace( $placeholder , $var, $message );
         }

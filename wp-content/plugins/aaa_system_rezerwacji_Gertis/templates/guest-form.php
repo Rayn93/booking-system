@@ -232,6 +232,14 @@
                         <span>potwierdzony</span>
                     </label><br/>
                     <label>
+                        <input type='radio' name='entry[status]' value='advance' <?php echo ($Guest->isAdvance()) ? 'checked="checked"' : ''; ?>/>
+                        <span>Zapłacona zaliczka</span>
+                    </label><br/>
+                    <label>
+                        <input type='radio' name='entry[status]' value='paid' <?php echo ($Guest->isPaid()) ? 'checked="checked"' : ''; ?>/>
+                        <span>Zapłacona całość</span>
+                    </label><br/>
+                    <label>
                         <input type='radio' name='entry[status]' value='resign' <?php echo ($Guest->isResign()) ? 'checked="checked"' : ''; ?>/>
                         <span>rezygnacja</span>
                     </label><br/>

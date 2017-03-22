@@ -442,8 +442,6 @@ class Gertis_BookingSystem_Model{
             case 'resign': $status = 'resign'; break;
             case 'old': $status = 'old'; break;
             case 'waiting': $status = 'waiting'; break;
-            case 'advance': $status = 'advance'; break;
-            case 'paid': $status = 'paid'; break;
         }
 
         $ids_str = implode(',', $ids_list);
@@ -463,6 +461,28 @@ class Gertis_BookingSystem_Model{
         return $this->wpdb->query($prep);
     }
 
+    //Zmiana statusu  uczestnictwa na zapłacono zaliczkę
+    function advanceGuest($id){
+        $id = (int)$id;
+        $table_name = $this->getTableNameGuest();
+
+        $sql = "UPDATE {$table_name} SET status = 'advance' WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+
+        return $this->wpdb->query($prep);
+    }
+
+    //Zmiana statusu  uczestnictwa na zapłcono całość
+    function paidGuest($id){
+        $id = (int)$id;
+        $table_name = $this->getTableNameGuest();
+
+        $sql = "UPDATE {$table_name} SET status = 'paid' WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+
+        return $this->wpdb->query($prep);
+    }
+
     //Zmiana statusu  uczestnictwa na anulowano (zrezygnował)
     function cancelGuest($id){
         $id = (int)$id;
@@ -476,11 +496,13 @@ class Gertis_BookingSystem_Model{
 
 
 
+
+
     //zwraca liczbę zajętych miejsc na danym turnusie
     function countTakenSeats($event_turn){
 
         $table_name = $this->getTableNameGuest();
-        $sql = 'SELECT COUNT(event_turn) FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" AND status IN ("waiting", "confirm")';
+        $sql = 'SELECT COUNT(event_turn) FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" AND status IN ("waiting", "confirm", "advance", "paid")';
         return $this->wpdb->get_var($sql);
     }
 

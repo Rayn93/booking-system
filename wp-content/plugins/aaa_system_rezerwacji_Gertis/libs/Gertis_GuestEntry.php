@@ -83,6 +83,16 @@ class Gertis_GuestEntry{
         return ($this->status == 'old');
     }
 
+    // Return true if status == old
+    function isAdvance(){
+        return ($this->status == 'advance');
+    }
+
+    // Return true if status == old
+    function isPaid(){
+        return ($this->status == 'paid');
+    }
+
 
 
 
@@ -324,6 +334,12 @@ class Gertis_GuestEntry{
         }
         else if(isset($this->status) && $this->status == 'old'){
             $this->status = 'old';
+        }
+        else if(isset($this->status) && $this->status == 'advance'){
+            $this->status = 'advance';
+        }
+        else if(isset($this->status) && $this->status == 'paid'){
+            $this->status = 'paid';
         }
         else{
             $this->status = 'waiting';

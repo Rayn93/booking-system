@@ -178,7 +178,7 @@
 
                     <td><?php echo $item->id; ?></td>
                     <td><?php echo $item->guest_name; ?>
-                        <div class="row-actions noExl">
+                        <div class="row-actions">
                                 <span class="edit">
                                     <a class="edit" href="<?php echo $this->getAdminPageUrl('-guests', array('view' => 'guest-form', 'guestid' => $item->id)); ?>">Edytuj</a>
                                 </span> |
@@ -198,13 +198,13 @@
                                     ?>
                                         <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
                                     </span> |
-                                <?php if($item->status == 'waiting' || $item->status == 'confirm' ): ?>
+                                <?php if($item->status == 'waiting' || $item->status == 'confirm' || $item->status == 'advance' || $item->status == 'paid'): ?>
                                     <span class="edit">
                                             <?php
                                             $token_name = $this->action_token.$item->id;
-                                            $confirm_url = $this->getAdminPageUrl('-guests', array('action' => 'cancel', 'guestid' => $item->id));
+                                            $cancel_url = $this->getAdminPageUrl('-guests', array('action' => 'cancel', 'guestid' => $item->id));
                                             ?>
-                                        <a class="edit" href="<?php echo wp_nonce_url($confirm_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz anulować zgłoszenie tego uczestnika?')">Anuluj</a>
+                                        <a class="edit" href="<?php echo wp_nonce_url($cancel_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz anulować zgłoszenie tego uczestnika?')">Anuluj</a>
                                         </span>
                                 <?php endif ?>
                         </div>
@@ -219,7 +219,28 @@
                         <?php echo $item->street; ?>
                         <?php echo $item->zip_code; ?>
                     </td>
-                    <td><?php echo $item->money; ?></td>
+                    <td><?php echo $item->money; ?>
+                        <div class="row-actions">
+                            <?php if($item->status == 'confirm'): ?>
+                                <span class="edit">
+                                            <?php
+                                            $token_name = $this->action_token.$item->id;
+                                            $advance_url = $this->getAdminPageUrl('-guests', array('action' => 'advance', 'guestid' => $item->id));
+                                            ?>
+                                    <a class="edit" href="<?php echo wp_nonce_url($advance_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz zmienić status na: Zapłacono zaliczkę, tego uczestnika?')">Zap. zaliczkę</a>
+                                        </span>
+                            <?php endif ?>
+                            <?php if($item->status == 'advance' || $item->status == 'confirm'): ?>
+                                <span class="edit">
+                                            <?php
+                                            $token_name = $this->action_token.$item->id;
+                                            $paid_url = $this->getAdminPageUrl('-guests', array('action' => 'paid', 'guestid' => $item->id));
+                                            ?>
+                                    <a class="edit" href="<?php echo wp_nonce_url($paid_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz zmienić status na: Zapłacono całość, tego uczestnika?')">Zap. całość</a>
+                                        </span>
+                            <?php endif ?>
+                        </div>
+                    </td>
                     <td><?php echo $item->from_who; ?></td>
                     <td><?php echo $item->more_info; ?></td>
                     <td><?php echo $item->staff_info; ?></td>
@@ -227,6 +248,8 @@
                         <?php
                             if($item->status == 'waiting') echo 'Oczekuje';
                             else if($item->status == 'confirm') echo 'Potwierdzony';
+                            else if($item->status == 'advance') echo 'Zapłacona zaliczka';
+                            else if($item->status == 'paid') echo 'Zapłacona całość';
                             else if($item->status == 'resign') echo 'Zrezygnował';
                             else if($item->status == 'old') echo 'Zakończony';
                         ?>
