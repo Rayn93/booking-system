@@ -180,6 +180,41 @@ class Gertis_BookingSystem_Model{
         }
     }
 
+    function saveEmailEntry(Gertis_EmailEntry $EmailEntry){
+
+        $toSave = array(
+            'event_code' => $EmailEntry->getField('event_code'),
+            'register_mail' => $EmailEntry->getField('register_mail'),
+            'confirm_mail' => $EmailEntry->getField('confirm_mail'),
+            'advance_mail' => $EmailEntry->getField('advance_mail'),
+            'paid_mail' => $EmailEntry->getField('paid_mail'),
+            'cancel_mail' => $EmailEntry->getField('cancel_mail'),
+        );
+
+        $maps = array('%s', '%s', '%s', '%s', '%s', '%s');
+
+        $table_name = $this->getTableNameEmail();
+
+        if($EmailEntry->hasId()){
+
+            if($this->wpdb->update($table_name, $toSave, array('id' => $EmailEntry->getField('id')), $maps, '%d')){
+                return $EmailEntry->getField('id');
+            }
+            else{
+                return FALSE;
+            }
+        }
+        else{
+
+            if($this->wpdb->insert($table_name, $toSave, $maps)){
+                return $this->wpdb->insert_id;
+            }
+            else{
+                return FALSE;
+            }
+        }
+    }
+
     //Pobiera oraz zwraca wydarzenie o konkretnym id
     function fetchEventRow($id){
         $table_name = $this->getTableNameEvent();

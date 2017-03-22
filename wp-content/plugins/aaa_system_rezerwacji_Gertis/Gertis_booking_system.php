@@ -16,6 +16,7 @@ session_start();
 require_once 'libs/Gertis_BookingSystem_Model.php';
 require_once 'libs/Gertis_EventEntry.php';
 require_once 'libs/Gertis_GuestEntry.php';
+require_once 'libs/Gertis_EmailEntry.php';
 require_once 'libs/Gertis_Pagination.php';
 require_once 'libs/Request.php';
 require_once 'libs/shortcodes.php';
@@ -55,7 +56,7 @@ class Gertis_booking_system{
 
 //        $guest_for_confirm = new Gertis_GuestEntry(8);
 //        $guest_email = $this->model->getEventDate('OPT1');
-//        var_dump($guest_email);
+//        var_dump($_POST['entry']);
 
     }
 
@@ -121,7 +122,10 @@ class Gertis_booking_system{
 
         wp_register_style('gertis-admin-style', plugins_url('/css/style-admin.css', __FILE__));
 
-        if(get_current_screen()->id == 'toplevel_page_'.static::$plugin_id || get_current_screen()->id == 'system-rezerwacji_page_'.static::$plugin_id.'-guests'){
+        if(get_current_screen()->id == 'toplevel_page_'.static::$plugin_id ||
+            get_current_screen()->id == 'system-rezerwacji_page_'.static::$plugin_id.'-guests' ||
+            get_current_screen()->id == 'system-rezerwacji_page_'.static::$plugin_id.'-emails'
+        ){
 
             wp_enqueue_script('jquery');
             wp_enqueue_script('gertis-export-excel');
@@ -536,8 +540,8 @@ class Gertis_booking_system{
 
         $request = Request::instance();
         $view = $request->getQuerySingleParam('view', 'emails');
-//        $action = $request->getQuerySingleParam('action');
-//        $eventid = (int)$request->getQuerySingleParam('eventid');
+        $action = $request->getQuerySingleParam('action');
+        $emailid = (int)$request->getQuerySingleParam('emailid');
 
         switch ($view) {
             case 'emails':
@@ -548,8 +552,52 @@ class Gertis_booking_system{
 
             case 'email-form':
 
+                if($emailid > 0){
+                    $EmailEntry = new Gertis_EmailEntry($emailid);
 
-                $this->renderEmail('email-form');
+                    if(!$EmailEntry->exist()){
+                        $this->setFlashMsg('Brak takiego zestawu mail-i', 'error');
+                        $this->redirect($this->getAdminPageUrl('-emails'));
+                    }
+                }
+                else{
+                    $EmailEntry = new Gertis_EmailEntry();
+                }
+
+                if($action == 'save' && $request->isMethod('POST') && $_POST['entry']){
+
+                    //Sprawdzenie czy token akcji  formularza jest poprawny
+                    if(check_admin_referer($this->action_token)){
+
+                        $EmailEntry->setFields($_POST['entry']);
+
+                        if($EmailEntry->validate()){
+
+                            $entry_id = $this->model->saveEmailEntry($EmailEntry);
+
+                            if($entry_id != FALSE){
+                                if($EmailEntry->hasId()){
+                                    $this->setFlashMsg('Poprawnie zmodyfikowano szablony email');
+                                }
+                                else{
+                                    $this->setFlashMsg('Poprawnie dodano nowe szablony');
+                                }
+                                $this->redirect($this->getAdminPageUrl('-emails', array('view' => 'email-form', 'emailid' => $entry_id)));
+                            }
+                            else{
+                                $this->setFlashMsg('Nie udało się dodać/edytować szablonów email. Sprawdź czy dokonałeś/aś jakiś zmian w formularzu.', 'error');
+                            }
+                        }
+                        else{
+                            $this->setFlashMsg('Popraw pola formularza', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Błędny token formularza', 'error');
+                    }
+                }
+
+                $this->renderEmail('email-form', array('Email' => $EmailEntry));
                 break;
 
             default:

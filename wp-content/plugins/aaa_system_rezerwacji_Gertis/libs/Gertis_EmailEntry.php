@@ -81,6 +81,19 @@ class Gertis_EmailEntry{
     //Funkcja walidująca poprawność pul w formularzu z mail-ami. Zwraca true jeżeli nie ma błędów
     function validate(){
 
+        $allowed_tags = array(
+            'a' => array(
+                'href' => array()
+            ),
+            'h1' => array(),
+            'h2' => array(),
+            'p' => array(),
+            'ul' => array(),
+            'li' => array(),
+            'br' => array(),
+            'strong' => array(),
+        );
+
         /*
          * event_code:
          * - nie może być puste
@@ -106,11 +119,11 @@ class Gertis_EmailEntry{
         if (empty($this->register_mail)) {
             $this->setError('register_mail', 'To pole nie może być puste');
         }
-        elseif(strlen($this->register_mail) > 50000){
+        else if(strlen($this->register_mail) > 50000){
             $this->setError('register_mail', 'To pole nie może być dłuższe niż 50 000 znaków.');
         }
         else{
-            $this->register_mail = sanitize_text_field($this->register_mail);
+            $this->register_mail = wp_kses($this->register_mail, $allowed_tags);
         }
 
         /*
@@ -121,11 +134,12 @@ class Gertis_EmailEntry{
         if (empty($this->confirm_mail)) {
             $this->setError('confirm_mail', 'To pole nie może być puste');
         }
-        elseif(strlen($this->confirm_mail) > 50000){
+        else if(strlen($this->confirm_mail) > 50000){
             $this->setError('confirm_mail', 'To pole nie może być dłuższe niż 50 000 znaków.');
         }
         else{
-            $this->confirm_mail = sanitize_text_field($this->confirm_mail);
+            $this->confirm_mail = wp_kses($this->confirm_mail, $allowed_tags);
+
         }
 
         /*
@@ -136,11 +150,11 @@ class Gertis_EmailEntry{
         if (empty($this->advance_mail)) {
             $this->setError('advance_mail', 'To pole nie może być puste');
         }
-        elseif(strlen($this->advance_mail) > 50000){
+        else if(strlen($this->advance_mail) > 50000){
             $this->setError('advance_mail', 'To pole nie może być dłuższe niż 50 000 znaków.');
         }
         else{
-            $this->advance_mail = sanitize_text_field($this->advance_mail);
+            $this->advance_mail = wp_kses($this->advance_mail, $allowed_tags);
         }
 
         /*
@@ -151,11 +165,11 @@ class Gertis_EmailEntry{
         if (empty($this->paid_mail)) {
             $this->setError('paid_mail', 'To pole nie może być puste');
         }
-        elseif(strlen($this->paid_mail) > 50000){
+        else if(strlen($this->paid_mail) > 50000){
             $this->setError('paid_mail', 'To pole nie może być dłuższe niż 50 000 znaków.');
         }
         else{
-            $this->paid_mail = sanitize_text_field($this->paid_mail);
+            $this->paid_mail = wp_kses($this->paid_mail, $allowed_tags);
         }
 
         /*
@@ -166,11 +180,11 @@ class Gertis_EmailEntry{
         if (empty($this->cancel_mail)) {
             $this->setError('cancel_mail', 'To pole nie może być puste');
         }
-        elseif(strlen($this->cancel_mail) > 50000){
+        else if(strlen($this->cancel_mail) > 50000){
             $this->setError('cancel_mail', 'To pole nie może być dłuższe niż 50 000 znaków.');
         }
         else{
-            $this->cancel_mail = sanitize_text_field($this->cancel_mail);
+            $this->cancel_mail = wp_kses($this->cancel_mail, $allowed_tags);
         }
 
 
