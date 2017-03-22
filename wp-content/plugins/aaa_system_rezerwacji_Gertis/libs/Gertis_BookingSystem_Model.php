@@ -5,6 +5,7 @@ class Gertis_BookingSystem_Model{
 
     private $table_guest = 'gertis_booking_system_guest';
     private $table_event = 'gertis_booking_system_event';
+    private $table_email = 'gertis_booking_system_email';
     private $wpdb;
 
 
@@ -19,6 +20,10 @@ class Gertis_BookingSystem_Model{
 
     function getTableNameEvent(){
         return $this->wpdb->prefix.$this->table_event;
+    }
+
+    function getTableNameEmail(){
+        return $this->wpdb->prefix.$this->table_email;
     }
 
     function createDbTableGuest(){
@@ -50,9 +55,10 @@ class Gertis_BookingSystem_Model{
         dbDelta($sql);
     }
 
+
     function createDbTableEvent(){
 
-        $table_name = $this->getTableNameEvent();
+        $table_name = $this->getTableNameEmail();
 
         $sql = '
             CREATE TABLE IF NOT EXISTS '.$table_name.'(
@@ -64,6 +70,27 @@ class Gertis_BookingSystem_Model{
                 price INT NOT NULL,
                 seat_no INT NOT NULL,
                 status enum("yes", "no") NOT NULL DEFAULT "yes",
+                PRIMARY KEY(id)
+            )ENGINE=InnoDB DEFAULT CHARSET=utf8';
+
+        require_once ABSPATH.'wp-admin/includes/upgrade.php';
+
+        dbDelta($sql);
+    }
+
+    function createDbTableEmail(){
+
+        $table_name = $this->getTableNameEvent();
+
+        $sql = '
+            CREATE TABLE IF NOT EXISTS '.$table_name.'(
+                id INT NOT NULL AUTO_INCREMENT,
+                event_code VARCHAR(20) NOT NULL,
+                register_mail TEXT NOT NULL,
+                confirm_mail TEXT NOT NULL,
+                advance_mail TEXT NOT NULL,
+                paid_mail TEXT NOT NULL,
+                cancel_mail TEXT NOT NULL,
                 PRIMARY KEY(id)
             )ENGINE=InnoDB DEFAULT CHARSET=utf8';
 
@@ -164,6 +191,14 @@ class Gertis_BookingSystem_Model{
     //Pobiera oraz zwraca uczestnika (cały wiersz) o konkretnym id
     function fetchGuestRow($id){
         $table_name = $this->getTableNameGuest();
+        $sql = "SELECT * FROM {$table_name} WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+        return $this->wpdb->get_row($prep);
+    }
+
+    //Pobiera oraz zwraca mail (cały wiersz) o konkretnym id
+    function fetchEmailRow($id){
+        $table_name = $this->getTableNameEmail();
         $sql = "SELECT * FROM {$table_name} WHERE id = %d";
         $prep = $this->wpdb->prepare($sql, $id);
         return $this->wpdb->get_row($prep);
@@ -357,7 +392,6 @@ class Gertis_BookingSystem_Model{
 
         return $this->wpdb->query($prep);
     }
-
 
 
 

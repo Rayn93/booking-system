@@ -9,7 +9,7 @@
 
     <h2>
         <a href="<?php echo $this->getAdminPageUrl(); ?>">Gertis System Rezerwacji</a>
-        <a class="add-new-h2" href="<?php echo $this->getAdminPageUrl('', array('view' => 'event-form')); ?>">Dodaj mail-e do nowej imprezy </a>
+        <a class="add-new-h2" href="<?php echo $this->getAdminPageUrl('-emails', array('view' => 'email-form')); ?>">Dodaj szablony e-mail do nowej imprezy </a>
     </h2>
 
     <br /><br />

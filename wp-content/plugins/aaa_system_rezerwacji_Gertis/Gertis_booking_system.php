@@ -68,6 +68,7 @@ class Gertis_booking_system{
 
             $this->model->createDbTableGuest();
             $this->model->createDbTableEvent();
+            $this->model->createDbTableEmail();
             update_option($ver_opt, $this->plugin_version);
 
         }else{
@@ -590,7 +591,7 @@ class Gertis_booking_system{
 
 
 
-    //Zwraca link do pluginu (parametr $page dla uczestników powinien mieć wartość '-guests')
+    //Zwraca link do pluginu (parametr $page dla uczestników powinien mieć wartość '-guests' a do szablonu email '-emails')
     public function getAdminPageUrl($page ='', array $params = array()){
         $admin_url = admin_url('admin.php?page='.static::$plugin_id.$page);
         $admin_url = add_query_arg($params, $admin_url);
