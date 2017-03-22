@@ -1,11 +1,11 @@
-<form method="get" action="<?php echo $this->getAdminPageUrl(); ?>" id="gertis-events-form-1">
+<form method="get" action="<?php echo $this->getAdminPageUrl('emails'); ?>" id="gertis-emails-form-1">
 
     <input type="hidden" name="page" value="<?php echo static::$plugin_id; ?>" />
     <input type="hidden" name="paged" value="<?php echo $Pagination->getCurrPage(); ?>" />
 
     Sortuj według
     <select name="orderby">
-        <?php foreach(Gertis_BookingSystem_Model::getEventOrderByOpts() as $key=>$val): ?>
+        <?php foreach(Gertis_BookingSystem_Model::getEmailsOrderByOpts() as $key=>$val): ?>
             <option
                 <?php echo($val == $Pagination->getOrderBy()) ? 'selected="selected"' : ''; ?>
                 value="<?php echo $val; ?>">
@@ -29,7 +29,7 @@
 </form>
 
 
-<form action="<?php echo $this->getAdminPageUrl('', array('view' => 'events', 'action' => 'bulk')); ?>" method="post" id="gertis-events-form-2" onsubmit="return confirm('Czy na pewno chcesz zastosować zmiany masowe?')">
+<form action="<?php echo $this->getAdminPageUrl('-emails', array('view' => 'emails', 'action' => 'bulk')); ?>" method="post" id="gertis-emails-form-2" onsubmit="return confirm('Czy na pewno chcesz zastosować zmiany masowe?')">
 
     <?php wp_nonce_field($this->action_token.'bulk'); ?>
 
@@ -40,8 +40,6 @@
             <select name="bulkaction">
                 <option value="0">Masowe działania</option>
                 <option value="delete">Usuń</option>
-                <option value="actual">Aktualny</option>
-                <option value="no_actual">Nieaktualny</option>
             </select>
 
             <input type="submit" class="button-secondary" value="Zastosuj" />
@@ -127,13 +125,6 @@
             <th class="check-column"><input type="checkbox" /></th>
             <th>ID</th>
             <th>Kod wydarzenia</th>
-            <th>Turnus</th>
-            <th>Początek</th>
-            <th>Koniec</th>
-            <th>Cena</th>
-            <th>Liczba miejsc</th>
-            <th>Zapisanych</th>
-            <th>Status</th>
         </tr>
         </thead>
         <tbody id="the-list">
@@ -144,41 +135,29 @@
 
                 <tr <?php echo ($i%2) ? 'class="alternate"' : ''; ?>>
                     <th class="check-column">
-                        <input type="checkbox" value="<?php echo $item['id']; ?> 1" name="bulkcheck[]" />
+                        <input type="checkbox" value="<?php echo $item->id; ?> 1" name="bulkcheck[]" />
                     </th>
-                    <td><?php echo $item['id']; ?></td>
-                    <td><?php echo $item['event_code']; ?>
+                    <td><?php echo $item->id; ?></td>
+                    <td><?php echo $item->event_code; ?>
                         <div class="row-actions">
                                 <span class="edit">
-                                    <a class="edit" href="<?php echo $this->getAdminPageUrl('', array('view' => 'event-form', 'eventid' => $item['id'])); ?>">Edytuj</a>
+                                    <a class="edit" href="<?php echo $this->getAdminPageUrl('-emails', array('view' => 'email-form', 'emailid' => $item->id)); ?>">Edytuj</a>
                                 </span> |
                                 <span class="trash">
                                     <?php
-                                    $token_name = $this->action_token.$item['id'];
-                                    $del_url = $this->getAdminPageUrl('', array('action' => 'delete', 'eventid' => $item['id']));
+                                    $token_name = $this->action_token.$item->id;
+                                    $del_url = $this->getAdminPageUrl('-emails', array('action' => 'delete', 'emailid' => $item->id));
                                     ?>
                                     <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
-                                </span> |
-                                <span class="edit">
-                                    <a class="edit" href="<?php echo $this->getAdminPageUrl('-guests', array('action' => 'members', 'event_turn' => $item['event_turn'])); ?>">Uczestnicy</a>
                                 </span>
                         </div>
                     </td>
-                    <td><?php echo $item['event_turn']; ?></td>
-                    <td><?php $start_date = date_create($item['start_date']); echo date_format($start_date, 'd-m-Y');?></td>
-                    <td><?php $end_date = date_create($item['end_date']); echo date_format($end_date, 'd-m-Y');?></td>
-                    <td><?php echo $item['price']; ?></td>
-                    <td><?php echo $item['seat_no']; ?></td>
-                    <td><?php echo $item['taken_seats']; ?></td>
-                    <td><?php echo ($item['status'] == 'yes') ? 'aktualny' : 'nieaktualny'; ?></td>
                 </tr>
 
             <?php endforeach; ?>
-
-
         <?php else: ?>
             <tr>
-                <td colspan="8">Brak rejsów w bazie danych</td>
+                <td colspan="2">Brak szablonów dla imprez w bazie danych</td>
             </tr>
         <?php endif; ?>
         </tbody>

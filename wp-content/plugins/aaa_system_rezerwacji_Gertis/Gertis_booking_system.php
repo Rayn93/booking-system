@@ -397,7 +397,7 @@ class Gertis_booking_system{
 
                 $curr_page = (int)$request->getQuerySingleParam('paged', 1);
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
-                $order_dir = $request->getQuerySingleParam('orderdir', 'asc');
+                $order_dir = $request->getQuerySingleParam('orderdir', 'desc');
                 //$event_turn = $request->getQuerySingleParam('event_turn');
 
                 //Generowanie listy uczestników dla poszczególnego turnusu
@@ -546,8 +546,13 @@ class Gertis_booking_system{
         switch ($view) {
             case 'emails':
 
+                $curr_page = (int)$request->getQuerySingleParam('paged', 1);
+                $order_by = $request->getQuerySingleParam('orderby', 'id');
+                $order_dir = $request->getQuerySingleParam('orderdir', 'asc');
 
-                $this->renderEmail('emails');
+                $pagination = $this->model->getEmailPagination($curr_page, $this->pagination_limit, $order_by, $order_dir);
+
+                $this->renderEmail('emails', array('Pagination' => $pagination));
                 break;
 
             case 'email-form':

@@ -280,7 +280,7 @@ class Gertis_BookingSystem_Model{
     }
 
 
-    function getGuestPagination($curr_page, $limit = 10, $order_by = 'id', $order_dir = 'asc', $event_turn = ''){
+    function getGuestPagination($curr_page, $limit = 10, $order_by = 'id', $order_dir = 'desc', $event_turn = ''){
 
         $curr_page = (int)$curr_page;
         if($curr_page < 1){
@@ -295,7 +295,7 @@ class Gertis_BookingSystem_Model{
 //        $filter_opts = static::getEventForFilter();
 //        $filter = in_array($filter, $filter_opts) ? $order_by : 'all';
 
-        $order_dir = in_array($order_dir, array('asc', 'desc')) ? $order_dir : 'asc';
+        $order_dir = in_array($order_dir, array('asc', 'desc')) ? $order_dir : 'desc';
 
         $offset = ($curr_page-1)*$limit;
 
@@ -315,13 +315,44 @@ class Gertis_BookingSystem_Model{
         }
 
 
-
-
         //$event_list = $this->wpdb->get_results($sql, ARRAY_A);
-        $event_list = $this->wpdb->get_results($sql);
+        $guest_list = $this->wpdb->get_results($sql);
 
 
-        $Pagination = new Gertis_Pagination($event_list, $order_by, $order_dir, $limit, $total_count, $curr_page, $last_page);
+        $Pagination = new Gertis_Pagination($guest_list, $order_by, $order_dir, $limit, $total_count, $curr_page, $last_page);
+
+        return $Pagination;
+    }
+
+    function getEmailPagination($curr_page, $limit = 10, $order_by = 'id', $order_dir = 'asc'){
+
+        $curr_page = (int)$curr_page;
+        if($curr_page < 1){
+            $curr_page = 1;
+        }
+
+        $limit = (int)$limit;
+
+        $order_by_opts = static::getEmailsOrderByOpts();
+        $order_by = in_array($order_by, $order_by_opts) ? $order_by : 'id';
+
+        $order_dir = in_array($order_dir, array('asc', 'desc')) ? $order_dir : 'asc';
+
+        $offset = ($curr_page-1)*$limit;
+
+        $table_name = $this->getTableNameEmail();
+
+        $count_sql = "SELECT COUNT(*) FROM {$table_name}";
+        $total_count = $this->wpdb->get_var($count_sql);
+
+        $last_page = ceil($total_count/$limit);
+
+        $sql = "SELECT * FROM {$table_name} ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+
+
+        $email_list = $this->wpdb->get_results($sql);
+
+        $Pagination = new Gertis_Pagination($email_list, $order_by, $order_dir, $limit, $total_count, $curr_page, $last_page);
 
         return $Pagination;
     }
@@ -343,6 +374,13 @@ class Gertis_BookingSystem_Model{
             'Kod imprezy [turnus]' => 'event_turn',
             'Imie i nazwisko' => 'guest_name',
             'Status' => 'status'
+        );
+    }
+
+    static function getEmailsOrderByOpts(){
+        return array(
+            'ID' => 'id',
+            'Kod imprezy' => 'event_code',
         );
     }
 
