@@ -46,7 +46,7 @@ class Gertis_BookingSystem_Model{
     			more_info TEXT DEFAULT NULL,
     			staff_info TEXT DEFAULT NULL,
                 money INT DEFAULT NULL,
-                status enum("waiting", "confirm", "resign", "old") NOT NULL DEFAULT "waiting",
+                status enum("waiting", "confirm", "resign", "old", "advance", "paid") NOT NULL DEFAULT "waiting",
                 PRIMARY KEY(id)
             )ENGINE=InnoDB DEFAULT CHARSET=utf8';
 
@@ -442,6 +442,8 @@ class Gertis_BookingSystem_Model{
             case 'resign': $status = 'resign'; break;
             case 'old': $status = 'old'; break;
             case 'waiting': $status = 'waiting'; break;
+            case 'advance': $status = 'advance'; break;
+            case 'paid': $status = 'paid'; break;
         }
 
         $ids_str = implode(',', $ids_list);
@@ -538,6 +540,90 @@ class Gertis_BookingSystem_Model{
             $event_date = date_format($start_date, 'd.m.Y').' - '.date_format($end_date, 'd.m.Y');
 
             return $event_date;
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+    //Zwraca kod imrezy dla określonego turnusu wydarzenia
+     private function getEventCode($event_turn){
+
+        $table_name = $this->getTableNameEvent();
+        $sql = 'SELECT event_code FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" ';
+        return $this->wpdb->get_var($sql);
+
+    }
+
+    //Zwraca szablon maila po rejestracji. Gdy nie ma maila to FALSE
+    function getRegisterMail($event_turn){
+
+        $event_code = $this->getEventCode($event_turn);
+
+        if($event_code != NULL){
+            $table_name = $this->getTableNameEmail();
+            $sql = 'SELECT register_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+            return $this->wpdb->get_var($sql);
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+    //Zwraca szablon maila po akcji potwierdzenia. Gdy nie ma maila to FALSE
+    function getConfirmMail($event_turn){
+
+        $event_code = $this->getEventCode($event_turn);
+
+        if($event_code != NULL){
+            $table_name = $this->getTableNameEmail();
+            $sql = 'SELECT confirm_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+            return $this->wpdb->get_var($sql);
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+    //Zwraca szablon maila po akcji zapłacono zaliczkę. Gdy nie ma maila to FALSE
+    function getAdvanceMail($event_turn){
+
+        $event_code = $this->getEventCode($event_turn);
+
+        if($event_code != NULL){
+            $table_name = $this->getTableNameEmail();
+            $sql = 'SELECT advance_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+            return $this->wpdb->get_var($sql);
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+    //Zwraca szablon maila po akcji zapłacono całość. Gdy nie ma maila to FALSE
+    function getPaidMail($event_turn){
+
+        $event_code = $this->getEventCode($event_turn);
+
+        if($event_code != NULL){
+            $table_name = $this->getTableNameEmail();
+            $sql = 'SELECT paid_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+            return $this->wpdb->get_var($sql);
+        }
+        else{
+            return FALSE;
+        }
+    }
+
+    //Zwraca szablon maila po akcji zapłacono całość. Gdy nie ma maila to FALSE
+    function getCancelMail($event_turn){
+
+        $event_code = $this->getEventCode($event_turn);
+
+        if($event_code != NULL){
+            $table_name = $this->getTableNameEmail();
+            $sql = 'SELECT cancel_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+            return $this->wpdb->get_var($sql);
         }
         else{
             return FALSE;

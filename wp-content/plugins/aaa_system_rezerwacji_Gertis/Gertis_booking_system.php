@@ -55,8 +55,8 @@ class Gertis_booking_system{
 
 
 //        $guest_for_confirm = new Gertis_GuestEntry(8);
-//        $guest_email = $this->model->getEventDate('OPT1');
-//        var_dump($_POST['entry']);
+//        $guest_email = $this->model->getCancelMail('OPT1');
+//        var_dump($guest_email);
 
     }
 
@@ -747,6 +747,11 @@ class Gertis_booking_system{
 
         $message = '';
         $subject = 'Gertis - Obozy żeglarskie: ';
+        $to_replace = array(
+            '%%IMIE%%' => $mail_params['guest_name'],
+            '%%TURNUS%%' => $mail_params['event_turn'],
+            '%%DATA%%' => $this->model->getEventDate($mail_params['event_turn'])
+        );
 
 
         switch ($type_message){
@@ -754,32 +759,40 @@ class Gertis_booking_system{
             case 'registration_guest':
 
                 $subject .= 'potwierdzenie rejestracji';
-                $message .= '<h1>Cześć '.$mail_params['guest_name'].'</h1>';
-                $message .= '<p>Gratulujemy! Właśnie poprawnie złożyłaś rejestrację na obóz żeglarski z Gertis</p>';
 
-                $message .= '<p>Miejsce zostaje zarezerwowane na <strong>5 dni roboczych</strong>. Aby potwierdzić rezerwację należy dokonać wpłaty <strong>zaliczki wysokości 600 zł </strong>. Zaliczkę możesz wykonać korzystając z poniższego przycisku (płatność za pośrednictwem PayPal). </p>';
+                if($this->model->getRegisterMail($mail_params['event_turn']) != FALSE){
 
-                $message .= '<p>
-                                <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66KKJCHJLR99C">
-                                    <img src="https://www.paypalobjects.com/pl_PL/PL/i/btn/btn_paynowCC_LG.gif" border="0" alt="PayPal – Płać wygodnie i bezpiecznie">" 
-                                </a>
-                            </p>';
+                    $message = $this->model->getRegisterMail($mail_params['event_turn']);
+
+                }
+                else{
+                    $message .= '<h1>Cześć '.$mail_params['guest_name'].'</h1>';
+                    $message .= '<p>Gratulujemy! Właśnie poprawnie złożyłaś rejestrację na obóz żeglarski z Gertis</p>';
+
+                    $message .= '<p>Miejsce zostaje zarezerwowane na <strong>5 dni roboczych</strong>. Aby potwierdzić rezerwację należy dokonać wpłaty <strong>zaliczki wysokości 600 zł </strong>. Zaliczkę możesz wykonać korzystając z poniższego przycisku (płatność za pośrednictwem PayPal). </p>';
+
+                    $message .= '<p>
+                                    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66KKJCHJLR99C">
+                                        <img src="https://www.paypalobjects.com/pl_PL/PL/i/btn/btn_paynowCC_LG.gif" border="0" alt="PayPal – Płać wygodnie i bezpiecznie">"
+                                    </a>
+                                </p>';
 
 
-                $message .= '<p>Zaliczkę możesz również uregulować poprzez przelew bankowy na konto:</p>';
-                $message .= '<p><strong>
-                                Gertis - Marek Makowski <br />
-                                Nr konta bankowego: 52 938123823 129389123 12830123<br />
-                                Tytułem: '.$mail_params['guest_name'].'. Zaliczka za obóz:'.$mail_params['event_turn'].' </strong>
-                            </p>';
+                    $message .= '<p>Zaliczkę możesz również uregulować poprzez przelew bankowy na konto:</p>';
+                    $message .= '<p><strong>
+                                    Gertis - Marek Makowski <br />
+                                    Nr konta bankowego: 52 938123823 129389123 12830123<br />
+                                    Tytułem: '.$mail_params['guest_name'].'. Zaliczka za obóz:'.$mail_params['event_turn'].' </strong>
+                                </p>';
 
-                $message .= '<p>Pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
-                $message .= '<p>W razie jakichkolwiek pytań służymy pomocą. Wszelkie dane kontaktowe znajdziesz tutaj: http://www.obozy-zeglarskie.pl/kontakt/</p>
-';
-                $message .= '<p>
-                                Do zobaczenia pod żaglami ;) <br />
-                                <strong>Zespół Gertis. </strong>
-                            </p>';
+                    $message .= '<p>Pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
+                    $message .= '<p>W razie jakichkolwiek pytań służymy pomocą. Wszelkie dane kontaktowe znajdziesz tutaj: http://www.obozy-zeglarskie.pl/kontakt/</p>
+    ';
+                    $message .= '<p>
+                                    Do zobaczenia pod żaglami ;) <br />
+                                    <strong>Zespół Gertis. </strong>
+                                </p>';
+                }
 
                 break;
 
@@ -823,6 +836,10 @@ class Gertis_booking_system{
 
             default:
                 break;
+        }
+
+        foreach ( $to_replace as $placeholder => $var ) {
+            $message = str_replace( $placeholder , $var, $message );
         }
 
 

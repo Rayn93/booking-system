@@ -1275,3 +1275,10 @@
 [22-Mar-2017 13:19:59 UTC] PHP Fatal error:  Cannot use object of type stdClass as array in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\emails.php on line 138
 [22-Mar-2017 13:25:53 UTC] PHP Fatal error:  Cannot use object of type stdClass as array in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\emails.php on line 138
 [22-Mar-2017 13:27:00 UTC] PHP Fatal error:  Cannot use object of type stdClass as array in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\emails.php on line 140
+[22-Mar-2017 15:21:00 UTC] PHP Parse error:  syntax error, unexpected 'switch' (T_SWITCH) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 755
+[22-Mar-2017 15:21:55 UTC] PHP Parse error:  syntax error, unexpected ')' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 752
+[22-Mar-2017 15:22:58 UTC] PHP Parse error:  syntax error, unexpected ')' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 752
+[22-Mar-2017 15:23:01 UTC] PHP Parse error:  syntax error, unexpected ')' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 752
+[22-Mar-2017 15:23:21 UTC] PHP Parse error:  syntax error, unexpected ')' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 752
+[22-Mar-2017 15:23:56 UTC] PHP Parse error:  syntax error, unexpected ')' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 752
+[22-Mar-2017 15:25:01 UTC] PHP Parse error:  syntax error, unexpected '}' in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 768

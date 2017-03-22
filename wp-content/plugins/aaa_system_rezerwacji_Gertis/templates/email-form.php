@@ -116,4 +116,26 @@ if($Email->hasId()){
         <input type="submit" class="button-primary" value="Zapisz zmiany" />
     </p>
 
+    <h3>Uwagi do szablonów</h3>
+    <p>Aby mail ładnie się wyświetlał należy kożystać z tagów HTML</p>
+    <p>Dopuszczalne tagi HTML: </p>
+    <ul>
+        <li>h1 -> główny nagłówek</li>
+        <li>h2 -> poboczny nagłówek</li>
+        <li>p -> akapit tekstu</li>
+        <li>strong -> pogrubienie</li>
+        <li>ul -> początek listy</li>
+        <li>li -> lista</li>
+        <li>br -> przejście do następnej lini (enter)</li>
+        <li>a -> link</li>
+        <li>img -> obrazek</li>
+    </ul>
+
+    <p>W treści szablonu można również kożystać ze specjalnych wartość:</p>
+    <ul>
+        <li><strong>%%IMIE%%</strong> -> zwraca imię i nazwisko uczestnika</li>
+        <li><strong>%%TURNUS%%</strong> -> zwraca kod imprezy na który uczestnik się zapisał</li>
+        <li><strong>%%DATA%%</strong> -> zwraca termin imprezy na który uczestnik się zapisał</li>
+    </ul>
+
 </form>

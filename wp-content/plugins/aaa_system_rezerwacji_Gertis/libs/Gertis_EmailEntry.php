@@ -85,6 +85,11 @@ class Gertis_EmailEntry{
             'a' => array(
                 'href' => array()
             ),
+            'img' => array(
+                'src' => array(),
+                'border' => array(),
+                'alt' => array()
+            ),
             'h1' => array(),
             'h2' => array(),
             'p' => array(),
