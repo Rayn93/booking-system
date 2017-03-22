@@ -546,6 +546,52 @@ class Gertis_booking_system{
         switch ($view) {
             case 'emails':
 
+                if($action == 'delete'){
+
+                    $token_name = $this->action_token.$emailid;
+                    $wpnonce = $request->getQuerySingleParam('_wpnonce', NULL);
+
+                    if(wp_verify_nonce($wpnonce, $token_name)){
+
+                        if($this->model->deleteRow($emailid, 'email') !== FALSE){
+                            $this->setFlashMsg('Poprawnie usunięto szablony email tego wydarzenia!');
+                        }
+                        else{
+                            $this->setFlashMsg('Nie udało się usunąć szablonów email tego wydarzenia', 'error');
+                        }
+                    }
+                    else{
+                        $this->setFlashMsg('Nie poprawny token akcji', 'error');
+                    }
+
+                    $this->redirect($this->getAdminPageUrl('-emails'));
+
+                }
+                else if($action == 'bulk'){
+
+                    if ($request->isMethod('POST') && check_admin_referer($this->action_token . 'bulk')) {
+
+                        $bulk_action = (isset($_POST['bulkaction'])) ? $_POST['bulkaction'] : NULL;
+                        $bulk_check = (isset($_POST['bulkcheck'])) ? $_POST['bulkcheck'] : array();
+
+                        if (count($bulk_check) < 1) {
+                            $this->setFlashMsg('Brak wydarzeń do zmiany', 'error');
+                        }
+                        else {
+                            if ($bulk_action == 'delete') {
+
+                                if ($this->model->bulkDelete($bulk_check, 'email') !== FALSE) {
+                                    $this->setFlashMsg('Poprawnie usunięto zaznaczone szablony email!');
+                                }
+                                else {
+                                    $this->setFlashMsg('Nie udało się usunąć zaznaczonych szablonów email', 'error');
+                                }
+                            }
+                        }
+                    }
+                    $this->redirect($this->getAdminPageUrl('-emails'));
+                }
+
                 $curr_page = (int)$request->getQuerySingleParam('paged', 1);
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
                 $order_dir = $request->getQuerySingleParam('orderdir', 'asc');

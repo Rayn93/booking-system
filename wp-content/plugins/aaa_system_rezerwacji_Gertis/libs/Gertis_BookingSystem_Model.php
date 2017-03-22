@@ -394,6 +394,9 @@ class Gertis_BookingSystem_Model{
         elseif ($table == 'guest'){
             $table_name = $this->getTableNameGuest();
         }
+        elseif ($table == 'email'){
+            $table_name = $this->getTableNameEmail();
+        }
 
         $sql = "DELETE FROM {$table_name} WHERE id = %d";
         $prep = $this->wpdb->prepare($sql, $id);
@@ -410,6 +413,9 @@ class Gertis_BookingSystem_Model{
         }
         elseif ($table == 'guest'){
             $table_name = $this->getTableNameGuest();
+        }
+        elseif ($table == 'email'){
+            $table_name = $this->getTableNameEmail();
         }
 
         $ids_str = implode(',', $ids_list);

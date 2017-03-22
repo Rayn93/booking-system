@@ -1,6 +1,6 @@
 <form method="get" action="<?php echo $this->getAdminPageUrl('emails'); ?>" id="gertis-emails-form-1">
 
-    <input type="hidden" name="page" value="<?php echo static::$plugin_id; ?>" />
+    <input type="hidden" name="page" value="<?php echo static::$plugin_id.'-emails'; ?>" />
     <input type="hidden" name="paged" value="<?php echo $Pagination->getCurrPage(); ?>" />
 
     Sortuj według
