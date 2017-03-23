@@ -8,7 +8,7 @@ session_start();
      * Plugin URI: http://www.robertsaternus.pl
      * Description: System rezerwacji na rejsy, dedykowany dla Gertis.
      * Author: Robert Saternus
-     * Version: 1.1
+     * Version: 1.2
      * Author URI: http://www.robertsaternus.pl
      */
 
@@ -25,11 +25,11 @@ require_once 'libs/shortcodes.php';
 class Gertis_booking_system{
 
     private static $plugin_id = 'gertis-book-system';
-    private $plugin_version = '1.1.0';
+    private $plugin_version = '1.2.0';
     private $user_capability = 'edit_pages';
     private $model;
     private $action_token = 'gertis-bs-action';
-    private $pagination_limit = 15;
+    private $pagination_limit = 20;
 
 
 
@@ -560,9 +560,13 @@ class Gertis_booking_system{
         if (isset($_POST['front_entry'])){
 
             //Sprawdzenie Recaptchy
+            //Localshost
             $recaptcha_secret = '6LcesSATAAAAAEbSpdql0Q8_rx8m7utCEIgcnfUu';
+//            Freelancelot
+//            $recaptcha_secret = '6LcXvxgUAAAAAGerfk-Wc82jyVD26IAJAGOq2amv';
             $check_recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$recaptcha_secret.'&response='.$_POST['g-recaptcha-response']);
             $feedback_recaptcha = json_decode($check_recaptcha);
+            $event_turn = $_POST['front_entry[event_turn]'];
 
             //Gdy recaptcha jest poprawna
             if($feedback_recaptcha->success){
@@ -598,25 +602,25 @@ class Gertis_booking_system{
                         else {
                             //Przekirowanie na stronę z formularzem z informacją że rejestracja się nie powiodła
                             $_SESSION['form_error'] = 'Błąd bazy danych. Spróbuj ponownie za jakiś czas lub skontaktuj się z nami.';
-                            $this->redirect(get_site_url().'/a-system-rezerwacji/');
+                            $this->redirect(get_site_url().'/a-system-rezerwacji/', array('code' => $event_turn));
                         }
                     }
                     else {
                         //Przekirowanie na stronę z formularzem z informacją że nie przeszło walidacji
                         $_SESSION['form_error'] = 'Formularz nie został poprawnie wypełniony. Wypełnij formularz ponownie';
-                        $this->redirect(get_site_url().'/a-system-rezerwacji/');
+                        $this->redirect(get_site_url().'/a-system-rezerwacji/', array('code' => $event_turn));
                     }
                 }
                 else{
                     //Przekirowanie na stronę z formularzem z informacją że błędny token
                     $_SESSION['form_error'] = 'Błąd tokena. Wyczyść pliki przeglądarki i spróbuj ponownie!';
-                    $this->redirect(get_site_url().'/a-system-rezerwacji/');
+                    $this->redirect(get_site_url().'/a-system-rezerwacji/', array('code' => $event_turn));
                 }
             }
             else{
                 //Przekirowanie na stronę z formularzem z informacją że recaptcha jest błędna
                 $_SESSION['form_error'] = 'Błąd weryfikacji recaptch-y. Spróbuj jeszcze raz jeżeli nie jesteś botem :)';
-                $this->redirect(get_site_url().'/a-system-rezerwacji/');
+                $this->redirect(get_site_url().'/a-system-rezerwacji/', array('code' => $event_turn));
             }
         }
     }

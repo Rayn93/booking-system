@@ -184,7 +184,7 @@ class Gertis_GuestEntry{
             $this->setError('email', 'To pole nie może być puste');
         }
         else if((!filter_var($this->email, FILTER_VALIDATE_EMAIL))){
-            $this->setError('email', 'To pole musi być datą');
+            $this->setError('email', 'To pole musi być poprawnym adresem email');
         }
 
         /*

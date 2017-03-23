@@ -71,7 +71,7 @@ function gertisMainForm(){
                 <div class="form-group">
                     <label for="birth_date" class="col-sm-3 control-label">Data urodzenia *</label>
                     <div class="col-sm-4">
-                        <input type="date" class="form-control" name="front_entry[birth_date]" id="birth_date" placeholder="rrrr-mm-dd" pattern="^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"
+                        <input type="text" class="form-control" name="front_entry[birth_date]" id="birth_date" placeholder="rrrr-mm-dd" pattern="^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"
                                data-error="Data musi zostać podana i musi mieć format: rrrr-mm-dd np. 1993-05-30" required>
                         <div class="help-block with-errors"></div>
                     </div>
@@ -150,8 +150,10 @@ function gertisMainForm(){
                     <div class="col-sm-offset-3 col-sm-9">
                         <input type="text" name="recaptcha" value="" id="recaptchaValidator" pattern="1"
                                data-error="Jesteś botem!" style="visibility: hidden; height: 1px" required>
-                        <div class="g-recaptcha" data-sitekey="6LcesSATAAAAAKLNFstcDb6fhWKvXNvshHJSnXNC"
-                             data-callback="captcha_onclick"></div>
+<!--                        Localhost-->
+                        <div class="g-recaptcha" data-sitekey="6LcesSATAAAAAKLNFstcDb6fhWKvXNvshHJSnXNC" data-callback="captcha_onclick"></div>
+<!--                        Freelancelot-->
+<!--                        <div class="g-recaptcha" data-sitekey="6LcXvxgUAAAAAKQ-zHtE8Lw59insDi6rXFTREY43" data-callback="captcha_onclick"></div>-->
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
