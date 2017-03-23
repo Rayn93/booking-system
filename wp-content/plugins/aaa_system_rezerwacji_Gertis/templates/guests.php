@@ -227,8 +227,8 @@
                                             $token_name = $this->action_token.$item->id;
                                             $advance_url = $this->getAdminPageUrl('-guests', array('action' => 'advance', 'guestid' => $item->id));
                                             ?>
-                                    <a class="edit" href="<?php echo wp_nonce_url($advance_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz zmienić status na: Zapłacono zaliczkę, tego uczestnika?')">Zap. zaliczkę</a>
-                                        </span>
+                                    <a class="edit" href="<?php echo wp_nonce_url($advance_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz zmienić status na: Zapłacono zaliczkę, tego uczestnika?')">Zap. zalicz.</a>
+                                        </span><br />
                             <?php endif ?>
                             <?php if($item->status == 'advance' || $item->status == 'confirm'): ?>
                                 <span class="edit">
@@ -305,5 +305,9 @@
 
 
 <?php if($_GET['action'] == 'members'): ?>
-    <button id="btnExport"> Export uczestników do Excel-a</button>
+    <?php $email_params = array('view' => 'email-to-guests', 'event_turn' => $_GET['event_turn']); ?>
+
+    <button id="btnExport" class="button button-primary button-large"> Export uczestników do Excel-a</button>
+    <a class="button button-primary button-large" href="<?php echo $this->getAdminPageUrl('-emails', $email_params); ?>" />Email do uczestników</a>
+
 <?php endif; ?>

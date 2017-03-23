@@ -287,6 +287,8 @@ class Gertis_booking_system{
         $guestid = (int)$request->getQuerySingleParam('guestid');
         $event_turn = $request->getQuerySingleParam('event_turn');
 
+//        $action_params = array('action' => $action, 'event_turn' => $event_turn);
+
         switch ($view) {
             case 'guests':
 
@@ -474,7 +476,6 @@ class Gertis_booking_system{
                 $curr_page = (int)$request->getQuerySingleParam('paged', 1);
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
                 $order_dir = $request->getQuerySingleParam('orderdir', 'desc');
-                //$event_turn = $request->getQuerySingleParam('event_turn');
 
                 //Generowanie listy uczestników dla poszczególnego turnusu
                 if($action == 'members'){
@@ -518,7 +519,8 @@ class Gertis_booking_system{
                                     $this->setFlashMsg('Poprawnie zmodyfikowano dane uczestnika');
                                 }
                                 else{
-                                    $this->setFlashMsg('Poprawnie dodano nowego uczestnika');
+
+                                    $this->setFlashMsg('Poprawnie dodano nowego uczestnika i wysłano mail do niego z potwierdzeniem');
                                 }
                                 $this->redirect($this->getAdminPageUrl('-guests', array('view' => 'guest-form', 'guestid' => $entry_id)));
                             }
@@ -618,6 +620,7 @@ class Gertis_booking_system{
         $view = $request->getQuerySingleParam('view', 'emails');
         $action = $request->getQuerySingleParam('action');
         $emailid = (int)$request->getQuerySingleParam('emailid');
+        $event_turn = $request->getQuerySingleParam('event_turn');
 
         switch ($view) {
             case 'emails':
@@ -725,6 +728,52 @@ class Gertis_booking_system{
                 }
 
                 $this->renderEmail('email-form', array('Email' => $EmailEntry));
+                break;
+
+            case 'email-to-guests':
+
+                $guest_emails = array();
+                $allowed_tags = array(
+                    'a' => array(
+                        'href' => array()
+                    ),
+                    'img' => array(
+                        'src' => array(),
+                        'border' => array(),
+                        'alt' => array()
+                    ),
+                    'h1' => array(),
+                    'h2' => array(),
+                    'p' => array(),
+                    'ul' => array(),
+                    'li' => array(),
+                    'br' => array(),
+                    'strong' => array(),
+                );
+
+                if(isset($event_turn) && !isset($action)){
+                    $guest_emails = $this->model->getGuestEmials($event_turn);
+                }
+
+                else if($action == 'send' &&  $request->isMethod('POST') && !empty($_POST['guests_emails'])){
+
+                    $to = $_POST['guests_emails'];
+                    $subject = wp_kses_data($_POST['email_subject'], $allowed_tags);
+                    $message = wp_kses($_POST['email_massage'], $allowed_tags);
+
+                    wp_mail($to, $subject, $message);
+                    $this->setFlashMsg('Poprawnie wysłano mail-e do uczestników tego wydarzenia');
+
+//                    if(wp_mail($to, $subject, $message)){
+//                        $this->setFlashMsg('Poprawnie wysłano mail-e do uczestników tego wydarzenia');
+//                    }
+//                    else{
+//                        $this->setFlashMsg('Nie udało się wysłać maili do uczestników. Spróbuj później', 'error');
+//                    }
+                    $this->redirect($this->getAdminPageUrl('-guests', array('action' => 'members', 'event_turn' => $event_turn)));
+                }
+
+                $this->renderEmail('email-to-guests', array('Emails' => $guest_emails));
                 break;
 
             default:

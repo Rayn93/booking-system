@@ -117,7 +117,7 @@ if($Email->hasId()){
     </p>
 
     <h3>Uwagi do szablonów</h3>
-    <p>Aby mail ładnie się wyświetlał należy kożystać z tagów HTML</p>
+    <p>Aby mail ładnie się wyświetlał należy korzystać z tagów HTML</p>
     <p>Dopuszczalne tagi HTML: </p>
     <ul>
         <li>h1 -> główny nagłówek</li>

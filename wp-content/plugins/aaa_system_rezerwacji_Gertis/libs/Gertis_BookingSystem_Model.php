@@ -307,7 +307,7 @@ class Gertis_BookingSystem_Model{
         $last_page = ceil($total_count/$limit);
 
         if($event_turn != ''){
-            $sql = "SELECT * FROM {$table_name} WHERE event_turn = '{$event_turn}' AND status IN (\"waiting\", \"confirm\") ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
+            $sql = "SELECT * FROM {$table_name} WHERE event_turn = '{$event_turn}' AND status IN (\"waiting\", \"confirm\", \"advance\", \"paid\") ORDER BY {$order_by} {$order_dir} LIMIT {$offset}, {$limit}";
             //filter: SELECT * FROM wp_gertis_booking_system_guest WHERE event_turn = 'OPT1' ORDER BY id ASC LIMIT 0, 10
         }
         else{
@@ -650,6 +650,15 @@ class Gertis_BookingSystem_Model{
         else{
             return FALSE;
         }
+    }
+
+    function getGuestEmials($event_turn){
+
+        $table_name = $this->getTableNameGuest();
+        $sql = 'SELECT email FROM '.$table_name.' WHERE event_turn="'.$event_turn.'" AND status IN ("waiting", "confirm", "advance", "paid") ';
+        $result = $this->wpdb->get_results($sql, ARRAY_A);
+
+        return $result;
     }
 
 //    static function getEventForFilter(){
