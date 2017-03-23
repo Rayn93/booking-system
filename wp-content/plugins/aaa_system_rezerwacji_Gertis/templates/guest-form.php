@@ -17,12 +17,33 @@
                 <label for="gertis_event_turn">Kod imprezy [turnus]:</label>
             </th>
             <td>
-                <input type="text" name="entry[event_turn]" id="gertis_event_turn" value="<?php echo $Guest->getField('event_turn'); ?>"/>
+<!--                <input type="text" name="entry[event_turn]" id="gertis_event_turn" value="--><?php //echo $Guest->getField('event_turn'); ?><!--"/>-->
+                <select name="entry[event_turn]" id="gertis_event_turn">
+
+                    <?php if(!empty($EventList)): ?>
+
+                        <?php foreach ($EventList as $i=>$item): ?>
+                            <option <?php echo($Guest->getField('event_turn') == $item['event_turn']) ? 'selected="selected"' : ''; ?>
+                                value="<?php echo $item['event_turn'] ?>">
+                                <?php
+                                    $start_date = date_create($item['start_date']);
+                                    $end_date = date_create($item['end_date']);
+                                    $event_date = date_format($start_date, 'd.m.Y').' - '.date_format($end_date, 'd.m.Y');
+                                ?>
+                                <?php echo $item['event_turn'].' (termin: '.$event_date.')' ?>
+                            </option>
+                        <?php endforeach; ?>
+
+                    <?php else: ?>
+                        <option value="0">Nie ma wolnych terminów. Dodaj nowe wydarzenie!</option>
+                    <?php endif; ?>
+
+                </select>
 
                 <?php if($Guest->hasError('event_turn')): ?>
                 <p class="description error"><?php echo $Guest->getError('event_turn'); ?></p>
                 <?php else: ?>
-                <p class="description">To pole jest wymagane. Format np. SPO1</p>
+                <p class="description">To pole jest wymagane.</p>
                 <?php endif; ?>
 
             </td>

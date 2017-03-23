@@ -55,8 +55,8 @@ class Gertis_booking_system{
 
 
 //        $guest_for_confirm = new Gertis_GuestEntry(8);
-//        $guest_email = $this->model->getCancelMail('OPT1');
-//        var_dump($guest_email);
+//        $get = $this->model->getAllPossibleEventTurns();
+//        var_dump($get);
 
     }
 
@@ -490,6 +490,8 @@ class Gertis_booking_system{
 
             case 'guest-form':
 
+                $event_list = $this->model->getAllPossibleEventTurns();
+
                 if($guestid > 0){
                     $GuestEntry = new Gertis_GuestEntry($guestid);
 
@@ -542,7 +544,7 @@ class Gertis_booking_system{
                     }
                 }
 
-                $this->renderGuest('guest-form', array('Guest' => $GuestEntry));
+                $this->renderGuest('guest-form', array('Guest' => $GuestEntry, 'EventList' => $event_list));
                 break;
 
             default:

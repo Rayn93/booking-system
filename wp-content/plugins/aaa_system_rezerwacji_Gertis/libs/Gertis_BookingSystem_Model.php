@@ -526,6 +526,24 @@ class Gertis_BookingSystem_Model{
 
     }
 
+    //Funkcja zwraca wszystkie dostępne terminy
+    function getAllPossibleEventTurns(){
+
+        $table_name = $this->getTableNameEvent();
+        $sql = 'SELECT event_turn, start_date, end_date FROM '.$table_name.' WHERE status = "yes" ORDER BY event_turn ASC';
+        $event_list = $this->wpdb->get_results($sql, ARRAY_A);
+        $check_event_list = array();
+
+        foreach ($event_list as $key => $val){
+             if($this->checkEventTurn($event_list[$key]['event_turn'])){
+                 array_push($check_event_list, $event_list[$key]);
+             }
+        }
+
+        return $check_event_list;
+
+    }
+
     //Sprawdza czy na podany event_turn można się rejestrować. True - można, false - niemożna
     function checkEventTurn($event_turn){
 
