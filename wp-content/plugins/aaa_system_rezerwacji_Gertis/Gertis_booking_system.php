@@ -519,7 +519,12 @@ class Gertis_booking_system{
                                     $this->setFlashMsg('Poprawnie zmodyfikowano dane uczestnika');
                                 }
                                 else{
-
+                                    $mail_params = array(
+                                        'guest_name' => $GuestEntry->getField('guest_name'),
+                                        'event_turn' => $GuestEntry->getField('event_turn'),
+                                        'email' => $GuestEntry->getField('email')
+                                    );
+                                    $this->sendEmail('registration_guest', $GuestEntry->getField('email'), $mail_params);
                                     $this->setFlashMsg('Poprawnie dodano nowego uczestnika i wysłano mail do niego z potwierdzeniem');
                                 }
                                 $this->redirect($this->getAdminPageUrl('-guests', array('view' => 'guest-form', 'guestid' => $entry_id)));
