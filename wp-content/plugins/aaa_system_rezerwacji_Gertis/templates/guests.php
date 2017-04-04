@@ -148,7 +148,9 @@
             <th class="check-column"><input type="checkbox" /></th>
             <?php endif; ?>
             <th>ID</th>
-            <th>Imie i nazwisko</th>
+            <th>Data rejestracji</th>
+            <th>Imie</th>
+            <th>Nazwisko</th>
             <th>Kod imprezy (turnus)</th>
             <th>Data urodzenia</th>
             <th>Email</th>
@@ -156,7 +158,7 @@
             <th>Pesel/ID</th>
             <th>Adres</th>
             <th>Wpłacono</th>
-            <th>Skąd wiesz?</th>
+<!--            <th>Skąd wiesz?</th>-->
             <th>Uwagi dodatkowe</th>
             <th>Nasze uwagi</th>
             <th>Status</th>
@@ -177,6 +179,7 @@
                     <?php endif; ?>
 
                     <td><?php echo $item->id; ?></td>
+                    <td><?php echo $item->register_date; ?></td>
                     <td><?php echo $item->guest_name; ?>
                         <div class="row-actions">
                                 <span class="edit">
@@ -191,22 +194,26 @@
                                         <a class="edit" href="<?php echo wp_nonce_url($confirm_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz potwierdzić zgłoszenie tego uczestnika?')">Potwierdź</a>
                                     </span> |
                                 <?php endif ?>
-                                    <span class="trash">
+                        </div>
+                    </td>
+                    <td><?php echo $item->guest_surname; ?>
+                        <div class="row-actions">
+                            <span class="trash">
                                     <?php
                                     $token_name = $this->action_token.$item->id;
                                     $del_url = $this->getAdminPageUrl('-guests', array('action' => 'delete', 'guestid' => $item->id));
                                     ?>
-                                        <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
+                                <a class="delete" href="<?php echo wp_nonce_url($del_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz usunąć tego uczestnika?')">Usuń</a>
                                     </span> |
-                                <?php if($item->status == 'waiting' || $item->status == 'confirm' || $item->status == 'advance' || $item->status == 'paid'): ?>
-                                    <span class="edit">
+                            <?php if($item->status == 'waiting' || $item->status == 'confirm' || $item->status == 'advance' || $item->status == 'paid'): ?>
+                                <span class="trash">
                                             <?php
                                             $token_name = $this->action_token.$item->id;
                                             $cancel_url = $this->getAdminPageUrl('-guests', array('action' => 'cancel', 'guestid' => $item->id));
                                             ?>
-                                        <a class="edit" href="<?php echo wp_nonce_url($cancel_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz anulować zgłoszenie tego uczestnika?')">Anuluj</a>
+                                    <a class="edit" href="<?php echo wp_nonce_url($cancel_url, $token_name) ?>" onclick="return confirm('Czy na pewno chcesz anulować zgłoszenie tego uczestnika?')">Anuluj</a>
                                         </span>
-                                <?php endif ?>
+                            <?php endif ?>
                         </div>
                     </td>
                     <td><?php echo $item->event_turn; ?></td>
@@ -241,7 +248,7 @@
                             <?php endif ?>
                         </div>
                     </td>
-                    <td><?php echo $item->from_who; ?></td>
+<!--                    <td>--><?php //echo $item->from_who; ?><!--</td>-->
                     <td><?php echo $item->more_info; ?></td>
                     <td><?php echo $item->staff_info; ?></td>
                     <td>

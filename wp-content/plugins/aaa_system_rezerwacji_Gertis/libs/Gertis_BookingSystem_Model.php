@@ -35,6 +35,7 @@ class Gertis_BookingSystem_Model{
                 id INT NOT NULL AUTO_INCREMENT,
                 event_turn VARCHAR(20) NOT NULL,
                 guest_name VARCHAR(255) NOT NULL,
+                guest_surname VARCHAR(255) NOT NULL,
                 birth_date DATE NOT NULL,
                 email VARCHAR(255) NOT NULL,
                 phone BIGINT NOT NULL,
@@ -46,7 +47,8 @@ class Gertis_BookingSystem_Model{
     			more_info TEXT DEFAULT NULL,
     			staff_info TEXT DEFAULT NULL,
                 money INT DEFAULT NULL,
-                status enum("waiting", "confirm", "resign", "old", "advance", "paid") NOT NULL DEFAULT "waiting",
+                status enum("waiting", "confirm", "resign", "old", "advance", "paid", "send") NOT NULL DEFAULT "waiting",
+                register_date DATE NOT NULL,
                 PRIMARY KEY(id)
             )ENGINE=InnoDB DEFAULT CHARSET=utf8';
 
@@ -142,6 +144,7 @@ class Gertis_BookingSystem_Model{
         $toSave = array(
             'event_turn' => $GuestEntry->getField('event_turn'),
             'guest_name' => $GuestEntry->getField('guest_name'),
+            'guest_surname' => $GuestEntry->getField('guest_surname'),
             'birth_date' => $GuestEntry->getField('birth_date'),
             'email' => $GuestEntry->getField('email'),
             'phone' => $GuestEntry->getField('phone'),
@@ -154,9 +157,11 @@ class Gertis_BookingSystem_Model{
             'staff_info' => $GuestEntry->getField('staff_info'),
             'money' => $GuestEntry->getField('money'),
             'status' => $GuestEntry->getField('status'),
+            'register_date' => $GuestEntry->getField('register_date'),
         );
 
-        $maps = array('%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s');
+
+        $maps = array('%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%s');
 
         $table_name = $this->getTableNameGuest();
 
@@ -170,6 +175,8 @@ class Gertis_BookingSystem_Model{
             }
         }
         else{
+
+            $toSave['register_date'] = date("Y-m-d");
 
             if($this->wpdb->insert($table_name, $toSave, $maps)){
                 return $this->wpdb->insert_id;
@@ -373,7 +380,8 @@ class Gertis_BookingSystem_Model{
             'ID' => 'id',
             'Kod imprezy [turnus]' => 'event_turn',
             'Imie i nazwisko' => 'guest_name',
-            'Status' => 'status'
+            'Status' => 'status',
+            'Data rejestracji' => 'register_date'
         );
     }
 

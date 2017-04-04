@@ -60,9 +60,18 @@ function gertisMainForm(){
                 <!--                </div>-->
 
                 <div class="form-group">
-                    <label for="guest_name" class="col-sm-3 control-label">Imię i nazwisko *</label>
+                    <label for="guest_name" class="col-sm-3 control-label">Imię*</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="front_entry[guest_name]" id="guest_name" placeholder="Imię i nazwisko uczestnika"
+                        <input type="text" class="form-control" name="front_entry[guest_name]" id="guest_name" placeholder="Imię uczestnika"
+                               data-error="To pole nie może zostać puste" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="guest_surname" class="col-sm-3 control-label">Nazwisko*</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="front_entry[guest_surname]" id="guest_surname" placeholder="Nazwisko uczestnika"
                                data-error="To pole nie może zostać puste" required>
                         <div class="help-block with-errors"></div>
                     </div>
@@ -81,6 +90,7 @@ function gertisMainForm(){
                     <label for="email" class="col-sm-3 control-label">Email *</label>
                     <div class="col-sm-9">
                         <input type="email" class="form-control" name="front_entry[email]" id="email" placeholder="Adres Email"
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$"
                                data-error="Podaj prawidłowy adres E-mail" required>
                         <div class="help-block with-errors"></div>
                     </div>
@@ -89,17 +99,17 @@ function gertisMainForm(){
                 <div class="form-group">
                     <label for="phone" class="col-sm-3 control-label">Nr telefonu * </label>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control" name="front_entry[phone]" id="phone" placeholder="Numer telefonu"
+                        <input type="number" class="form-control" name="front_entry[phone]" id="phone" placeholder="Numer telefonu" min="0"
                                data-error="Podaj aktualny nr telefonu (musi się składać z samych liczb)" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="personal_no" class="col-sm-3 control-label">Pesel lub nr ID *</label>
+                    <label for="personal_no" class="col-sm-3 control-label">Pesel lub nr Dowodu osobistego *</label>
                     <div class="col-sm-9">
-                        <input type="number" class="form-control" name="front_entry[personal_no]" id="personal_no" placeholder="Pesel lub nr dowodu osobistego" data-minlength="6"
-                               data-error="Podaj min 6 cyfr" required>
+                        <input type="text" class="form-control" name="front_entry[personal_no]" id="personal_no" placeholder="Pesel lub nr dowodu osobistego" data-minlength="9"
+                               data-error="Podaj min 9 znaków" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>

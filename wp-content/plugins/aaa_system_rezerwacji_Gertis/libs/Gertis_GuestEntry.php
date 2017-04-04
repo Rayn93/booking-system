@@ -5,6 +5,7 @@ class Gertis_GuestEntry{
     private $id = NULL;
     private $event_turn = NULL;
     private $guest_name = NULL;
+    private $guest_surname = NULL;
     private $birth_date = NULL;
     private $email = NULL;
     private $phone = NULL;
@@ -17,6 +18,7 @@ class Gertis_GuestEntry{
     private $money = NULL;
     private $status = 'waiting';
     private $staff_info = NULL;
+    private $register_date = NULL;
 
     private $errors = array();
     private $exists = FALSE;
@@ -83,18 +85,20 @@ class Gertis_GuestEntry{
         return ($this->status == 'old');
     }
 
-    // Return true if status == old
+    // Return true if status == advance
     function isAdvance(){
         return ($this->status == 'advance');
     }
 
-    // Return true if status == old
+    // Return true if status == paid
     function isPaid(){
         return ($this->status == 'paid');
     }
 
-
-
+    // Return true if status == send
+    function isSend(){
+        return ($this->status == 'send');
+    }
 
 
 
@@ -151,6 +155,21 @@ class Gertis_GuestEntry{
         }
         else{
             $this->guest_name = sanitize_text_field($this->guest_name);
+        }
+
+        /*
+         * guest_surname:
+         * - nie może być puste
+         * - po oczyszczeniu kod nie może być dłuższy niż 255 znaków
+         */
+        if (empty($this->guest_surname)) {
+            $this->setError('guest_surname', 'To pole nie może być puste');
+        }
+        else if (strlen($this->guest_surname) > 255) {
+            $this->setError('guest_surname', 'To pole nie może być dłuższe niż 20 znaków.');
+        }
+        else{
+            $this->guest_surname = sanitize_text_field($this->guest_surname);
         }
 
 
@@ -324,7 +343,7 @@ class Gertis_GuestEntry{
 
         /*
          * pole status:
-         * - musi zostać ustawione na 'waiting', 'confirm', 'resign' lub 'old'
+         * - musi zostać ustawione na 'waiting', 'confirm', 'resign', 'old', 'advance' itd...
          */
         if(isset($this->status) && $this->status == 'confirm'){
             $this->status = 'confirm';
@@ -340,6 +359,9 @@ class Gertis_GuestEntry{
         }
         else if(isset($this->status) && $this->status == 'paid'){
             $this->status = 'paid';
+        }
+        else if(isset($this->status) && $this->status == 'send'){
+            $this->status = 'send';
         }
         else{
             $this->status = 'waiting';

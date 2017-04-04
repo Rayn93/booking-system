@@ -51,7 +51,7 @@
 
         <tr class="form-field">
             <th>
-                <label for="gertis_guest_name">Imie i nazwisko uczestnika</label>
+                <label for="gertis_guest_name">Imię uczestnika</label>
             </th>
             <td>
                 <input type="text" name="entry[guest_name]" id="gertis_guest_name" value="<?php echo $Guest->getField('guest_name'); ?>"/>
@@ -60,6 +60,21 @@
                 <p class="description error"><?php echo $Guest->getError('guest_name'); ?></p>
                 <?php else: ?>
                 <p class="description">To pole jest wymagane.</p>
+                <?php endif; ?>
+            </td>
+        </tr>
+
+        <tr class="form-field">
+            <th>
+                <label for="gertis_guest_surname">Nazwisko uczestnika</label>
+            </th>
+            <td>
+                <input type="text" name="entry[guest_surname]" id="gertis_guest_surname" value="<?php echo $Guest->getField('guest_surname'); ?>"/>
+
+                <?php if($Guest->hasError('guest_surname')): ?>
+                    <p class="description error"><?php echo $Guest->getError('guest_surname'); ?></p>
+                <?php else: ?>
+                    <p class="description">To pole jest wymagane.</p>
                 <?php endif; ?>
             </td>
         </tr>
@@ -85,7 +100,7 @@
                 <label for="gertis_email">Email</label>
             </th>
             <td>
-                <input type="email" name="entry[email]" id="gertis_email" value="<?php echo $Guest->getField('email'); ?>"/>
+                <input type="email" name="entry[email]" id="gertis_email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$" value="<?php echo $Guest->getField('email'); ?>"/>
 
                 <?php if($Guest->hasError('email')): ?>
                 <p class="description error"><?php echo $Guest->getError('email'); ?></p>
@@ -101,7 +116,7 @@
                 <label for="gertis_phone">Telefon:</label>
             </th>
             <td>
-                <input type="number" name="entry[phone]" id="gertis_phone" value="<?php echo $Guest->getField('phone'); ?>"/>
+                <input type="number" name="entry[phone]" id="gertis_phone" min="0" value="<?php echo $Guest->getField('phone'); ?>"/>
 
                 <?php if($Guest->hasError('phone')): ?>
                 <p class="description error"><?php echo $Guest->getError('phone'); ?></p>
@@ -113,7 +128,7 @@
 
         <tr>
             <th>
-                <label for="gertis_personal_no">Pesel / nr ID</label>
+                <label for="gertis_personal_no">Pesel / nr dowodu osobistego</label>
             </th>
             <td>
                 <input type="text" name="entry[personal_no]" id="gertis_personal_no" value="<?php echo $Guest->getField('personal_no'); ?>"/>
@@ -132,7 +147,7 @@
                 <label for="gertis_money">Zapłacona kwota [zł]:</label>
             </th>
             <td>
-                <input type="number" name="entry[money]" id="gertis_money" value="<?php echo $Guest->getField('money'); ?>"/>
+                <input type="number" name="entry[money]" id="gertis_money" min="0" value="<?php echo $Guest->getField('money'); ?>"/>
 
                 <?php if($Guest->hasError('money')): ?>
                     <p class="description error"><?php echo $Guest->getError('money'); ?></p>
@@ -261,6 +276,10 @@
                         <span>Zapłacona całość</span>
                     </label><br/>
                     <label>
+                        <input type='radio' name='entry[status]' value='send' <?php echo ($Guest->isSend()) ? 'checked="checked"' : ''; ?>/>
+                        <span>Przesłany dalej</span>
+                    </label><br/>
+                    <label>
                         <input type='radio' name='entry[status]' value='resign' <?php echo ($Guest->isResign()) ? 'checked="checked"' : ''; ?>/>
                         <span>rezygnacja</span>
                     </label><br/>
@@ -289,3 +308,10 @@
     </p>
 
 </form>
+
+
+<?php if($Guest->hasId()): ?>
+
+<h3>Prześlij użytkownika</h3>
+
+<?php endif; ?>

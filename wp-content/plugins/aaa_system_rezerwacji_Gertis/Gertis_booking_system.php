@@ -10,7 +10,7 @@ session_start();
      * Author: Robert Saternus
      * Version: 1.2
      * Author URI: http://www.robertsaternus.pl
-     */
+ */
 
 
 require_once 'libs/Gertis_BookingSystem_Model.php';
@@ -54,9 +54,13 @@ class Gertis_booking_system{
 
 
 
-//        $guest_for_confirm = new Gertis_GuestEntry(8);
-//        $get = $this->model->getAllPossibleEventTurns();
-//        var_dump($get);
+//        $data = array(
+//            'event_turn' => 'melon',
+//            'guest_name' => 'guest_name',
+//        );
+//
+//        $data['register_date'] = 'elo';
+//        var_dump(date("Y-m-d"));
 
     }
 
