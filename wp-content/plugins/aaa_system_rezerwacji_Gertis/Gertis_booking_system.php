@@ -548,6 +548,23 @@ class Gertis_booking_system{
                     }
                 }
 
+                //Send guest information to another travel agent email
+                elseif($action == 'send_to_agent' && $request->isMethod('POST') && $_POST['agent_email']){
+
+                    if($this->model->sendGuest($guestid) !== FALSE && !filter_var($_POST['agent_email'], FILTER_VALIDATE_EMAIL) === FALSE){
+
+                        $mail_params = array(
+                            'guest_id' => $guestid
+                        );
+                        $this->sendEmail('send_to_agent', $_POST['agent_email'], $mail_params);
+                        $this->setFlashMsg('Poprawnie przesłano informacje o użytkowniku');
+                    }
+                    else{
+                        $this->setFlashMsg('Nie udało się przesłać danych uczestnika. Sprawdź pole email agenta', 'error');
+                    }
+                    $this->redirect($this->getAdminPageUrl('-guests'));
+                }
+
                 $this->renderGuest('guest-form', array('Guest' => $GuestEntry, 'EventList' => $event_list));
                 break;
 
@@ -883,6 +900,8 @@ class Gertis_booking_system{
         return $admin_emails;
     }
 
+
+    //Send email for some actions like: register guest, confirmation, send guest to another agent
     public function sendEmail($type_message, $to, $mail_params = array() ){
 
         $message = '';
@@ -1015,6 +1034,29 @@ class Gertis_booking_system{
                     $message .= '<p>Pozdrawiamy</p>';
                     $message .= '<p><strong>Zespół Gertis.</strong></p>';
                 }
+
+                break;
+
+            case 'send_to_agent':
+
+                $GuestEntry = new Gertis_GuestEntry($mail_params['guest_id']);
+
+                $subject .= 'Przekazanie uczestnika '.$GuestEntry->getField('guest_name').' '.$GuestEntry->getField('guest_surname');
+
+                $message .= '<h1>Cześć</h1>';
+                $message .= '<p>Przesyłamy dane uczestnika</p>';
+                $message .= ' <br /> Data rejestracji: '.$GuestEntry->getField('register_date');
+                $message .= ' <br /> Imię: '.$GuestEntry->getField('guest_name');
+                $message .= ' <br /> Nazwisko: '.$GuestEntry->getField('guest_surname');
+                $message .= ' <br /> Kod imprezy: '.$GuestEntry->getField('event_turn');
+                $message .= ' <br /> Data urodzenia: '.$GuestEntry->getField('birth_date');
+                $message .= ' <br /> Email: '.$GuestEntry->getField('email');
+                $message .= ' <br /> Telefon: '.$GuestEntry->getField('phone');
+                $message .= ' <br /> Pesel/Nr Dowodu: '.$GuestEntry->getField('personal_no');
+                $message .= ' <br /> Adres: '.$GuestEntry->getField('city').' '.$GuestEntry->getField('street').' '.$GuestEntry->getField('zip_code');
+
+                $message .= '<p>Pozdrawiamy</p>';
+                $message .= '<p><strong>Zespół Gertis.</strong></p>';
 
                 break;
 

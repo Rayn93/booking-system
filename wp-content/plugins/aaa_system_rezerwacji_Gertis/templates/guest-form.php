@@ -311,7 +311,12 @@
 
 
 <?php if($Guest->hasId()): ?>
-
-<h3>Prześlij użytkownika</h3>
+<?php  $action_params2 = array('view' => 'guest-form', array('action' => 'send_to_agent', 'guestid' => $Guest->getField('id'))); ?>
+<br/><br/><br/>
+<h3>Prześlij dane użytkownika innemu agentowi</h3>
+    <form action="<?php echo $this->getAdminPageUrl('-guests', $action_params2); ?>" method="post" id="gertis-guest-form2">
+        <input type="email" name="agent_email" id="email2" placeholder="Adres Email Agenta" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$">
+        <input type="submit" class="button-primary" value="Prześlij"/>
+    </form>
 
 <?php endif; ?>

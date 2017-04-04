@@ -379,7 +379,8 @@ class Gertis_BookingSystem_Model{
         return array(
             'ID' => 'id',
             'Kod imprezy [turnus]' => 'event_turn',
-            'Imie i nazwisko' => 'guest_name',
+            'Imie' => 'guest_name',
+            'Nazwisko' => 'guest_surname',
             'Status' => 'status',
             'Data rejestracji' => 'register_date'
         );
@@ -502,6 +503,16 @@ class Gertis_BookingSystem_Model{
         return $this->wpdb->query($prep);
     }
 
+    //Zmiana statusu  uczestnictwa na  przesłany dalej
+    function sendGuest($id){
+        $id = (int)$id;
+        $table_name = $this->getTableNameGuest();
+
+        $sql = "UPDATE {$table_name} SET status = 'send' WHERE id = %d";
+        $prep = $this->wpdb->prepare($sql, $id);
+
+        return $this->wpdb->query($prep);
+    }
 
 
 

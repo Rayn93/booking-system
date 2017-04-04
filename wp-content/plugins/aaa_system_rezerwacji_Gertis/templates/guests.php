@@ -257,6 +257,7 @@
                             else if($item->status == 'confirm') echo 'Potwierdzony';
                             else if($item->status == 'advance') echo 'Zapłacona zaliczka';
                             else if($item->status == 'paid') echo 'Zapłacona całość';
+                            else if($item->status == 'send') echo 'Przesłany dalej';
                             else if($item->status == 'resign') echo 'Zrezygnował';
                             else if($item->status == 'old') echo 'Zakończony';
                         ?>
