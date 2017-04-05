@@ -19,7 +19,7 @@ require_once 'libs/Gertis_GuestEntry.php';
 require_once 'libs/Gertis_EmailEntry.php';
 require_once 'libs/Gertis_Pagination.php';
 require_once 'libs/Request.php';
-require_once 'libs/shortcodes.php';
+require_once  'libs/shortcodes.php';
 
 
 class Gertis_booking_system{
@@ -481,6 +481,7 @@ class Gertis_booking_system{
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
                 $order_dir = $request->getQuerySingleParam('orderdir', 'desc');
 
+
                 //Generowanie listy uczestników dla poszczególnego turnusu
                 if($action == 'members'){
                     $pagination = $this->model->getGuestPagination($curr_page, 100, $order_by, $order_dir, $event_turn);
@@ -567,6 +568,15 @@ class Gertis_booking_system{
 
                 $this->renderGuest('guest-form', array('Guest' => $GuestEntry, 'EventList' => $event_list));
                 break;
+
+            case 'guests-export':
+
+                $curr_page = (int)$request->getQuerySingleParam('paged', 1);
+                $order_by = $request->getQuerySingleParam('orderby', 'id');
+                $order_dir = $request->getQuerySingleParam('orderdir', 'desc');
+
+                $pagination = $this->model->getGuestPagination($curr_page, 100, $order_by, $order_dir, $event_turn);
+                $this->renderGuest('guests-export', array('Pagination' => $pagination));
 
             default:
                 $this->renderGuest('404');
@@ -1072,6 +1082,29 @@ class Gertis_booking_system{
 
         return (wp_mail($to, $subject, $message));
 
+    }
+
+    function arrayToCsv( array &$fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false ) {
+        $delimiter_esc = preg_quote($delimiter, '/');
+        $enclosure_esc = preg_quote($enclosure, '/');
+
+        $output = array();
+        foreach ( $fields as $field ) {
+            if ($field === null && $nullToMysqlNull) {
+                $output[] = 'NULL';
+                continue;
+            }
+
+            // Enclose fields containing $delimiter, $enclosure or whitespace
+            if ( $encloseAll || preg_match( "/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field ) ) {
+                $output[] = $enclosure . str_replace($enclosure, $enclosure . $enclosure, $field) . $enclosure;
+            }
+            else {
+                $output[] = $field;
+            }
+        }
+
+        return implode( $delimiter, $output );
     }
 
 }
