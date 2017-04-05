@@ -596,7 +596,7 @@ class Gertis_BookingSystem_Model{
             $start_date = date_create($result_row['start_date']);
             $end_date = date_create($result_row['end_date']);
 
-            $event_date = date_format($start_date, 'd.m.Y').' - '.date_format($end_date, 'd.m.Y');
+            $event_date = date_format($start_date, 'd-m-Y').'-'.date_format($end_date, 'd-m-Y');
 
             return $event_date;
         }

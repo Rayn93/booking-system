@@ -1,6 +1,7 @@
 jQuery(document).ready(function () {
 
     var event_turn = getUrlParameter('event_turn');
+    var event_date = getUrlParameter('event_date');
 
 
     jQuery("#btnExport").click(function(){
@@ -8,7 +9,7 @@ jQuery(document).ready(function () {
             // exclude CSS class
             exclude: ".noExl",
             name: "event_turn",
-            filename: "Lista uczestników: " + event_turn //do not include extension
+            filename: event_turn + ' ' + event_date //do not include extension
         });
     });
 

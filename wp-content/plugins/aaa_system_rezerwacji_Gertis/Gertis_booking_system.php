@@ -575,6 +575,7 @@ class Gertis_booking_system{
                 $order_by = $request->getQuerySingleParam('orderby', 'id');
                 $order_dir = $request->getQuerySingleParam('orderdir', 'desc');
 
+
                 $pagination = $this->model->getGuestPagination($curr_page, 100, $order_by, $order_dir, $event_turn);
                 $this->renderGuest('guests-export', array('Pagination' => $pagination));
 

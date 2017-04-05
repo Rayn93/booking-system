@@ -315,8 +315,9 @@
 <?php if($_GET['action'] == 'members'): ?>
     <?php $email_params = array('view' => 'email-to-guests', 'event_turn' => $_GET['event_turn']); ?>
 
+    <?php $Model = new Gertis_BookingSystem_Model(); ?>
 
-    <a class="button button-primary button-large" href="<?php echo $this->getAdminPageUrl('-guests', array('view' => 'guests-export', 'event_turn' => $_GET['event_turn'])); ?>">Export uczestników</a>
+    <a class="button button-primary button-large" href="<?php echo $this->getAdminPageUrl('-guests', array('view' => 'guests-export', 'event_turn' => $_GET['event_turn'], 'event_date' => $Model->getEventDate($_GET['event_turn']))); ?>">Export uczestników</a>
     <a class="button button-primary button-large" href="<?php echo $this->getAdminPageUrl('-emails', $email_params); ?>" />Email do uczestników</a>
 
 <?php endif; ?>

@@ -1,3 +1,4 @@
+<?php $Model = new Gertis_BookingSystem_Model() ?>
 <form method="get" action="<?php echo $this->getAdminPageUrl(); ?>" id="gertis-events-form-1">
 
     <input type="hidden" name="page" value="<?php echo static::$plugin_id; ?>" />
@@ -163,7 +164,7 @@
                                     <a class="edit" href="<?php echo $this->getAdminPageUrl('-guests', array('action' => 'members', 'event_turn' => $item['event_turn'])); ?>">Uczestnicy</a>
                                 </span> |
                                 <span class="edit">
-                                        <a class="edit" href="<?php echo $this->getAdminPageUrl('-guests', array('view' => 'guests-export', 'event_turn' => $item['event_turn'])); ?>">Export uczestników</a>
+                                        <a class="edit" href="<?php echo $this->getAdminPageUrl('-guests', array('view' => 'guests-export', 'event_turn' => $item['event_turn'], 'event_date' => $Model->getEventDate($item['event_turn']))); ?>">Export uczestników</a>
                                 </span>
                         </div>
                     </td>
