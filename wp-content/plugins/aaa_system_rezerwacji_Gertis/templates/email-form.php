@@ -133,7 +133,8 @@ if($Email->hasId()){
 
     <p>W treści szablonu można również kożystać ze specjalnych wartość:</p>
     <ul>
-        <li><strong>%%IMIE%%</strong> -> zwraca imię i nazwisko uczestnika</li>
+        <li><strong>%%IMIE%%</strong> -> zwraca imię  uczestnika</li>
+        <li><strong>%%NAZWISKO%%</strong> -> zwraca nazwisko uczestnika</li>
         <li><strong>%%TURNUS%%</strong> -> zwraca kod imprezy na który uczestnik się zapisał</li>
         <li><strong>%%DATA%%</strong> -> zwraca termin imprezy na który uczestnik się zapisał</li>
     </ul>

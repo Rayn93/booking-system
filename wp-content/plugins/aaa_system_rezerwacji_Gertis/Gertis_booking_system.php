@@ -331,6 +331,7 @@ class Gertis_booking_system{
                             //Mail do uczetnika z informacjami o potwierdzeniu
                             $mail_params = array(
                                 'guest_name' => $GuestEntry->getField('guest_name'),
+                                'guest_surname' => $GuestEntry->getField('guest_surname'),
                                 'event_turn' => $GuestEntry->getField('event_turn'),
                                 'email' => $GuestEntry->getField('email')
                             );
@@ -363,6 +364,7 @@ class Gertis_booking_system{
                            //Mail do uczetnika z informacjami o potwierdzeniu
                             $mail_params = array(
                                 'guest_name' => $GuestEntry->getField('guest_name'),
+                                'guest_surname' => $GuestEntry->getField('guest_surname'),
                                 'event_turn' => $GuestEntry->getField('event_turn'),
                                 'email' => $GuestEntry->getField('email')
                             );
@@ -395,6 +397,7 @@ class Gertis_booking_system{
                             //Mail do uczetnika z informacjami o potwierdzeniu
                             $mail_params = array(
                                 'guest_name' => $GuestEntry->getField('guest_name'),
+                                'guest_surname' => $GuestEntry->getField('guest_surname'),
                                 'event_turn' => $GuestEntry->getField('event_turn'),
                                 'email' => $GuestEntry->getField('email')
                             );
@@ -423,6 +426,7 @@ class Gertis_booking_system{
                         $GuestEntry = new Gertis_GuestEntry($guestid);
                         $mail_params = array(
                             'guest_name' => $GuestEntry->getField('guest_name'),
+                            'guest_surname' => $GuestEntry->getField('guest_surname'),
                             'event_turn' => $GuestEntry->getField('event_turn'),
                             'email' => $GuestEntry->getField('email')
                         );
@@ -618,6 +622,7 @@ class Gertis_booking_system{
                             //Mail do admina o nowym uczestniku (wysłać $entry_id) oraz do uczestnika
                             $mail_params = array(
                                 'guest_name' => $GuestEntry->getField('guest_name'),
+                                'guest_surname' => $GuestEntry->getField('guest_surname'),
                                 'event_turn' => $GuestEntry->getField('event_turn'),
                                 'id' => $entry_id,
                                 'email' => $GuestEntry->getField('email')
@@ -919,6 +924,7 @@ class Gertis_booking_system{
         $subject = 'Gertis - Obozy żeglarskie: ';
         $to_replace = array(
             '%%IMIE%%' => $mail_params['guest_name'],
+            '%%NAZWISKO%%' => $mail_params['guest_surname'],
             '%%TURNUS%%' => $mail_params['event_turn'],
             '%%DATA%%' => $this->model->getEventDate($mail_params['event_turn'])
         );
@@ -968,7 +974,7 @@ class Gertis_booking_system{
                 $message .= '<p>Właśnie zarejestrował się nowy uczestnik na obóz żeglarski o kodzie: <strong>'.$mail_params['event_turn'].'</strong></p>';
                 $message .= '<p>Podstawowe dane uczestnika: </p>';
                 $message .= '<ul>
-                                <li>Imię i nazwisko: '.$mail_params['guest_name'].'</li>
+                                <li>Imię i nazwisko: '.$mail_params['guest_name'].' '.$mail_params['guest_surname'].'</li>
                                 <li>Email: '.$mail_params['email'].'</li>
                                 <li>ID w systemie rezerwacji: '.$mail_params['id'].'</li>
                              </ul>';
