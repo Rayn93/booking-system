@@ -115,18 +115,9 @@ function gertisMainForm(){
                 </div>
 
                 <div class="form-group">
-                    <label for="city" class="col-sm-3 control-label">Miasto *</label>
+                    <label for="street" class="col-sm-3 control-label">Ulica i nr budynku / mieszkania *</label>
                     <div class="col-sm-9">
-                        <input type="text" class="form-control" name="front_entry[city]" id="city" placeholder="Miejscowość zamieszkania np. Poznań"
-                               data-error="To pole nie może zostać puste" required>
-                        <div class="help-block with-errors"></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="street" class="col-sm-3 control-label">Ulica i nr budynku *</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="front_entry[street]" id="street" placeholder="Ulica i numer budynku zamieszkania np. Piłsudzkiego 3A"
+                        <input type="text" class="form-control" name="front_entry[street]" id="street" placeholder="Ulica i numer budynku zamieszkania np. Piłsudzkiego 14b/26"
                                data-error="To pole nie może zostać puste" required>
                         <div class="help-block with-errors"></div>
                     </div>
@@ -138,6 +129,15 @@ function gertisMainForm(){
                         <input type="text" class="form-control" name="front_entry[zip_code]" id="zip_code" pattern="^\d{2}(?:[-]\d{3})?$"
                                placeholder="Kod pocztowy miejsca zamieszkania"
                                data-error="Wprowadzona wartość musi mieć format xx-xxx np. 41-400" required>
+                        <div class="help-block with-errors"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="city" class="col-sm-3 control-label">Miasto *</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="front_entry[city]" id="city" placeholder="Miejscowość zamieszkania np. Poznań"
+                               data-error="To pole nie może zostać puste" required>
                         <div class="help-block with-errors"></div>
                     </div>
                 </div>
@@ -179,7 +179,7 @@ function gertisMainForm(){
                     <div class="col-sm-offset-3 col-sm-9">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" required> Znam i akceptuję <a class="credential" href="#">warunki uczestnictwa w imprezie</a>
+                                <input type="checkbox" required> Znam i akceptuję <a class="credential" href="http://www.obozy-zeglarskie.pl/ogolne-warunki-uczestnictwa/" target="_blank">warunki uczestnictwa w imprezie</a>
                             </label>
                         </div>
                     </div>
@@ -242,7 +242,7 @@ function gertisPrintEventTable($args){
                     <td><?php echo $free_seats;?></td>
 
                     <?php if($free_seats > 0): ?>
-                        <td><a href="<?php echo get_site_url().'/a-system-rezerwacji/?code='.$item['event_turn']; ?>" >Rezerwuj</a></td>
+                        <td><a class="booking" href="<?php echo get_site_url().'/a-system-rezerwacji/?code='.$item['event_turn']; ?>" >Rezerwuj</a></td>
                     <?php else: ?>
                         <td> Brak wolnych miejsc </td>
                     <?php endif; ?>

@@ -377,12 +377,12 @@ class Gertis_BookingSystem_Model{
 
     static function getGuestOrderByOpts(){
         return array(
-            'ID' => 'id',
+//            'ID' => 'id',
+            'Data rejestracji' => 'register_date',
             'Kod imprezy [turnus]' => 'event_turn',
             'Imie' => 'guest_name',
             'Nazwisko' => 'guest_surname',
-            'Status' => 'status',
-            'Data rejestracji' => 'register_date'
+            'Status' => 'status'
         );
     }
 

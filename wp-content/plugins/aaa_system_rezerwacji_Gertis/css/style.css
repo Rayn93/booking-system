@@ -30,3 +30,18 @@ a.credential{
     margin: 0 auto;
     display: block;
 }
+
+table a.booking{
+    display: inline-block;
+    background: #004289;
+    color: #fff;
+    padding: 5px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: 0.5s;
+}
+
+table a.booking:hover{
+    background: #e2001a;
+}
+

@@ -147,21 +147,23 @@
             <?php if(!isset($_GET['action']) && $_GET['action'] != 'members'): ?>
             <th class="check-column"><input type="checkbox" /></th>
             <?php endif; ?>
-            <th>ID</th>
-            <th>Data rejestracji</th>
+<!--            <th>ID</th>-->
+
             <th>Imie</th>
             <th>Nazwisko</th>
             <th>Kod imprezy (turnus)</th>
+            <th>Status</th>
+            <th>Telefon</th>
             <th>Data urodzenia</th>
             <th>Email</th>
-            <th>Telefon</th>
             <th>Pesel/ID</th>
             <th>Adres</th>
             <th>Wpłacono</th>
 <!--            <th>Skąd wiesz?</th>-->
             <th>Uwagi dodatkowe</th>
             <th>Nasze uwagi</th>
-            <th>Status</th>
+            <th>Data rejestracji</th>
+
         </tr>
         </thead>
         <tbody id="the-list">
@@ -178,8 +180,7 @@
                         </th>
                     <?php endif; ?>
 
-                    <td><?php echo $item->id; ?></td>
-                    <td><?php echo $item->register_date; ?></td>
+<!--                    <td>--><?php //echo $item->id; ?><!--</td>-->
                     <td><?php echo $item->guest_name; ?>
                         <div class="row-actions">
                                 <span class="edit">
@@ -217,14 +218,25 @@
                         </div>
                     </td>
                     <td><?php echo $item->event_turn; ?></td>
+                    <td>
+                        <?php
+                        if($item->status == 'waiting') echo 'Oczekuje';
+                        else if($item->status == 'confirm') echo 'Potwierdzony';
+                        else if($item->status == 'advance') echo 'Zapłacona zaliczka';
+                        else if($item->status == 'paid') echo 'Zapłacona całość';
+                        else if($item->status == 'send') echo 'Przesłany dalej';
+                        else if($item->status == 'resign') echo 'Zrezygnował';
+                        else if($item->status == 'old') echo 'Zakończony';
+                        ?>
+                    </td>
+                    <td><?php echo $item->phone; ?></td>
                     <td><?php echo $item->birth_date; ?></td>
                     <td><?php echo $item->email; ?></td>
-                    <td><?php echo $item->phone; ?></td>
                     <td><?php echo $item->personal_no; ?></td>
-                    <td>
-                        <?php echo $item->city; ?>
+                    <td class="nocenter">
                         <?php echo $item->street; ?>
                         <?php echo $item->zip_code; ?>
+                        <?php echo $item->city; ?>
                     </td>
                     <td><?php echo $item->money; ?>
                         <div class="row-actions">
@@ -251,17 +263,8 @@
 <!--                    <td>--><?php //echo $item->from_who; ?><!--</td>-->
                     <td><?php echo $item->more_info; ?></td>
                     <td><?php echo $item->staff_info; ?></td>
-                    <td>
-                        <?php
-                            if($item->status == 'waiting') echo 'Oczekuje';
-                            else if($item->status == 'confirm') echo 'Potwierdzony';
-                            else if($item->status == 'advance') echo 'Zapłacona zaliczka';
-                            else if($item->status == 'paid') echo 'Zapłacona całość';
-                            else if($item->status == 'send') echo 'Przesłany dalej';
-                            else if($item->status == 'resign') echo 'Zrezygnował';
-                            else if($item->status == 'old') echo 'Zakończony';
-                        ?>
-                    </td>
+                    <td><?php echo $item->register_date; ?></td>
+
                 </tr>
 
             <?php endforeach; ?>
