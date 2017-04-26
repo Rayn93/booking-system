@@ -25,7 +25,7 @@ require_once  'libs/shortcodes.php';
 class Gertis_booking_system{
 
     private static $plugin_id = 'gertis-book-system';
-    private $plugin_version = '1.2.0';
+    private $plugin_version = '1.3.0';
     private $user_capability = 'edit_pages';
     private $model;
     private $action_token = 'gertis-bs-action';
@@ -942,19 +942,14 @@ class Gertis_booking_system{
                 }
                 else{
                     $message .= '<h1>Cześć '.$mail_params['guest_name'].'</h1>';
-                    $message .= '<p>Gratulujemy! Właśnie poprawnie złożyłaś rejestrację na obóz żeglarski z Gertis</p>';
+                    $message .= '<p>Potwierdzamy rezerwację miejsca obozie żeglarskim w Szkole Żeglarstwa Gertis</p>';
 
-                    $message .= '<p>Miejsce zostaje zarezerwowane na <strong>5 dni roboczych</strong>. Aby potwierdzić rezerwację należy dokonać wpłaty <strong>zaliczki wysokości 600 zł </strong>. Zaliczkę możesz wykonać korzystając z poniższego przycisku (płatność za pośrednictwem PayPal). </p>';
-                    $message .= '<p>
-                                    <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66KKJCHJLR99C">
-                                        <img src="https://www.paypalobjects.com/pl_PL/PL/i/btn/btn_paynowCC_LG.gif" border="0" alt="PayPal – Płać wygodnie i bezpiecznie">"
-                                    </a>
-                                </p>';
+                    $message .= '<p>Miejsce zostaje zarezerwowane na <strong>5 dni roboczych</strong>. Aby potwierdzić rezerwację należy dokonać wpłaty <strong>zaliczki wysokości 600 zł</p>';
                     $message .= '<p>Zaliczkę możesz również uregulować poprzez przelew bankowy na konto:</p>';
                     $message .= '<p><strong>
-                                    Gertis - Marek Makowski <br />
-                                    Nr konta bankowego: 52 938123823 129389123 12830123<br />
-                                    Tytułem: '.$mail_params['guest_name'].'. Zaliczka za obóz:'.$mail_params['event_turn'].' </strong>
+                                    BTA Gertis Marek Makowski <br />
+                                    Nr konta:  56 1020 4753 0000 0102 0041 8996<br />
+                                    Tytułem: '.$mail_params['guest_name'].' '.$mail_params['guest_surname'].' + '.$mail_params['event_turn'].' </strong>
                                 </p>';
                     $message .= '<p>Pozostałe płatności należy dokonać <strong>do 21 dni przed imprezą lub zgodnie z ustaleniami indywidualnymi.</strong></p>';
                     $message .= '<p>W razie jakichkolwiek pytań służymy pomocą. Wszelkie dane kontaktowe znajdziesz tutaj: http://www.obozy-zeglarskie.pl/kontakt/</p>
@@ -1120,4 +1115,4 @@ class Gertis_booking_system{
 
 $Gertis_booking_system = new Gertis_booking_system();
 
-ob_flush();
+//ob_flush();

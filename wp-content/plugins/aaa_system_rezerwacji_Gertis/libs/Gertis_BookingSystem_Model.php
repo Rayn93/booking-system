@@ -60,7 +60,7 @@ class Gertis_BookingSystem_Model{
 
     function createDbTableEvent(){
 
-        $table_name = $this->getTableNameEmail();
+        $table_name = $this->getTableNameEvent();
 
         $sql = '
             CREATE TABLE IF NOT EXISTS '.$table_name.'(
@@ -82,7 +82,7 @@ class Gertis_BookingSystem_Model{
 
     function createDbTableEmail(){
 
-        $table_name = $this->getTableNameEvent();
+        $table_name = $this->getTableNameEmail();
 
         $sql = '
             CREATE TABLE IF NOT EXISTS '.$table_name.'(
