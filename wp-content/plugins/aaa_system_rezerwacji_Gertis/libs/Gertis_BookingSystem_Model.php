@@ -614,78 +614,83 @@ class Gertis_BookingSystem_Model{
 
     }
 
-    //Zwraca szablon maila po rejestracji. Gdy nie ma maila to FALSE
+    //Zwraca szablon maila po rejestracji. Gdy nie ma maila to ładuje szablon domyślny
     function getRegisterMail($event_turn){
-
+        $table_name = $this->getTableNameEmail();
         $event_code = $this->getEventCode($event_turn);
 
-        if($event_code != NULL){
-            $table_name = $this->getTableNameEmail();
-            $sql = 'SELECT register_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+        $sql = 'SELECT register_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+
+        if($this->wpdb->get_var($sql) != NULL){
             return $this->wpdb->get_var($sql);
         }
         else{
-            return FALSE;
+            $sql = 'SELECT register_mail FROM '.$table_name.' WHERE event_code="DOMYSLNY" ';
+            return $this->wpdb->get_var($sql);
         }
     }
 
-    //Zwraca szablon maila po akcji potwierdzenia. Gdy nie ma maila to FALSE
+    //Zwraca szablon maila po akcji potwierdzenia. Gdy nie ma maila to ładuje szablon domyślny
     function getConfirmMail($event_turn){
-
+        $table_name = $this->getTableNameEmail();
         $event_code = $this->getEventCode($event_turn);
 
-        if($event_code != NULL){
-            $table_name = $this->getTableNameEmail();
-            $sql = 'SELECT confirm_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+        $sql = 'SELECT confirm_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+
+        if($this->wpdb->get_var($sql) != NULL){
             return $this->wpdb->get_var($sql);
         }
         else{
-            return FALSE;
+            $sql = 'SELECT confirm_mail FROM '.$table_name.' WHERE event_code="DOMYSLNY" ';
+            return $this->wpdb->get_var($sql);
         }
     }
 
-    //Zwraca szablon maila po akcji zapłacono zaliczkę. Gdy nie ma maila to FALSE
+    //Zwraca szablon maila po akcji zapłacono zaliczkę. Gdy nie ma maila to ładuje szablon domyślny
     function getAdvanceMail($event_turn){
-
+        $table_name = $this->getTableNameEmail();
         $event_code = $this->getEventCode($event_turn);
 
-        if($event_code != NULL){
-            $table_name = $this->getTableNameEmail();
-            $sql = 'SELECT advance_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+        $sql = 'SELECT advance_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+
+        if($this->wpdb->get_var($sql) != NULL){
             return $this->wpdb->get_var($sql);
         }
         else{
-            return FALSE;
+            $sql = 'SELECT advance_mail FROM '.$table_name.' WHERE event_code="DOMYSLNY" ';
+            return $this->wpdb->get_var($sql);
         }
     }
 
-    //Zwraca szablon maila po akcji zapłacono całość. Gdy nie ma maila to FALSE
+    //Zwraca szablon maila po akcji zapłacono całość. Gdy nie ma maila to ładuje szablon domyślny
     function getPaidMail($event_turn){
-
+        $table_name = $this->getTableNameEmail();
         $event_code = $this->getEventCode($event_turn);
 
-        if($event_code != NULL){
-            $table_name = $this->getTableNameEmail();
-            $sql = 'SELECT paid_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+        $sql = 'SELECT paid_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+
+        if($this->wpdb->get_var($sql) != NULL){
             return $this->wpdb->get_var($sql);
         }
         else{
-            return FALSE;
+            $sql = 'SELECT paid_mail FROM '.$table_name.' WHERE event_code="DOMYSLNY" ';
+            return $this->wpdb->get_var($sql);
         }
     }
 
-    //Zwraca szablon maila po akcji zapłacono całość. Gdy nie ma maila to FALSE
+    //Zwraca szablon maila po akcji anuluj. Gdy nie ma maila to ładuje szablon domyślny
     function getCancelMail($event_turn){
-
+        $table_name = $this->getTableNameEmail();
         $event_code = $this->getEventCode($event_turn);
 
-        if($event_code != NULL){
-            $table_name = $this->getTableNameEmail();
-            $sql = 'SELECT cancel_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+        $sql = 'SELECT cancel_mail FROM '.$table_name.' WHERE event_code="'.$event_code.'" ';
+
+        if($this->wpdb->get_var($sql) != NULL){
             return $this->wpdb->get_var($sql);
         }
         else{
-            return FALSE;
+            $sql = 'SELECT cancel_mail FROM '.$table_name.' WHERE event_code="DOMYSLNY" ';
+            return $this->wpdb->get_var($sql);
         }
     }
 
