@@ -15,7 +15,7 @@ class Gertis_EventEntry{
     private $end_date = NULL;
     private $price = NULL;
     private $seat_no = NULL;
-    private $status = 'yes';
+    private $status = 'no';
 
     private $errors = array();
     private $exists = FALSE;

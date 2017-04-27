@@ -59,8 +59,14 @@ class Gertis_booking_system{
 //            'guest_name' => 'guest_name',
 //        );
 //
-//        $data['register_date'] = 'elo';
-//        var_dump(date("Y-m-d"));
+//        $my_array = array(
+//            'ccc@example.com',
+//            'ddd@example.com',
+//            'eee@example.pro',
+//            'fff@example.pro'
+//        );
+//
+//        var_dump($this->renderBccEmails($my_array));
 
     }
 
@@ -530,13 +536,13 @@ class Gertis_booking_system{
                                     $this->setFlashMsg('Poprawnie zmodyfikowano dane uczestnika');
                                 }
                                 else{
-                                    $mail_params = array(
-                                        'guest_name' => $GuestEntry->getField('guest_name'),
-                                        'event_turn' => $GuestEntry->getField('event_turn'),
-                                        'email' => $GuestEntry->getField('email')
-                                    );
-                                    $this->sendEmail('registration_guest', $GuestEntry->getField('email'), $mail_params);
-                                    $this->setFlashMsg('Poprawnie dodano nowego uczestnika i wysłano mail do niego z potwierdzeniem');
+//                                    $mail_params = array(
+//                                        'guest_name' => $GuestEntry->getField('guest_name'),
+//                                        'event_turn' => $GuestEntry->getField('event_turn'),
+//                                        'email' => $GuestEntry->getField('email')
+//                                    );
+//                                    $this->sendEmail('registration_guest', $GuestEntry->getField('email'), $mail_params);
+                                    $this->setFlashMsg('Poprawnie dodano nowego uczestnika do bazy');
                                 }
                                 $this->redirect($this->getAdminPageUrl('-guests', array('view' => 'guest-form', 'guestid' => $entry_id)));
                             }
@@ -799,6 +805,8 @@ class Gertis_booking_system{
                     'strong' => array(),
                 );
 
+                $headers = $this->renderBccEmails($guest_emails);
+
                 if(isset($event_turn) && !isset($action)){
                     $guest_emails = $this->model->getGuestEmials($event_turn);
                 }
@@ -809,7 +817,7 @@ class Gertis_booking_system{
                     $subject = wp_kses_data($_POST['email_subject'], $allowed_tags);
                     $message = wp_kses($_POST['email_massage'], $allowed_tags);
 
-                    wp_mail($to, $subject, $message);
+                    wp_mail($to, $subject, $message, $headers);
                     $this->setFlashMsg('Poprawnie wysłano mail-e do uczestników tego wydarzenia');
 
 //                    if(wp_mail($to, $subject, $message)){
@@ -851,7 +859,7 @@ class Gertis_booking_system{
 
     }
 
-    //Funkcja służąca do renderowania widoków dla sekcji z rejsami
+    //Funkcja służąca do renderowania widoków dla sekcji z szablonami email
     private function renderEmail($view, array $args = array()){
 
         extract($args);
@@ -1107,6 +1115,16 @@ class Gertis_booking_system{
         }
 
         return implode( $delimiter, $output );
+    }
+
+    function renderBccEmails($emails = array()){
+
+        foreach ($emails as &$value) {
+            $value = 'BCC: '.$value;
+        }
+        unset($value);
+
+        return $emails;
     }
 
 }

@@ -112,7 +112,7 @@ if($Event->hasId()){
                 <label for="gertis_status">Opublikowany:</label>
             </th>
             <td>
-                <input type="checkbox" name="entry[status]" id="gertis_status" value="yes" <?php echo ($Event->checkStatus()) ? 'checked="checked"' : ''; ?> />
+                <input type="checkbox" name="entry[status]" id="gertis_status" value="<?php echo $Event->getField('status'); ?>" <?php echo ($Event->checkStatus()) ? 'checked="checked"' : ''; ?> />
             </td>
         </tr>
 
