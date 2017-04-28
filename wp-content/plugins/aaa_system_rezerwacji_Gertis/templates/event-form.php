@@ -109,11 +109,29 @@ if($Event->hasId()){
 
         <tr>
             <th>
-                <label for="gertis_status">Opublikowany:</label>
+                <label for="gertis_status">Status imprezy:</label>
             </th>
             <td>
-                <input type="checkbox" name="entry[status]" id="gertis_status" value="<?php echo $Event->getField('status'); ?>" <?php echo ($Event->checkStatus()) ? 'checked="checked"' : ''; ?> />
+                <fieldset>
+                    <label>
+                        <input type='radio' name='entry[status]' value='yes' <?php echo ($Event->isStatusYes()) ? 'checked="checked"' : ''; ?>/>
+                        <span>aktualny</span>
+                    </label><br/>
+                    <label>
+                        <input type='radio' name='entry[status]' value='no' <?php echo ($Event->isStatusNo()) ? 'checked="checked"' : ''; ?>/>
+                        <span>nieaktualny</span>
+                    </label><br/>
+                </fieldset>
+
+                <?php if($Event->hasError('status')): ?>
+                    <p class="description error"><?php echo $Event->getError('status'); ?></p>
+                <?php else: ?>
+                    <p class="description">To pole jest obowiązkowe</p>
+                <?php endif; ?>
             </td>
+<!--            <td>-->
+<!--                <input type="checkbox" name="entry[status]" id="gertis_status" value="--><?php //echo $Event->getField('status'); ?><!--" --><?php //echo ($Event->checkStatus()) ? 'checked="checked"' : ''; ?><!-- />-->
+<!--            </td>-->
         </tr>
 
         </tbody>

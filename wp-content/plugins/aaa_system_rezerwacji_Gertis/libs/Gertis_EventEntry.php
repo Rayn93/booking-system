@@ -15,7 +15,7 @@ class Gertis_EventEntry{
     private $end_date = NULL;
     private $price = NULL;
     private $seat_no = NULL;
-    private $status = 'no';
+    private $status = 'yes';
 
     private $errors = array();
     private $exists = FALSE;
@@ -65,6 +65,16 @@ class Gertis_EventEntry{
     // Return true if status == yes
     function checkStatus(){
         return ($this->status == 'yes');
+    }
+
+    // Return true if status == yes
+    function isStatusYes(){
+        return ($this->status == 'yes');
+    }
+
+    // Return true if status == no
+    function isStatusNo(){
+        return ($this->status == 'no');
     }
 
 

@@ -1483,3 +1483,5 @@
 [27-Apr-2017 21:36:47 UTC] PHP Parse error:  syntax error, unexpected 'if' (T_IF) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 811
 [27-Apr-2017 21:36:50 UTC] PHP Parse error:  syntax error, unexpected 'if' (T_IF) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 811
 [27-Apr-2017 21:36:52 UTC] PHP Parse error:  syntax error, unexpected 'if' (T_IF) in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\Gertis_booking_system.php on line 811
+[28-Apr-2017 12:59:25 UTC] PHP Fatal error:  Call to a member function isStatusYes() on null in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\event-form.php on line 117
+[28-Apr-2017 13:00:40 UTC] PHP Fatal error:  Call to a member function hasError() on null in C:\xampp\htdocs\system-rezerwacji\wp-content\plugins\aaa_system_rezerwacji_Gertis\templates\event-form.php on line 126
