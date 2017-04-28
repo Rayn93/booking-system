@@ -20,7 +20,20 @@
 <!--                <input type="text" name="entry[event_turn]" id="gertis_event_turn" value="--><?php //echo $Guest->getField('event_turn'); ?><!--"/>-->
                 <select name="entry[event_turn]" id="gertis_event_turn">
 
-                    <?php if(!empty($EventList)): ?>
+                    <?php if(!empty($_GET['event_turn']) && !empty($EventList)): ?>
+                        <?php foreach ($EventList as $i=>$item): ?>
+                            <option <?php echo($_GET['event_turn'] == $item['event_turn']) ? 'selected="selected"' : ''; ?>
+                                value="<?php echo $item['event_turn'] ?>">
+                                <?php
+                                $start_date = date_create($item['start_date']);
+                                $end_date = date_create($item['end_date']);
+                                $event_date = date_format($start_date, 'd.m.Y').' - '.date_format($end_date, 'd.m.Y');
+                                ?>
+                                <?php echo $item['event_turn'].' (termin: '.$event_date.')' ?>
+                            </option>
+                        <?php endforeach; ?>
+
+                    <?php elseif(!empty($EventList)): ?>
 
                         <?php foreach ($EventList as $i=>$item): ?>
                             <option <?php echo($Guest->getField('event_turn') == $item['event_turn']) ? 'selected="selected"' : ''; ?>
